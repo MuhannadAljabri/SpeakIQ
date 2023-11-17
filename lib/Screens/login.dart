@@ -20,43 +20,117 @@ class LoginState extends State<LoginScreen>{
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      body:SingleChildScrollView(child: content()),
-
+    return SafeArea(
+        child: Scaffold(
+      body: SingleChildScrollView(child: content()),
+    )
+    );
     );
   }
   Widget content(){
     return Column(
       children: [
-        Container(
-            height: 250,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.elliptical(100, 100),
-                    bottomRight: Radius.elliptical(100, 100)
-                )
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top:70.0),
-              child: Column(
-                children: [
-                  Image.asset(
-                      'lib/assets/MicDropLogoMain.png',
-                      scale: 5
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                      'Login to your account',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14
-                      )
-                  )
-                ],
+       Widget content() {
+    return Column(
+      children: [
+        Stack(
+          //alignment: Alignment.center,
+          children: [
+            Container(
+              height: 140,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(124, 201, 201, 201),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(100),
+                ),
               ),
-            )
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(top: 100),
+              child: Text(
+                'Register new account',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF212121),
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w700,
+                  height: 0,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 20),
+              child: Container(
+                width: 65,
+                height: 65,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+          child: Row(children: [
+            const SizedBox(height: 20),
+            Expanded(
+              child: Container(
+                child: TextField(
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    labelText: 'Username',
+                    hintText: 'Enter your email',
+                    contentPadding: const EdgeInsets.all(20.0),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          child: Row(children: [
+            const SizedBox(height: 20),
+            Expanded(
+              child: Container(
+                child: TextField(
+                  controller: passwordController,
+                  obscureText: passwordVisible,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    labelText: 'Password',
+                    hintText: 'Enter your password',
+                    contentPadding: const EdgeInsets.all(20.0),
+                    suffixIcon: IconButton(
+                      icon: Icon(passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () {
+                        setState(
+                          () {
+                            passwordVisible = !passwordVisible;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
         ),
         const SizedBox(
             height: 10
