@@ -30,9 +30,6 @@ class LoginState extends State<LoginScreen>{
   Widget content(){
     return Column(
       children: [
-       Widget content() {
-    return Column(
-      children: [
         Stack(
           //alignment: Alignment.center,
           children: [
