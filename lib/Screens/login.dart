@@ -33,20 +33,34 @@ class LoginState extends State<LoginScreen>{
           //alignment: Alignment.center,
           children: [
             Container(
-              height: 140,
+              height: 200,
               decoration: const BoxDecoration(
-                color: Color.fromARGB(124, 201, 201, 201),
+                color: Color.fromARGB(124, 245, 245, 245),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(100),
                   bottomRight: Radius.circular(100),
                 ),
               ),
-            ),
-            Container(
+              child: Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.only(top: 100),
-              child: Text(
-                'Register new account',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 20),
+              child: Container(
+                width: 65,
+                height: 65,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: const Image(image: AssetImage('assets/MicDropLogoMain.png')),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+              const Text(
+                'Login to your account',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF212121),
@@ -54,20 +68,9 @@ class LoginState extends State<LoginScreen>{
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w700,
                   height: 0,
-                ),
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(top: 20),
-              child: Container(
-                width: 65,
-                height: 65,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
-                ),
-              ),
+                ),),
+              
+          ]),),
             ),
           ],
         ),
@@ -81,10 +84,15 @@ class LoginState extends State<LoginScreen>{
                 child: TextField(
                   controller: usernameController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
-                    labelText: 'Username',
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                    labelText: 'Email*',
                     hintText: 'Enter your email',
                     contentPadding: const EdgeInsets.all(20.0),
                   ),
@@ -93,7 +101,7 @@ class LoginState extends State<LoginScreen>{
             ),
           ]),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
           child: Row(children: [
@@ -104,16 +112,22 @@ class LoginState extends State<LoginScreen>{
                   controller: passwordController,
                   obscureText: passwordVisible,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
-                    labelText: 'Password',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                    
+                    labelText: 'Password*',
                     hintText: 'Enter your password',
                     contentPadding: const EdgeInsets.all(20.0),
                     suffixIcon: IconButton(
                       icon: Icon(passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off),
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(
                           () {
@@ -127,71 +141,6 @@ class LoginState extends State<LoginScreen>{
               ),
             ),
           ]),
-        ),
-        const SizedBox(
-            height: 10
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-          child: Row(
-              children: [
-                const SizedBox(height: 20),
-                Expanded(
-                  child: Container(
-                    child: TextField(
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        labelText: 'Username',
-                        hintText: 'Enter your email',
-                        contentPadding: const EdgeInsets.all(20.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ]
-          ),
-        ),
-        const SizedBox(
-            height: 10
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-          child: Row(
-              children: [
-                const SizedBox(height: 20),
-                Expanded(
-                  child: Container(
-                    child: TextField(
-                      controller: passwordController,
-                      obscureText: passwordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        labelText: 'Password',
-                        hintText: 'Enter your password',
-                        contentPadding: const EdgeInsets.all(20.0),
-                        suffixIcon: IconButton(
-                          icon: Icon(passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            setState(
-                                  () {
-                                passwordVisible = !passwordVisible;
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ]
-          ),
         ),
         const SizedBox(
             height: 0

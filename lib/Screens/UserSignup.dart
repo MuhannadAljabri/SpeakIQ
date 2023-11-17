@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speak_iq/Screens/login.dart';
 
 class UserSignup extends StatefulWidget {
   const UserSignup({Key? key}) : super(key: key);
@@ -9,9 +11,10 @@ class UserSignup extends StatefulWidget {
 
 class _UserSignupState extends State<UserSignup> {
 
-  List<String> roles = ['None', 'Event Planner', 'Speaker', 'Others']; // Add your role options here
+  List<String> roles = ['Event Planner', 'Speaker', 'Other']; // Add your role options here
   String selectedRole = 'None'; // Set a default role
   bool passwordVisible = true;
+  Color primaryColor = const Color.fromRGBO(206, 206, 206, 0.5);
 
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
@@ -31,31 +34,25 @@ class _UserSignupState extends State<UserSignup> {
             children: [
               // Header (Logo, Text, Back Button, background)
               Stack(
-                children: [
-                  Container(
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(124, 201, 201, 201),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 28, // Adjust the width to fit the IconButton
-                    height: 28, // Adjust the height to fit the IconButton
-                    margin: EdgeInsets.only(left: 16, top: 16),
-                    decoration: ShapeDecoration(
-                      color: Colors.black.withOpacity(0.05),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
+          //alignment: Alignment.center,
+          children: [
+            Container(
+              height: 200,
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(0, 0, 0, 0),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(100),
+                ),
+              ),
+              child: 
+            IconButton(
+              alignment: Alignment.topLeft,
+                      padding: EdgeInsets.only(left: 20, top: 40),
                       iconSize: 28,
                       icon: const Icon(
                         Icons.arrow_back,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
@@ -63,36 +60,48 @@ class _UserSignupState extends State<UserSignup> {
                       },
                     ),
                   ),
-
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(top: 100),
-                    child: Text(
-                      'Register new account',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF212121),
-                        fontSize: 16,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 20),
-                    child: Container(
-                      width: 65,
-                      height: 65,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
-                      ),
-                    ),
-                  ),
-                ],
+            Container(
+              height: 200,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(124, 245, 245, 245),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(100),
+                ),
               ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                Container(
+                alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 20),
+              child: Container(
+                width: 65,
+                height: 65,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: const Image(image: AssetImage('assets/MicDropLogoMain.png')),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+              const Text(
+                'Register new account',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF212121),
+                  fontSize: 16,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w700,
+                  height: 0,
+                ),),
+              
+          ]),),
+              
+              
+            
+          ],
+        ),
               // Name Text Field
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -101,7 +110,15 @@ class _UserSignupState extends State<UserSignup> {
                   child: TextField(
                     controller: fullNameController,
                     decoration: InputDecoration(
-                      labelText: 'Full Name',
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                      labelText: 'Full Name*',
                       hintText: 'Enter your full name',
                       //prefixText: prefixText,
                       border: OutlineInputBorder(
@@ -119,7 +136,15 @@ class _UserSignupState extends State<UserSignup> {
                   child: TextField(
                     controller: lastNameController,
                     decoration: InputDecoration(
-                      labelText: 'Last Name',
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                      labelText: 'Last Name*',
                       hintText: 'Enter your last name',
                       //prefixText: prefixText,
                       border: OutlineInputBorder(
@@ -137,7 +162,15 @@ class _UserSignupState extends State<UserSignup> {
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                      labelText: 'Email*',
                       hintText: 'Enter your email',
                       //prefixText: prefixText,
                       border: OutlineInputBorder(
@@ -155,6 +188,14 @@ class _UserSignupState extends State<UserSignup> {
                   child: TextField(
                     controller: phoneNumberController,
                     decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
                       labelText: 'Phone Number',
                       hintText: 'Enter your phone number',
                       //prefixText: prefixText,
@@ -177,16 +218,24 @@ class _UserSignupState extends State<UserSignup> {
                             controller: passwordController,
                             obscureText: passwordVisible,
                             decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(50.0),
                               ),
-                              labelText: 'Password',
+                              labelText: 'Password*',
                               hintText: 'Enter your password',
                               contentPadding: const EdgeInsets.all(20.0),
                               suffixIcon: IconButton(
                                 icon: Icon(passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
                                 onPressed: () {
                                   setState(
                                         () {
@@ -210,7 +259,6 @@ class _UserSignupState extends State<UserSignup> {
                     height: 59,
                     child: 
                       DropdownButtonFormField(
-                        value: selectedRole,
                         items: roles.map((role) {
                           return DropdownMenuItem(
                             value: role,
@@ -223,7 +271,15 @@ class _UserSignupState extends State<UserSignup> {
                           });
                         },
                       decoration: InputDecoration(
-                        labelText: 'Role',
+                        enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                     focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                      borderRadius: BorderRadius.circular(50.0),
+                     ),
+                        labelText: 'Role*',
                         hintText: 'Select your role',
                         //prefixText: prefixText,
                         border: OutlineInputBorder(
