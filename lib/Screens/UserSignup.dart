@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Screens/login.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserSignup extends StatefulWidget {
   const UserSignup({Key? key}) : super(key: key);
@@ -56,7 +61,7 @@ class _UserSignupState extends State<UserSignup> {
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
-                        Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, '/login');
                       },
                     ),
                   ),
@@ -97,8 +102,6 @@ class _UserSignupState extends State<UserSignup> {
                 ),),
               
           ]),),
-              
-              
             
           ],
         ),
@@ -304,7 +307,8 @@ class _UserSignupState extends State<UserSignup> {
                       ),
                     ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text).then((value) => 
+                    Navigator.pushReplacementNamed(context, '/home'));
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
