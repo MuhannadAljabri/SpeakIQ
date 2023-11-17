@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
       () {
         // Navigate to the main screen after 2 seconds
         Navigator.pushReplacementNamed(
-          context, '/signup'
+          context, '/login'
         );
       },
     );
