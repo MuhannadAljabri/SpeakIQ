@@ -25,7 +25,6 @@ class LoginState extends State<LoginScreen>{
       body: SingleChildScrollView(child: content()),
     )
     );
-    );
   }
   Widget content(){
     return Column(
