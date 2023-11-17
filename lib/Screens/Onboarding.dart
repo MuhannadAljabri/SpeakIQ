@@ -1,2 +1,17 @@
-import 'package:speak_iq/Screens/splash.dart';
-import 'package:speak_iq/main.dart';
+import 'package:flutter/material.dart';
+
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Onboarding Screen'),
+      ),
+      body: const Center(
+        child: Text('Welcome to the onboarding screen!'),
+      ),
+    );
+  }
+}

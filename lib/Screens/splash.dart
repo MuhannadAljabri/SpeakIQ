@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:speak_iq/main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,9 +17,8 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 2),
       () {
         // Navigate to the main screen after 2 seconds
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        Navigator.pushReplacementNamed(
+          context, '/signup'
         );
       },
     );
