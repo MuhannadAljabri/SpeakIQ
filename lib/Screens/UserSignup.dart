@@ -11,6 +11,7 @@ class _UserSignupState extends State<UserSignup> {
 
   List<String> roles = ['None', 'Event Planner', 'Speaker', 'Others']; // Add your role options here
   String selectedRole = 'None'; // Set a default role
+  bool passwordVisible = true;
 
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
@@ -28,13 +29,211 @@ class _UserSignupState extends State<UserSignup> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildHeader(),
-              _buildInputField('Full Name', 'Enter your full name', controller: fullNameController),
-              _buildInputField('Last Name', 'Enter your last name', controller: lastNameController),
-              _buildInputField('Email', 'Enter your email', controller: emailController),
-              _buildInputField('Phone Number', 'Enter your phone number', controller: phoneNumberController),
-              _buildInputField('Password', 'Enter your password', controller: passwordController),
-              _buildDropDown('Role', 'Select your role'),
+              // Header (Logo, Text, Back Button, background)
+              Stack(
+                children: [
+                  Container(
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(124, 201, 201, 201),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(100),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 28, // Adjust the width to fit the IconButton
+                    height: 28, // Adjust the height to fit the IconButton
+                    margin: EdgeInsets.only(left: 16, top: 16),
+                    decoration: ShapeDecoration(
+                      color: Colors.black.withOpacity(0.05),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      iconSize: 28,
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // Navigate back to the previous screen
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(top: 100),
+                    child: Text(
+                      'Register new account',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF212121),
+                        fontSize: 16,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w700,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(top: 20),
+                    child: Container(
+                      width: 65,
+                      height: 65,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Name Text Field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Container(
+                  height: 59,
+                  child: TextField(
+                    controller: fullNameController,
+                    decoration: InputDecoration(
+                      labelText: 'Full Name',
+                      hintText: 'Enter your full name',
+                      //prefixText: prefixText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Last name text field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Container(
+                  height: 59,
+                  child: TextField(
+                    controller: lastNameController,
+                    decoration: InputDecoration(
+                      labelText: 'Last Name',
+                      hintText: 'Enter your last name',
+                      //prefixText: prefixText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Email text field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Container(
+                  height: 59,
+                  child: TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      hintText: 'Enter your email',
+                      //prefixText: prefixText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Phone number text field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Container(
+                  height: 59,
+                  child: TextField(
+                    controller: phoneNumberController,
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      hintText: 'Enter your phone number',
+                      //prefixText: prefixText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Password text field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Row(
+                    children: [
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: Container(
+                          child: TextField(
+                            controller: passwordController,
+                            obscureText: passwordVisible,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              labelText: 'Password',
+                              hintText: 'Enter your password',
+                              contentPadding: const EdgeInsets.all(20.0),
+                              suffixIcon: IconButton(
+                                icon: Icon(passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(
+                                        () {
+                                      passwordVisible = !passwordVisible;
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              // Roles drop down field
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: 
+                  Container(
+                    height: 59,
+                    child: 
+                      DropdownButtonFormField(
+                        value: selectedRole,
+                        items: roles.map((role) {
+                          return DropdownMenuItem(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRole = value.toString();
+                          });
+                        },
+                      decoration: InputDecoration(
+                        labelText: 'Role',
+                        hintText: 'Select your role',
+                        //prefixText: prefixText,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
+              ),
+              // Register button
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: Container(
@@ -78,6 +277,7 @@ class _UserSignupState extends State<UserSignup> {
                 ),
                 )
               ),
+              // Navigate to login page
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 30),
                 child: GestureDetector(
@@ -123,125 +323,4 @@ class _UserSignupState extends State<UserSignup> {
       )
     );
   }
-
-  Widget _buildHeader() {
-    return Stack(
-      //alignment: Alignment.center,
-      children: [
-        Container(
-          height: 140,
-          decoration: BoxDecoration(
-            color: Color.fromARGB(124, 201, 201, 201),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(100),
-              bottomRight: Radius.circular(100),
-            ),
-          ),
-        ),
-        Container(
-          width: 28, // Adjust the width to fit the IconButton
-          height: 28, // Adjust the height to fit the IconButton
-          margin: EdgeInsets.only(left: 16, top: 16),
-          decoration: ShapeDecoration(
-            color: Colors.black.withOpacity(0.05),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            iconSize: 28,
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              // Navigate back to the previous screen
-              Navigator.pop(context);
-            },
-          ),
-        ),
-
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.only(top: 100),
-          child: Text(
-            'Register new account',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF212121),
-              fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w700,
-              height: 0,
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.only(top: 20),
-          child: Container(
-            width: 65,
-            height: 65,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInputField(String label, String hint, {TextEditingController? controller}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-      child: Container(
-      height: 59,
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          //prefixText: prefixText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-      ),
-    ),
-    );
-  }
-
-  Widget _buildDropDown(String label, String hint) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-      child: 
-        Container(
-          height: 59,
-          child: 
-            DropdownButtonFormField(
-              value: selectedRole,
-              items: roles.map((role) {
-                return DropdownMenuItem(
-                  value: role,
-                  child: Text(role),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedRole = value.toString();
-                });
-              },
-            decoration: InputDecoration(
-              labelText: label,
-              hintText: hint,
-              //prefixText: prefixText,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-            ),
-          ),
-        ),
-    );
-  }
-
 }
