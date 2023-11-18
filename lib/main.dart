@@ -1,5 +1,6 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/Screens/SpeakerSignup.dart';
 import '../Screens/splash.dart';
 import '../Screens/UserSignup.dart';
 import '../Screens/login.dart';
@@ -26,10 +27,16 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/signup': (context) => const UserSignup(),
+        '/user_signup': (context) => const UserSignup(),
         '/home': (context) => const HomeScreen(),
+<<<<<<< Updated upstream
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
+=======
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/login':(context) => const LoginScreen(),
+        '/speaker_signup':(context) => const UploadImageAndPDF()
+>>>>>>> Stashed changes
       },
     );
   }
