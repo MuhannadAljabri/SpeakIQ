@@ -29,14 +29,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/user_signup': (context) => const UserSignup(),
         '/home': (context) => const HomeScreen(),
-<<<<<<< Updated upstream
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
-=======
-        '/onboarding': (context) => const OnboardingScreen(),
-        '/login':(context) => const LoginScreen(),
+        '/Onboarding': (context) => OnboardingScreen(),
         '/speaker_signup':(context) => const UploadImageAndPDF()
->>>>>>> Stashed changes
       },
     );
   }
