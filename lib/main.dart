@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/Onboarding': (context) => OnboardingScreen(),
-        '/speaker_signup':(context) => const UploadImageAndPDF()
+        '/speaker_signup': (context) => const UploadImageAndPDF()
       },
     );
   }

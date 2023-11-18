@@ -36,7 +36,7 @@ class LoginState extends State<LoginScreen>{
             Container(
               height: 200,
               decoration: const BoxDecoration(
-                color: Color.fromARGB(124, 245, 245, 245),
+                color: Color.fromARGB(255, 245, 245, 245),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(100),
                   bottomRight: Radius.circular(100),

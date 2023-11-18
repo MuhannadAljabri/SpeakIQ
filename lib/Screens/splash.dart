@@ -17,14 +17,14 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 2),
       () {
         // Navigate to the main screen after 2 seconds
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/Onboarding');
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
       body: Center(
