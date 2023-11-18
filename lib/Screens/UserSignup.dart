@@ -46,29 +46,6 @@ class _UserSignupState extends State<UserSignup> {
                 Container(
                   height: 200,
                   decoration: const BoxDecoration(
-                    color: Color.fromRGBO(0, 0, 0, 0),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(100),
-                      bottomRight: Radius.circular(100),
-                    ),
-                  ),
-                  child: IconButton(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.only(left: 20, top: 40),
-                    iconSize: 28,
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      // Navigate back to the previous screen
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
-                  ),
-                ),
-                Container(
-                  height: 200,
-                  decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 245, 245, 245),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(100),
@@ -105,6 +82,29 @@ class _UserSignupState extends State<UserSignup> {
                           ),
                         ),
                       ]),
+                ),
+                Container(
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(0, 0, 0, 0),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100),
+                      bottomRight: Radius.circular(100),
+                    ),
+                  ),
+                  child: IconButton(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.only(left: 30, top: 50),
+                    iconSize: 28,
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      // Navigate back to the previous screen
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                  ),
                 ),
               ],
             ),
