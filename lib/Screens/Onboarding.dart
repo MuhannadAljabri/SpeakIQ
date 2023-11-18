@@ -2,15 +2,15 @@ import 'package:speak_iq/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
 
-class Onboarding extends StatefulWidget {
-  Onboarding({super.key});
+class OnboardingScreen extends StatefulWidget {
+  OnboardingScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _Onboard createState() => _Onboard();
 }
 
-class _Onboard extends State<Onboarding> {
+class _Onboard extends State<OnboardingScreen> {
   final PageController _controller = PageController();
 
   bool lastPage = false;

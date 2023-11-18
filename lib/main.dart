@@ -1,7 +1,10 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
 import '../Screens/splash.dart';
-import 'Screens/Onboarding.dart';
+import '../Screens/UserSignup.dart';
+import '../Screens/login.dart';
+import '../Screens/Home.dart';
+import '../Screens/Onboarding.dart';
 //import 'package:firebase_core/firebase_core.dart';
 //import 'firebase_options.dart';
 
@@ -16,19 +19,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SplashScreen(),
-    );
-  }
-}
-
-class Onboard extends StatelessWidget {
-  const Onboard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
+    //return const MaterialApp(
+    //home: SplashScreen(),
+    //);
     return MaterialApp(
-      home: Onboarding(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/signup': (context) => const UserSignup(),
+        '/home': (context) => const HomeScreen(),
+        '/onboarding': (context) => OnboardingScreen(),
+        '/login': (context) => const LoginScreen(),
+      },
     );
   }
 }
