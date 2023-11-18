@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // Navigate to the main screen after 2 seconds
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const Onboard()),
         );
       },
     );
