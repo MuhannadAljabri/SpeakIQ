@@ -22,7 +22,8 @@ class _UserSignupState extends State<UserSignup> {
   ]; // Add your role options here
   String selectedRole = 'None'; // Set a default role
   bool passwordVisible = true;
-  Color primaryColor = const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
+  Color primaryColor =
+      const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();

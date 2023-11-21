@@ -90,19 +90,19 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
     }
   }
 
-  Future<void> _submitImage() async{
-    if (_selectedImage != null){
-    String ImageName = _selectedImage!.path.split('/').last;
-    final storageReference = _storageReference.child('images/$ImageName');
-        await storageReference.putFile(_selectedImage!);
+  Future<void> _submitImage() async {
+    if (_selectedImage != null) {
+      String ImageName = _selectedImage!.path.split('/').last;
+      final storageReference = _storageReference.child('images/$ImageName');
+      await storageReference.putFile(_selectedImage!);
 
-        String downloadUrl = await storageReference.getDownloadURL();
+      String downloadUrl = await storageReference.getDownloadURL();
 
-        setState(() {
-          _imageDownloadUrl = downloadUrl;
-        });
-        _selectedImage = null;
-  }
+      setState(() {
+        _imageDownloadUrl = downloadUrl;
+      });
+      _selectedImage = null;
+    }
   }
 
   @override
@@ -182,63 +182,64 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                 ),
               ],
             ),
-            if(_selectedImage == null)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: GestureDetector(
-                onTap: () {
-                  _pickImageFromGallery();
-                },
-                child: Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 85,
-                    width: 85,
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(250, 240, 240, 240),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                        
-                    child: SvgPicture.asset(
-                      'assets/camera_icon.svg',
-                      height: 24,
-                      width: 24,
-                      color: primaryColorGreen,
+            if (_selectedImage == null)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    _pickImageFromGallery();
+                  },
+                  child: Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 85,
+                      width: 85,
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(250, 240, 240, 240),
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      child: SvgPicture.asset(
+                        'assets/camera_icon.svg',
+                        height: 24,
+                        width: 24,
+                        color: primaryColorGreen,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            if(_selectedImage != null)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: GestureDetector(
-                onTap: () {
-                  _pickImageFromGallery();
-                },
-                child: Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 85,
-                    width: 85,
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(250, 240, 240, 240),
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                        
-                    child: ClipRRect(
-        borderRadius: BorderRadius.circular(30.0),
-        child: Container(
-          height: 85,
-          width: 85,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          child: Image.file(_selectedImage!,fit: BoxFit.cover,)
-                  ),
-                ),
-              ),
-            ),)),
-
+            if (_selectedImage != null)
+              Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      _pickImageFromGallery();
+                    },
+                    child: Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 85,
+                        width: 85,
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(250, 240, 240, 240),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30.0),
+                          child: Container(
+                              height: 85,
+                              width: 85,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover,
+                              )),
+                        ),
+                      ),
+                    ),
+                  )),
 
             // Name Text Field
             Padding(
