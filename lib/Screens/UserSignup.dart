@@ -22,8 +22,7 @@ class _UserSignupState extends State<UserSignup> {
   ]; // Add your role options here
   String selectedRole = 'None'; // Set a default role
   bool passwordVisible = true;
-  Color primaryColor = const Color.fromRGBO(206, 206, 206, 0.5);
-
+  Color primaryColor = const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -41,7 +40,6 @@ class _UserSignupState extends State<UserSignup> {
           children: [
             // Header (Logo, Text, Back Button, background)
             Stack(
-              //alignment: Alignment.center,
               children: [
                 Container(
                   height: 200,
@@ -128,8 +126,8 @@ class _UserSignupState extends State<UserSignup> {
                           color: Color.fromRGBO(206, 206, 206, 0.5)),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
-                    labelText: 'Full Name*',
-                    hintText: 'Enter your full name',
+                    labelText: 'First Name*',
+                    hintText: 'Enter your first name',
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -337,6 +335,16 @@ class _UserSignupState extends State<UserSignup> {
                               password: passwordController.text)
                           .then((value) =>
                               Navigator.pushReplacementNamed(context, '/home'));
+                      FirebaseDatabase.instance
+                          .ref()
+                          .child("users")
+                          .child(FirebaseAuth.instance.currentUser!.uid)
+                          .set({
+                        'first name': fullNameController.text,
+                        'email': emailController.text,
+                        'role': selectedRole.toString()
+                      });
+
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {

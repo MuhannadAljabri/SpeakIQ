@@ -73,6 +73,10 @@ flutter:
     - assets/MicDropLogoMain.png
     - assets/back.svg
     - assets/onboard.png
+    - assets/upload_button.svg
+    - assets/delete_button.svg
+    - assets/Pdf_icon.png
+    - assets/camera_icon.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
