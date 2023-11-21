@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 2),
       () {
         // Navigate to the main screen after 2 seconds
-        Navigator.pushReplacementNamed(context, '/Onboarding');
+        Navigator.pushReplacementNamed(context, '/onboarding');
       },
     );
   }
