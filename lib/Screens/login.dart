@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/Screens/UserSignup.dart';
+import 'package:speak_iq/style/route_animation.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -208,7 +210,7 @@ class LoginState extends State<LoginScreen>{
               ),
               TextButton(
                   onPressed: (){
-                    Navigator.pushReplacementNamed(context, '/user_signup');
+                    Navigator.of(context).push(slidingFromDown(UserSignup()));
                   },
                   child: const Text(
                     "Register",

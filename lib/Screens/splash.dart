@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/Screens/Onboarding.dart';
+import 'package:speak_iq/style/route_animation.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 2),
       () {
         // Navigate to the main screen after 2 seconds
-        Navigator.pushReplacementNamed(context, '/onboarding');
+        Navigator.of(context).pushReplacement(slidingFromLeft(OnboardingScreen()));
       },
     );
   }

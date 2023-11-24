@@ -1,8 +1,10 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speak_iq/Screens/login.dart';
 import 'package:speak_iq/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/style/route_animation.dart';
 
 class OnboardingScreen extends StatefulWidget {
   OnboardingScreen({super.key});
@@ -87,7 +89,7 @@ class _Onboard extends State<OnboardingScreen> {
                   Spacer(),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.of(context).push(slidingFromLeft(LoginScreen()));
                     },
                     child: const Text(
                       'GET STARTED',
@@ -110,7 +112,7 @@ class _Onboard extends State<OnboardingScreen> {
                     ),
                     onPressed: () {
                       // Navigate back to the previous screen
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.of(context).push(slidingFromLeft(LoginScreen()));
                     },
                   ),
                 ],

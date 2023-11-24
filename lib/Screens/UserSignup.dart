@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Screens/login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:speak_iq/style/route_animation.dart';
 
 class UserSignup extends StatefulWidget {
   const UserSignup({Key? key}) : super(key: key);
@@ -101,7 +102,7 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                     onPressed: () {
                       // Navigate back to the previous screen
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -381,10 +382,7 @@ class _UserSignupState extends State<UserSignup> {
               child: GestureDetector(
                 onTap: () {
                   // Navigate to the login page
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/login',
-                  );
+                  Navigator.pop(context);
                 },
                 child: Text.rich(
                   TextSpan(
