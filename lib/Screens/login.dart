@@ -125,7 +125,7 @@ class LoginState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'Email*',
+                        labelText: 'User Name',
                         hintText: 'Enter your email',
                         contentPadding: const EdgeInsets.all(20.0),
                       ),
@@ -174,7 +174,7 @@ class LoginState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: 'Password*',
+                          labelText: 'Password',
                           hintText: 'Enter your password',
                           contentPadding: const EdgeInsets.all(20.0),
                           suffixIcon: IconButton(
