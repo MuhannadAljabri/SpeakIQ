@@ -34,6 +34,7 @@ class _UserSignupState extends State<UserSignup> {
     'Other'
   ]; // Add your role options here
   String selectedRole = 'None'; // Set a default role
+  String otherRoleText = ''; // Text entered for "Other" role
   bool passwordVisible = true;
   
   // Validation status for each text field
@@ -42,6 +43,7 @@ class _UserSignupState extends State<UserSignup> {
   bool isEmailValid = true;
   bool isPhoneNumberValid = true;
   bool isPasswordValid = true;
+  bool isOtherRoleValid = true;
 
   bool formSubmitted = false;
 
@@ -50,6 +52,7 @@ class _UserSignupState extends State<UserSignup> {
   FocusNode emailFocus = FocusNode();
   FocusNode phoneNumberFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
+  FocusNode otherRoleFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -348,8 +351,8 @@ class _UserSignupState extends State<UserSignup> {
                         labelText: 'Password*',
                         hintText: 'Enter your password',
                         errorText: isPasswordValid
-                        ? null
-                        : 'Your password should have at least 6 characters',
+                          ? null
+                          : 'Your password should have at least 6 characters',
                         contentPadding: const EdgeInsets.all(20.0),
                         suffixIcon: IconButton(
                           icon: Icon(passwordVisible
@@ -372,42 +375,88 @@ class _UserSignupState extends State<UserSignup> {
             // Roles drop down field
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              child: Container(
-                child: DropdownButtonFormField(
-                  items: roles.map((role) {
-                    return DropdownMenuItem(
-                      value: role,
-                      child: Text(role),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRole = value.toString();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2.0,
-                          color: primaryColor),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2.0,
-                          color: primaryColor),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    labelText: 'Role',
-                    hintText: 'Select your role',
-                    contentPadding: const EdgeInsets.all(20.0),
-                    //prefixText: prefixText,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+              child: Column(
+                children: [
+                  Container(
+                    child: DropdownButtonFormField(
+                      items: roles.map((role) {
+                        return DropdownMenuItem(
+                          value: role,
+                          child: Text(role),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRole = value.toString();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: primaryColor),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: primaryColor),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        labelText: 'Role',
+                        hintText: 'Select your role',
+                        contentPadding: const EdgeInsets.all(20.0),
+                        //prefixText: prefixText,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                  // Additional text field for "Other" role
+                  if (selectedRole == 'Other')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              otherRoleText = value;
+                            });
+                          },
+                          focusNode: otherRoleFocus,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: primaryColor,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: isOtherRoleValid
+                                    ? primaryColor
+                                    : errorColor,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            labelText: 'Other Role*',
+                            hintText: 'Enter your role',
+                            errorText: isOtherRoleValid
+                              ? null
+                              : 'Please enter your role',
+                            contentPadding: const EdgeInsets.all(20.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              )
             ),
             // Register button
             Padding(
@@ -485,6 +534,7 @@ class _UserSignupState extends State<UserSignup> {
       isEmailValid = emailController.text.isNotEmpty && _isValidEmail(emailController.text);
       isPhoneNumberValid = phoneNumberController.text.isEmpty || _isValidPhoneNumber(phoneNumberController.text);
       isPasswordValid = passwordController.text.isNotEmpty && _isPasswordValid(passwordController.text);
+      isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
 
       // Move focus to the first field with an invalid value
       if (!isFullNameValid) 
@@ -497,6 +547,8 @@ class _UserSignupState extends State<UserSignup> {
         FocusScope.of(context).requestFocus(phoneNumberFocus);
       if (!isPasswordValid) 
         FocusScope.of(context).requestFocus(passwordFocus);
+      if (!isOtherRoleValid) 
+        FocusScope.of(context).requestFocus(otherRoleFocus);
       // Submit the form if all fields are valid
       else {
         FirebaseAuth.instance
@@ -511,7 +563,7 @@ class _UserSignupState extends State<UserSignup> {
               .set({
             'first name': fullNameController.text,
             'email': emailController.text,
-            'role': selectedRole.toString()
+            'role': selectedRole.toString() + otherRoleText
           });
           showDialog(
             context: context,
