@@ -84,9 +84,8 @@ class LoginState extends State<LoginScreen> {
       ),
       const SizedBox(height: 10),
       Form(
-        key: formField,
-        child: Column(
-          children: [
+          key: formField,
+          child: Column(children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
               child: Row(children: [
@@ -103,25 +102,30 @@ class LoginState extends State<LoginScreen> {
                       },
                       controller: usernameController,
                       decoration: InputDecoration(
-                        labelStyle: TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
+                        labelStyle:
+                            TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                              width: 2.0,
+                              color: Color.fromRGBO(206, 206, 206, 0.5)),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 2.0, color: Color.fromRGBO(44, 44, 44, 0.494)),
+                              width: 2.0,
+                              color: Color.fromRGBO(44, 44, 44, 0.494)),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
+                              width: 2.0,
+                              color: Color.fromRGBO(206, 206, 206, 0.5)),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 2.0, color: Color.fromRGBO(44, 44, 44, 0.494)),
+                              width: 2.0,
+                              color: Color.fromRGBO(44, 44, 44, 0.494)),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -142,68 +146,74 @@ class LoginState extends State<LoginScreen> {
                 Expanded(
                   child: Container(
                       child: TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please enter a password";
-                          } else if (passwordController.text.length < 8) {
-                            return "Password length should not be less than 8 characters";
-                          }
-                        },
-                        controller: passwordController,
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0, color: Color.fromRGBO(44, 44, 44, 0.494)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0, color: Color.fromRGBO(206, 206, 206, 0.5)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0, color: Color.fromRGBO(44, 44, 44, 0.494)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                          contentPadding: const EdgeInsets.all(20.0),
-                          suffixIcon: IconButton(
-                            icon: Icon(passwordVisible
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(
-                                    () {
-                                  passwordVisible = !passwordVisible;
-                                },
-                              );
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter a password";
+                      } else if (passwordController.text.length < 6) {
+                        return "Password length should not be less than 6 characters";
+                      }
+                    },
+                    controller: passwordController,
+                    obscureText: passwordVisible,
+                    decoration: InputDecoration(
+                      labelStyle:
+                          TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color.fromRGBO(44, 44, 44, 0.494)),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color.fromRGBO(44, 44, 44, 0.494)),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      contentPadding: const EdgeInsets.all(20.0),
+                      suffixIcon: IconButton(
+                        icon: Icon(passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(
+                            () {
+                              passwordVisible = !passwordVisible;
                             },
-                          ),
-                        ),
-                      )),
+                          );
+                        },
+                      ),
+                    ),
+                  )),
                 ),
               ]),
             ),
-          ]
-        )
-      ),
+          ])),
       const SizedBox(height: 0),
       Padding(
           padding: const EdgeInsets.only(right: 16),
           child: Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () {Navigator.of(context).push(slidingFromDown(ForgotPasswordScreen()));},
+              onPressed: () {
+                Navigator.of(context)
+                    .push(slidingFromDown(ForgotPasswordScreen()));
+              },
               child: const Text("Forgot password?",
                   style: TextStyle(
                     color: Color(0xFF2CA6A4),
@@ -222,7 +232,7 @@ class LoginState extends State<LoginScreen> {
             ),
             child: TextButton(
                 onPressed: () {
-                  if(formField.currentState!.validate()){
+                  if (formField.currentState!.validate()) {
                     FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: usernameController.text,
@@ -232,14 +242,32 @@ class LoginState extends State<LoginScreen> {
                     }).onError((error, stackTrace) {
                       if (kDebugMode) {
                         print("Error ${error.toString()}");
-                        const snackBar = SnackBar(
-                          content: Text('Account not found. Please check your username or password and try again'),
-                          backgroundColor: Color(0xFF2CA6A4),
-                          behavior: SnackBarBehavior.floating,
-                          duration: Duration(seconds: 3), // Adjust the duration as needed
+                        // const snackBar = SnackBar(
+                        //   content: Text('Account not found. Please check your username or password and try again.'),
+                        //   backgroundColor: Color(0xFF2CA6A4),
+                        //   behavior: SnackBarBehavior.floating,
+                        //   duration: Duration(seconds: 3), // Adjust the duration as needed
+                        // );
+                        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        AlertDialog alert = AlertDialog(
+                          title: Text("Account Not Found"),
+                          content: Text(
+                              "Account not found. Kindly verify your username or password and try again."),
+                          actions: [
+                            TextButton(
+                              child: Text("OK"),
+                              onPressed: () {},
+                            )
+                          ],
                         );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+                        // show the dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
                       }
                     });
                   }
@@ -284,7 +312,8 @@ class LoginState extends State<LoginScreen> {
   }
 
   bool isEmail(String em) {
-    String p = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regExp = RegExp(p);
     return regExp.hasMatch(em);
   }
