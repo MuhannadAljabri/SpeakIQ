@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speak_iq/Screens/SpeakerSignup.dart';
+import 'package:speak_iq/Screens/forgot_password.dart';
 import '../Screens/splash.dart';
 import '../Screens/UserSignup.dart';
 import '../Screens/login.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const ExampleStaggeredAnimations(),
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
-        '/speaker_signup': (context) => SpeakerSignUp()
+        '/speaker_signup': (context) => SpeakerSignUp(),
+        '/forgot_password':(context) => const ForgotPasswordScreen()
       },
     );
   }

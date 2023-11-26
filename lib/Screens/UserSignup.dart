@@ -16,21 +16,43 @@ class UserSignup extends StatefulWidget {
 }
 
 class _UserSignupState extends State<UserSignup> {
-  List<String> roles = [
-    'Event Planner',
-    'Speaker',
-    'Other'
-  ]; // Add your role options here
-  String selectedRole = 'None'; // Set a default role
-  bool passwordVisible = true;
-  Color primaryColor =
-      const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
+
+  Color primaryColor =const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
+  Color errorColor = const Color.fromRGBO(244, 67, 54, 1);// Error textfield border color
+
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  List<String> roles = [
+    'None',
+    'Event Planner',
+    'Speaker',
+    'Other'
+  ]; // Add your role options here
+  String selectedRole = 'None'; // Set a default role
+  String otherRoleText = ''; // Text entered for "Other" role
+  bool passwordVisible = true;
+  
+  // Validation status for each text field
+  bool isFullNameValid = true;
+  bool isLastNameValid = true;
+  bool isEmailValid = true;
+  bool isPhoneNumberValid = true;
+  bool isPasswordValid = true;
+  bool isOtherRoleValid = true;
+
+  bool formSubmitted = false;
+
+  FocusNode fullNameFocus = FocusNode();
+  FocusNode lastNameFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
+  FocusNode phoneNumberFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
+  FocusNode otherRoleFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -112,29 +134,48 @@ class _UserSignupState extends State<UserSignup> {
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Container(
-                height: 59,
                 child: TextField(
                   controller: fullNameController,
+                  focusNode: fullNameFocus,
+                  onChanged: (value) {
+                    setState(() {
+                        isFullNameValid = formSubmitted
+                            ? value.isNotEmpty
+                            : true; // Only validate if the form is submitted
+                      });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                          color: isFullNameValid
+                              ? primaryColor
+                              : const Color.fromRGBO(244, 67, 54, 1)),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        width: 2.0,
+                        color: isFullNameValid
+                            ? primaryColor
+                            : errorColor,
+                      ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     labelText: 'First Name*',
                     hintText: 'Enter your first name',
+                    errorText: isFullNameValid
+                        ? null
+                        : 'Please enter your first name',
+                    contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
+                  onSubmitted: (_) {
+                      _validateAndSubmitForm();
+                    },
                 ),
               ),
             ),
@@ -142,24 +183,38 @@ class _UserSignupState extends State<UserSignup> {
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Container(
-                height: 59,
                 child: TextField(
                   controller: lastNameController,
+                  focusNode: lastNameFocus,
+                  onChanged: (value) {
+                    setState(() {
+                        isLastNameValid = formSubmitted
+                            ? value.isNotEmpty
+                            : true; // Only validate if the form is submitted
+                      });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                          color: primaryColor),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        width: 2.0,
+                        color: isLastNameValid
+                            ? primaryColor
+                            : errorColor,
+                      ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     labelText: 'Last Name*',
                     hintText: 'Enter your last name',
+                    errorText: isLastNameValid
+                        ? null
+                        : 'Please enter your last name',
+                    contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -172,24 +227,38 @@ class _UserSignupState extends State<UserSignup> {
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Container(
-                height: 59,
                 child: TextField(
                   controller: emailController,
+                  focusNode: emailFocus,
+                  onChanged: (value) {
+                    setState(() {
+                        isEmailValid = formSubmitted
+                            ? value.isNotEmpty
+                            : true; // Only validate if the form is submitted
+                      });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                          color: primaryColor),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        width: 2.0,
+                        color: isEmailValid
+                            ? primaryColor
+                            : errorColor,
+                      ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     labelText: 'Email*',
                     hintText: 'Enter your email',
+                    errorText: isEmailValid
+                        ? null
+                        : 'Please enter a valid email',
+                    contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -202,24 +271,38 @@ class _UserSignupState extends State<UserSignup> {
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Container(
-                height: 59,
                 child: TextField(
                   controller: phoneNumberController,
+                  focusNode: phoneNumberFocus,
+                  onChanged: (value) {
+                    setState(() {
+                        isPhoneNumberValid = formSubmitted
+                            ? value.isNotEmpty
+                            : true; // Only validate if the form is submitted
+                      });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                          color: primaryColor),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
+                        width: 2.0,
+                        color: isPhoneNumberValid
+                            ? primaryColor
+                            : errorColor,
+                      ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     labelText: 'Phone Number',
                     hintText: 'Enter your phone number',
+                    errorText: isPhoneNumberValid
+                        ? null
+                        : 'Please enter a valid phone number (+1XXXXXXXXXX)',
+                    contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -237,18 +320,29 @@ class _UserSignupState extends State<UserSignup> {
                   child: Container(
                     child: TextField(
                       controller: passwordController,
+                      focusNode: passwordFocus,
                       obscureText: passwordVisible,
+                      onChanged: (value) {
+                        setState(() {
+                            isPasswordValid = formSubmitted
+                                ? value.isNotEmpty
+                                : true; // Only validate if the form is submitted
+                          });
+                      },
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               width: 2.0,
-                              color: Color.fromRGBO(206, 206, 206, 0.5)),
+                              color: primaryColor),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color.fromRGBO(206, 206, 206, 0.5)),
+                            width: 2.0,
+                            color: isPasswordValid
+                                ? primaryColor
+                                : errorColor,
+                          ),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         border: OutlineInputBorder(
@@ -256,6 +350,9 @@ class _UserSignupState extends State<UserSignup> {
                         ),
                         labelText: 'Password*',
                         hintText: 'Enter your password',
+                        errorText: isPasswordValid
+                          ? null
+                          : 'Your password should have at least 6 characters',
                         contentPadding: const EdgeInsets.all(20.0),
                         suffixIcon: IconButton(
                           icon: Icon(passwordVisible
@@ -278,42 +375,88 @@ class _UserSignupState extends State<UserSignup> {
             // Roles drop down field
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              child: Container(
-                height: 59,
-                child: DropdownButtonFormField(
-                  items: roles.map((role) {
-                    return DropdownMenuItem(
-                      value: role,
-                      child: Text(role),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRole = value.toString();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          width: 2.0,
-                          color: Color.fromRGBO(206, 206, 206, 0.5)),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    labelText: 'Role*',
-                    hintText: 'Select your role',
-                    //prefixText: prefixText,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+              child: Column(
+                children: [
+                  Container(
+                    child: DropdownButtonFormField(
+                      items: roles.map((role) {
+                        return DropdownMenuItem(
+                          value: role,
+                          child: Text(role),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRole = value.toString();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: primaryColor),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: primaryColor),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        labelText: 'Role',
+                        hintText: 'Select your role',
+                        contentPadding: const EdgeInsets.all(20.0),
+                        //prefixText: prefixText,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                  // Additional text field for "Other" role
+                  if (selectedRole == 'Other')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              otherRoleText = value;
+                            });
+                          },
+                          focusNode: otherRoleFocus,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: primaryColor,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: isOtherRoleValid
+                                    ? primaryColor
+                                    : errorColor,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            labelText: 'Other Role*',
+                            hintText: 'Enter your role',
+                            errorText: isOtherRoleValid
+                              ? null
+                              : 'Please enter your role',
+                            contentPadding: const EdgeInsets.all(20.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              )
             ),
             // Register button
             Padding(
@@ -331,47 +474,7 @@ class _UserSignupState extends State<UserSignup> {
                       ),
                     ),
                     onPressed: () {
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text)
-                          .then((value) =>
-                              Navigator.pushReplacementNamed(context, '/home'));
-                      FirebaseDatabase.instance
-                          .ref()
-                          .child("users")
-                          .child(FirebaseAuth.instance.currentUser!.uid)
-                          .set({
-                        'first name': fullNameController.text,
-                        'email': emailController.text,
-                        'role': selectedRole.toString()
-                      });
-
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Congratulations!'),
-                            content: const Text(
-                                'You have successfully created an account!'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('OK'),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      print("Full Name: ${fullNameController.text}");
-                      print("Last Name: ${lastNameController.text}");
-                      print("Email: ${emailController.text}");
-                      print("Phone Number: ${phoneNumberController.text}");
-                      print("Password: ${passwordController.text}");
-                      //print("Role: ${roleController.text}");
+                      _validateAndSubmitForm();
                     },
                     child: Text('Register'),
                   ),
@@ -417,5 +520,93 @@ class _UserSignupState extends State<UserSignup> {
         ),
       ),
     ));
+  }
+
+  void _validateAndSubmitForm() {
+    // Set the formSubmitted flag to true
+    setState(() {
+      formSubmitted = true;
+    });
+    // Validate each field
+    setState(() {
+      isFullNameValid = fullNameController.text.isNotEmpty;
+      isLastNameValid = lastNameController.text.isNotEmpty;
+      isEmailValid = emailController.text.isNotEmpty && _isValidEmail(emailController.text);
+      isPhoneNumberValid = phoneNumberController.text.isEmpty || _isValidPhoneNumber(phoneNumberController.text);
+      isPasswordValid = passwordController.text.isNotEmpty && _isPasswordValid(passwordController.text);
+      isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
+
+      // Move focus to the first field with an invalid value
+      if (!isFullNameValid) 
+        FocusScope.of(context).requestFocus(fullNameFocus);
+      if (!isLastNameValid) 
+        FocusScope.of(context).requestFocus(lastNameFocus);
+      if (!isEmailValid) 
+        FocusScope.of(context).requestFocus(emailFocus);
+      if (!isPhoneNumberValid) 
+        FocusScope.of(context).requestFocus(phoneNumberFocus);
+      if (!isPasswordValid) 
+        FocusScope.of(context).requestFocus(passwordFocus);
+      if (!isOtherRoleValid) 
+        FocusScope.of(context).requestFocus(otherRoleFocus);
+      // Submit the form if all fields are valid
+      else {
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text,
+                password: passwordController.text)
+            .then((value) {
+          FirebaseDatabase.instance
+              .ref()
+              .child("users")
+              .child(FirebaseAuth.instance.currentUser!.uid)
+              .set({
+            'first name': fullNameController.text,
+            'email': emailController.text,
+            'role': selectedRole.toString() + otherRoleText
+          });
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Congratulations!'),
+                content: const Text('You have successfully created an account!'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog
+                      Navigator.pushReplacementNamed(context, '/home');
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        });
+      }
+    });
+  }
+
+  bool _isValidEmail(String email) {
+    // Use a regular expression to check the email format
+    // You can modify this regex to suit your requirements
+    RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool _isValidPhoneNumber(String phoneNumber) {
+    // Use a regular expression to check the phone number format
+    // ^ asserts the start of the string.
+    // \+? allows an optional plus sign for the country code.
+    // \d{0,3} allows for up to 3 digits for the country code.
+    // \d{10} requires exactly 10 digits for the main part of the phone number.
+    // $ asserts the end of the string.
+    RegExp phoneRegex = RegExp(r'^\+?\d{0,3}?\d{8,15}$');
+    return phoneRegex.hasMatch(phoneNumber);
+  }
+
+  bool _isPasswordValid(String password) {
+    return password.length >= 6;
   }
 }
