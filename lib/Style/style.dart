@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Text field for required cases ex. email, password. A parent widget Form() will need to be used for this to to be functional
+// The following is a general text field class for required inputs ex. email, password. A parent widget Form() will need to be used for this to to be functional
 
 class RequiredTextField extends StatefulWidget {
    final String hintText;

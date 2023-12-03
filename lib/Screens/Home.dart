@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -335,6 +334,81 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              // Handle menu icon click
+              print('Menu icon clicked');
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            // List of clickable rectangular boxes
+            ElevatedButton(
+              onPressed: () {
+                // Handle box click
+                print('Box 1 clicked');
+              },
+              child: Container(
+                width: 300,
+                height: 100,
+                child: Center(
+                  child: Text('Box 1'),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Handle box click
+                print('Box 2 clicked');
+              },
+              child: Container(
+                width: 200,
+                height: 100,
+                child: Center(
+                  child: Text('Box 2'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        onTap: (index) {
+          // Handle bottom navigation bar item clicks
+          if (index == 0) {
+            print('Home icon clicked');
+          } else if (index == 1) {
+            print('Profile icon clicked');
+          }
+        },
       ),
     );
   }

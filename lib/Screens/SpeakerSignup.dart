@@ -9,6 +9,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Style/style.dart';
 import 'package:speak_iq/backend/firebase.dart';
+import 'package:speak_iq/style/colors.dart';
+import 'package:speak_iq/style/route_animation.dart';
 
 class SpeakerSignUp extends StatefulWidget {
   const SpeakerSignUp({super.key});
@@ -108,31 +110,22 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                 //alignment: Alignment.center,
                 children: [
                   Container(
-                    height: 200,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 245, 245, 245),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100),
-                      ),
-                    ),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(top: 20),
-                            child: Container(
-                              width: 65,
-                              height: 65,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: const Image(
-                                    image: AssetImage(
-                                        'assets/MicDropLogoMain.png')),
-                              ),
-                            ),
-                          ),
+                    
+            height: 200,
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 245, 245, 245),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(100),
+                bottomRight: Radius.circular(100),
+              ),
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                     SvgPicture.asset(
+            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
                           const SizedBox(height: 16),
                           const Text(
                             'Register new account',
@@ -146,7 +139,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                             ),
                           ),
                         ]),
-                  ),
+                  ),),
                   Container(
                     height: 200,
                     decoration: const BoxDecoration(
@@ -166,7 +159,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
-                        Navigator.pushReplacementNamed(context, '/login');
+                        Navigator.pop(context);
                       },
                     ),
                   ),
@@ -206,7 +199,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                 'assets/camera_icon.svg',
                                 height: 24,
                                 width: 24,
-                                color: primaryColorGreen,
+                                color: ColorsReference.lightBlue,
                               ),
                       ),
                     ),
@@ -375,13 +368,13 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                           'assets/upload_button.svg',
                                           width: 20,
                                           height: 20,
-                                          semanticsLabel: 'vector'),
+                                          semanticsLabel: 'vector', color: ColorsReference.lightBlue,),
                                       SizedBox(height: 10),
                                       Text(
                                         "Upload your speaker’s sheet as PDF",
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
-                                            color: Color(0xFF2CA6A4)),
+                                            color: ColorsReference.lightBlue),
                                       ),
                                     ],
                                   ),
@@ -447,7 +440,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color(0xFF2CA6A4)),
+                            ColorsReference.darkBlue),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -476,45 +469,21 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     ),
                   )),
               // Navigate to login page
-              Padding(
-                padding: const EdgeInsets.only(top: 30, bottom: 30),
-                child: GestureDetector(
-                  onTap: () {
-                    // Navigate to the login page
-                    Navigator.pushReplacementNamed(
-                      context,
-                      '/login',
-                    );
-                  },
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Already have an account? ',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.5),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            height: 0,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Login',
-                          style: TextStyle(
-                            color: Color(0xFF2CA6A4),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              Padding(padding: EdgeInsets.only(bottom: 30),child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text("Already have an account?",
+            style:
+                TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 14)),
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Login",
+              style: TextStyle(
+                color: ColorsReference.lightBlue,
               ),
+            ))
+      ]))
             ],
           ),
         ),

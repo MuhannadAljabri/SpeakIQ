@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Screens/login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:speak_iq/style/colors.dart';
 import 'package:speak_iq/style/route_animation.dart';
 
 class UserSignup extends StatefulWidget {
@@ -28,7 +29,6 @@ class _UserSignupState extends State<UserSignup> {
   TextEditingController passwordController = TextEditingController();
 
   List<String> roles = [
-    'None',
     'Event Planner',
     'Speaker',
     'Other'
@@ -64,33 +64,22 @@ class _UserSignupState extends State<UserSignup> {
           children: [
             // Header (Logo, Text, Back Button, background)
             Stack(
-              children: [
-                Container(
-                  height: 200,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 245, 245, 245),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(100),
-                      bottomRight: Radius.circular(100),
-                    ),
-                  ),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 20),
-                          child: Container(
-                            width: 65,
-                            height: 65,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: const Image(
-                                  image:
-                                      AssetImage('assets/MicDropLogoMain.png')),
-                            ),
-                          ),
-                        ),
+              children: [Container(
+            height: 200,
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 245, 245, 245),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(100),
+                bottomRight: Radius.circular(100),
+              ),
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                     SvgPicture.asset(
+            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
                         const SizedBox(height: 16),
                         const Text(
                           'Register new account',
@@ -104,7 +93,7 @@ class _UserSignupState extends State<UserSignup> {
                           ),
                         ),
                       ]),
-                ),
+                ),),
                 Container(
                   height: 200,
                   decoration: const BoxDecoration(
@@ -466,7 +455,7 @@ class _UserSignupState extends State<UserSignup> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFF2CA6A4)),
+                          MaterialStateProperty.all<Color>(ColorsReference.darkBlue),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -503,7 +492,7 @@ class _UserSignupState extends State<UserSignup> {
                       TextSpan(
                         text: 'Login',
                         style: TextStyle(
-                          color: Color(0xFF2CA6A4),
+                          color: ColorsReference.lightBlue,
                           fontSize: 14,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,

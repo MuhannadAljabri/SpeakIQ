@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:speak_iq/Screens/SpeakerSignup.dart';
 import 'package:speak_iq/Screens/UserSignup.dart';
 import 'package:speak_iq/Screens/forgot_password.dart';
+import 'package:speak_iq/style/colors.dart';
 import 'package:speak_iq/style/route_animation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speak_iq/style/style.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +20,7 @@ class LoginScreen extends StatefulWidget {
 class LoginState extends State<LoginScreen> {
   final formField = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   bool passwordVisible = true;
 
   @override
@@ -52,20 +55,12 @@ class LoginState extends State<LoginScreen> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(top: 20),
-                      child: Container(
-                        width: 65,
-                        height: 65,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: const Image(
-                              image: AssetImage('assets/MicDropLogoMain.png')),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                     SvgPicture.asset(
+            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
+            SizedBox(height: 16,),
+          
+                    
+                    
                     const Text(
                       'Login to your account',
                       textAlign: TextAlign.center,
@@ -91,50 +86,7 @@ class LoginState extends State<LoginScreen> {
               child: Row(children: [
                 const SizedBox(height: 20),
                 Expanded(
-                  child: Container(
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter an email address";
-                        } else if (!isEmail(value)) {
-                          return "Please enter a valid email address";
-                        }
-                      },
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color.fromRGBO(206, 206, 206, 0.5)),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color.fromRGBO(44, 44, 44, 0.494)),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color.fromRGBO(206, 206, 206, 0.5)),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color.fromRGBO(44, 44, 44, 0.494)),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'User Name',
-                        hintText: 'Enter your email',
-                        contentPadding: const EdgeInsets.all(20.0),
-                      ),
-                    ),
-                  ),
+                  child: RequiredTextField(hintText: "Enter your email", labelText: "Email", textController: emailController)
                 ),
               ]),
             ),
@@ -146,60 +98,51 @@ class LoginState extends State<LoginScreen> {
                 Expanded(
                   child: Container(
                       child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please enter a password";
-                      } else if (passwordController.text.length < 6) {
-                        return "Password length should not be less than 6 characters";
-                      }
-                    },
-                    controller: passwordController,
-                    obscureText: passwordVisible,
-                    decoration: InputDecoration(
-                      labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 66, 66, 66)),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(206, 206, 206, 0.5)),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(44, 44, 44, 0.494)),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(206, 206, 206, 0.5)),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color.fromRGBO(44, 44, 44, 0.494)),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelText: 'Password',
-                      hintText: 'Enter your password',
-                      contentPadding: const EdgeInsets.all(20.0),
-                      suffixIcon: IconButton(
-                        icon: Icon(passwordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(
-                            () {
-                              passwordVisible = !passwordVisible;
-                            },
-                          );
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'This field is required';
+                          }
                         },
+                        controller: passwordController,
+                        obscureText: passwordVisible,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: ColorsReference.textColorBlack),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(206, 206, 206, 0.5)),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(44, 44, 44, 0.494)),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'Password',
+                          hintText: 'Enter your password',
+                          contentPadding:
+                              const EdgeInsets.only(top: 20, left: 25),
+                          suffixIcon: IconButton(
+                            color: ColorsReference.darkBlue,
+                            icon: Icon(passwordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(
+                                () {
+                                  passwordVisible = !passwordVisible;
+                                },
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  )),
                 ),
               ]),
             ),
@@ -216,7 +159,7 @@ class LoginState extends State<LoginScreen> {
               },
               child: const Text("Forgot password?",
                   style: TextStyle(
-                    color: Color(0xFF2CA6A4),
+                    color: ColorsReference.lightBlue,
                   )),
             ),
           )),
@@ -227,7 +170,7 @@ class LoginState extends State<LoginScreen> {
             height: 50,
             width: 500,
             decoration: BoxDecoration(
-              color: const Color(0xFF2CA6A4),
+              color: ColorsReference.darkBlue,
               borderRadius: BorderRadius.circular(50.0),
             ),
             child: TextButton(
@@ -235,7 +178,7 @@ class LoginState extends State<LoginScreen> {
                   if (formField.currentState!.validate()) {
                     FirebaseAuth.instance
                         .signInWithEmailAndPassword(
-                            email: usernameController.text,
+                            email: emailController.text,
                             password: passwordController.text)
                         .then((value) {
                       Navigator.pushReplacementNamed(context, '/home');
@@ -288,12 +231,12 @@ class LoginState extends State<LoginScreen> {
             child: const Text(
               "Register",
               style: TextStyle(
-                color: Color(0xFF2CA6A4),
+                color: ColorsReference.lightBlue,
               ),
             ))
       ]),
       const Spacer(),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+     Padding(padding: EdgeInsets.only(bottom: 30),child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text("Are you a speaker?",
             style:
                 TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 14)),
@@ -304,10 +247,10 @@ class LoginState extends State<LoginScreen> {
             child: const Text(
               "Join Now",
               style: TextStyle(
-                color: Color(0xFF2CA6A4),
+                color: ColorsReference.lightBlue,
               ),
             ))
-      ])
+      ]))
     ]);
   }
 

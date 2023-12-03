@@ -4,6 +4,7 @@ import 'package:speak_iq/Screens/login.dart';
 import 'package:speak_iq/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/style/colors.dart';
 import 'package:speak_iq/style/route_animation.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -94,7 +95,7 @@ class _Onboard extends State<OnboardingScreen> {
                     child: const Text(
                       'GET STARTED',
                       style: TextStyle(
-                        color: Color.fromRGBO(44, 166, 164, 1),
+                        color: ColorsReference.lightBlue,
                         fontFamily: 'Poppins',
                         fontSize: 16,
                         letterSpacing:
@@ -108,7 +109,7 @@ class _Onboard extends State<OnboardingScreen> {
                     iconSize: 28,
                     icon: const Icon(
                       Icons.arrow_forward_ios_rounded,
-                      color: Color.fromRGBO(44, 166, 164, 1),
+                      color: ColorsReference.lightBlue,
                     ),
                     onPressed: () {
                       // Navigate back to the previous screen

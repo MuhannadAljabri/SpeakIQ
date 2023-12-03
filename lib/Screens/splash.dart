@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Screens/Onboarding.dart';
 import 'package:speak_iq/style/route_animation.dart';
 
@@ -26,11 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return  SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Image(image: AssetImage('assets/MicDropLogoMain.png')),
+        child: SvgPicture.asset(
+            'assets/speaksy_blue_with_slogan.svg',),
       ),
     ));
   }
