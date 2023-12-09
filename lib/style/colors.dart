@@ -7,4 +7,5 @@ class ColorsReference {
   static const Color textColorBlack = Color.fromARGB(255, 66, 66, 66);
   static const Color darkBlue = Color.fromRGBO(28, 29, 51, 1);
   static const Color lightBlue = Color.fromRGBO(0, 74, 173, 1);
+  static const Color errorColorRed = Color.fromRGBO(244, 67, 54, 1);
 }
