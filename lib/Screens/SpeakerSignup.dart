@@ -7,11 +7,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:speak_iq/Screens/login.dart';
 import 'package:speak_iq/Style/style.dart';
 import 'package:speak_iq/backend/firebase.dart';
 import 'package:speak_iq/style/colors.dart';
 import 'package:speak_iq/Style/route_animation.dart';
+
+import 'package:speak_iq/Screens/login.dart';
+import 'package:speak_iq/Screens/home.dart';
 
 class SpeakerSignUp extends StatefulWidget {
   const SpeakerSignUp({super.key});
@@ -47,22 +49,94 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   TextEditingController bioController = TextEditingController();
   TextEditingController linkController = TextEditingController();
 
-  void submission() async {
-    UserUploader userUploader = UserUploader();
-    String firstName = firstNameController.text;
-    String lastName = lastNameController.text;
-    String email = emailController.text;
-    File pictureFile = File(_imagePath);
-    File pdfFile = File(_filePath);
+  Future<void> submission() async {
 
-    await userUploader.uploadUserData(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        bio: bioController.text,
-        link: linkController.text,
-        picture: pictureFile,
-        pdfFile: pdfFile);
+    try {
+      // Validate the form
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+
+      // Create the user
+      UserCredential userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+
+      // If user creation is successful, proceed with submission
+      User? user = userCredential.user;
+      if (user != null) {
+        
+        UserUploader userUploader = UserUploader();
+        String firstName = firstNameController.text;
+        String lastName = lastNameController.text;
+        String email = emailController.text;
+        File pictureFile = File(_imagePath);
+        File pdfFile = File(_filePath);
+        // Upload the speaker information to the database
+        await userUploader.uploadUserData(
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          bio: bioController.text,
+          link: linkController.text,
+          picture: pictureFile,
+          pdfFile: pdfFile
+        );
+
+        // Example: printing user information
+        print("User ID: ${user.uid}");
+        print("Full Name: ${firstNameController.text}");
+        print("Last Name: ${lastNameController.text}");
+        print("Email: ${emailController.text}");
+        // ... (other print statements)
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Congratulations!'),
+              content: const Text('You have successfully created an account! You will be notified once your request as a speaker is approved.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                    Navigator.of(context).push(slidingFromLeft(HomePage()));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Handle authentication error
+      print('Error creating user: $e');
+
+      // Check if the error is due to the email already being in use
+      if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Account Exists'),
+              content: const Text(
+                'An account with this email already exists. Please login or use a different email.',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   Future<void> _choosePdfFile() async {
@@ -113,36 +187,38 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                 //alignment: Alignment.center,
                 children: [
                   Container(
-                    
-            height: 200,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 245, 245, 245),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(100),
-                bottomRight: Radius.circular(100),
-              ),
-            ),
-            child: Container(
-              alignment: Alignment.center,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                     SvgPicture.asset(
-            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Register new account',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF212121),
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700,
-                              height: 0,
+                    height: 200,
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 245, 245, 245),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(100),
+                      ),
+                    ),
+                    child: 
+                      Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Register new account',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color(0xFF212121),
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
+                                height: 0,
+                              ),
                             ),
-                          ),
-                        ]),
-                  ),),
+                          ]
+                        ),
+                      ),
+                  ),
                   Container(
                     height: 200,
                     decoration: const BoxDecoration(
@@ -241,8 +317,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     child: Container(
                       child: TextFormField(
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                          if (value == null || value.isEmpty || value.length < 6) {
+                            return 'The password should be at least 6 characters';
                           }
                         },
                         controller: passwordController,
@@ -504,19 +580,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text);
-
                           submission();
-
-                          print("Full Name: ${firstNameController.text}");
-                          print("Last Name: ${lastNameController.text}");
-                          print("Email: ${emailController.text}");
-                          print("Phone Number: ${phoneNumberController.text}");
-                          print("Password: ${passwordController.text}");
-                          //print("Role: ${roleController.text}");
-                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       },
                       child: Text('Register'),
