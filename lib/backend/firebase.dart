@@ -16,6 +16,8 @@ class UserUploader {
     required String link,
     required File picture,
     required File pdfFile,
+    required List<String> topics,
+    required List<String> languages,
   }) async {
     try {
       // Check if picture file exists and is not empty
@@ -40,6 +42,8 @@ class UserUploader {
             'email': email,
             'bio': bio,
             'link': link,
+            'topics': topics,
+            'languages': languages,
             'pictureUrl': pictureDownloadUrl,
             'pdfUrl': pdfDownloadUrl,
           });
@@ -57,6 +61,8 @@ class UserUploader {
             'email': email,
             'bio': bio,
             'link': link,
+            'topics': topics,
+            'languages': languages,
             'pictureUrl': pictureDownloadUrl,
             'pdfUrl': 'Not provided'
           });
@@ -70,25 +76,34 @@ class UserUploader {
 
         print('Picture file is empty or does not exist. Uploading only PDF.');
         // Store user information in Realtime Database without picture URL
-        await _database.child('speaker_requests').child(FirebaseAuth.instance.currentUser!.uid).set({
+        await _database
+            .child('speaker_requests')
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .set({
           'firstName': firstName,
           'lastName': lastName,
           'email': email,
           'bio': bio,
           'link': link,
+          'topics': topics,
+          'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': pdfDownloadUrl,
         });
 
         print('User data uploaded with only PDF.');
       } else {
-
-        await _database.child('speaker_requests').child(FirebaseAuth.instance.currentUser!.uid).set({
+        await _database
+            .child('speaker_requests')
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .set({
           'firstName': firstName,
           'lastName': lastName,
           'email': email,
           'bio': bio,
           'link': link,
+          'topics': topics,
+          'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': 'Not provided',
         });
@@ -103,19 +118,19 @@ class UserUploader {
   Future<String> _uploadFile(File file, String storageFolder, String firstName,
       String lastName) async {
     try {
-      if (storageFolder == 'speaker_sheets'){
-      String fileName = file!.path.split('.').last;
-      final storageReference = _storageRoot.child('speaker_sheets/$firstName-$lastName.$fileName');
-      await storageReference.putFile(file!);
-      return await storageReference.getDownloadURL();
+      if (storageFolder == 'speaker_sheets') {
+        String fileName = file!.path.split('.').last;
+        final storageReference =
+            _storageRoot.child('speaker_sheets/$firstName-$lastName.$fileName');
+        await storageReference.putFile(file!);
+        return await storageReference.getDownloadURL();
       } else {
-      String fileName = file!.path.split('.').last;
-      final storageReference = _storageRoot.child('profile_pics/$firstName-$lastName.$fileName');
-      await storageReference.putFile(file!);
-      return await storageReference.getDownloadURL();
+        String fileName = file!.path.split('.').last;
+        final storageReference =
+            _storageRoot.child('profile_pics/$firstName-$lastName.$fileName');
+        await storageReference.putFile(file!);
+        return await storageReference.getDownloadURL();
       }
-      
-
     } catch (error) {
       print('Error uploading file: $error');
       rethrow; // Rethrow the error to handle it in the calling function

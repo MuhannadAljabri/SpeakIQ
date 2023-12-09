@@ -39,6 +39,22 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   Color textColorBlack = Color.fromARGB(255, 66, 66, 66);
   Color primaryColorGreen = const Color(0xFF2CA6A4);
 
+  // Declare the lists of topics and spoken languages
+  List<String> availableTopics = [
+    'Finance',
+    'Entrepreneurship',
+    'Politics',
+    'Environment'
+  ]; // Your list of words
+  List<String> selectedTopics = [];
+  List<String> availableLanguages = [
+    'Arabic',
+    'Chinese',
+    'Spanish',
+    'French'
+  ]; // Your list of words
+  List<String> selectedLanguages = [];
+
   // Declare controllers for each text field
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -50,7 +66,6 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   TextEditingController linkController = TextEditingController();
 
   Future<void> submission() async {
-
     try {
       // Validate the form
       if (!_formKey.currentState!.validate()) {
@@ -59,15 +74,14 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
 
       // Create the user
       UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
 
       // If user creation is successful, proceed with submission
       User? user = userCredential.user;
       if (user != null) {
-        
         UserUploader userUploader = UserUploader();
         String firstName = firstNameController.text;
         String lastName = lastNameController.text;
@@ -76,14 +90,15 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
         File pdfFile = File(_filePath);
         // Upload the speaker information to the database
         await userUploader.uploadUserData(
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          bio: bioController.text,
-          link: linkController.text,
-          picture: pictureFile,
-          pdfFile: pdfFile
-        );
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            bio: bioController.text,
+            link: linkController.text,
+            topics: selectedTopics,
+            languages: selectedLanguages,
+            picture: pictureFile,
+            pdfFile: pdfFile);
 
         // Example: printing user information
         print("User ID: ${user.uid}");
@@ -96,7 +111,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Congratulations!'),
-              content: const Text('You have successfully created an account! You will be notified once your request as a speaker is approved.'),
+              content: const Text(
+                  'You have successfully created an account! You will be notified once your request as a speaker is approved.'),
               actions: <Widget>[
                 TextButton(
                   child: Text('OK'),
@@ -195,14 +211,16 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         bottomRight: Radius.circular(100),
                       ),
                     ),
-                    child: 
-                      Container(
-                        alignment: Alignment.center,
-                        child: Column(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
+                              'assets/speaksy_blue_logo.svg',
+                              height: 100,
+                              width: 200,
+                            ),
                             const SizedBox(height: 16),
                             const Text(
                               'Register new account',
@@ -215,9 +233,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                 height: 0,
                               ),
                             ),
-                          ]
-                        ),
-                      ),
+                          ]),
+                    ),
                   ),
                   Container(
                     height: 200,
@@ -238,7 +255,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
-                        Navigator.of(context).push(slidingFromRight(LoginScreen()));
+                        Navigator.of(context)
+                            .push(slidingFromRight(LoginScreen()));
                       },
                     ),
                   ),
@@ -317,7 +335,9 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     child: Container(
                       child: TextFormField(
                         validator: (value) {
-                          if (value == null || value.isEmpty || value.length < 6) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length < 6) {
                             return 'The password should be at least 6 characters';
                           }
                         },
@@ -369,7 +389,9 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     child: Container(
                       child: TextFormField(
                         validator: (value) {
-                          if (value == null || value.isEmpty || value != passwordController.text) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value != passwordController.text) {
                             return 'Passwords do not match';
                           }
                         },
@@ -405,7 +427,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                             onPressed: () {
                               setState(
                                 () {
-                                  confirmPasswordVisible = !confirmPasswordVisible;
+                                  confirmPasswordVisible =
+                                      !confirmPasswordVisible;
                                 },
                               );
                             },
@@ -424,11 +447,77 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         textController: phoneNumberController,
                         optional: true,
                       )),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 41, right: 16, top: 20),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Topics (select all that applies)',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 10),
+                    child: Wrap(
+                      spacing: 8.0,
+                      children: availableTopics.map((word) {
+                        return FilterChip(
+                          label: Text(word),
+                          selected: selectedTopics.contains(word),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedTopics.add(word);
+                              } else {
+                                selectedTopics.remove(word);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
 
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 41, right: 16, top: 20),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        'Spoken Languages (select all that applies)',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 10),
+                    child: Wrap(
+                      spacing: 8.0,
+                      children: availableLanguages.map((word) {
+                        return FilterChip(
+                          label: Text(word),
+                          selected: selectedLanguages.contains(word),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedLanguages.add(word);
+                              } else {
+                                selectedLanguages.remove(word);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
                   // Bio input box
                   Padding(
                     padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 20),
+                        const EdgeInsets.only(left: 16, right: 16, top: 30),
                     child: TextFormField(
                       maxLines: 5,
                       validator: (value) {
@@ -495,10 +584,12 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
-                                          'assets/upload_button.svg',
-                                          width: 20,
-                                          height: 20,
-                                          semanticsLabel: 'vector', color: ColorsReference.lightBlue,),
+                                        'assets/upload_button.svg',
+                                        width: 20,
+                                        height: 20,
+                                        semanticsLabel: 'vector',
+                                        color: ColorsReference.lightBlue,
+                                      ),
                                       SizedBox(height: 10),
                                       Text(
                                         "Upload your speaker’s sheet as PDF",
@@ -587,21 +678,26 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     ),
                   )),
               // Navigate to login page
-              Padding(padding: EdgeInsets.only(bottom: 30),child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text("Already have an account?",
-            style:
-                TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 14)),
-        TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text(
-              "Login",
-              style: TextStyle(
-                color: ColorsReference.lightBlue,
-              ),
-            ))
-      ]))
+              Padding(
+                  padding: EdgeInsets.only(bottom: 30),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Already have an account?",
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontSize: 14)),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(
+                                color: ColorsReference.lightBlue,
+                              ),
+                            ))
+                      ]))
             ],
           ),
         ),
