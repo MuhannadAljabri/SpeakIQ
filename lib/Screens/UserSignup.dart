@@ -6,8 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/Screens/login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:speak_iq/style/colors.dart';
-import 'package:speak_iq/style/route_animation.dart';
+import 'package:speak_iq/Style/route_animation.dart';
+import 'package:speak_iq/Style/colors.dart';
+import 'package:speak_iq/Screens/login.dart';
 
 class UserSignup extends StatefulWidget {
   const UserSignup({Key? key}) : super(key: key);
@@ -18,15 +19,13 @@ class UserSignup extends StatefulWidget {
 
 class _UserSignupState extends State<UserSignup> {
 
-  Color primaryColor =const Color.fromRGBO(206, 206, 206, 0.5); // Main textfield border color
-  Color errorColor = const Color.fromRGBO(244, 67, 54, 1);// Error textfield border color
-
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   List<String> roles = [
     'Event Planner',
@@ -43,6 +42,7 @@ class _UserSignupState extends State<UserSignup> {
   bool isEmailValid = true;
   bool isPhoneNumberValid = true;
   bool isPasswordValid = true;
+  bool isConfirmPasswordValid = true;
   bool isOtherRoleValid = true;
 
   bool formSubmitted = false;
@@ -52,6 +52,7 @@ class _UserSignupState extends State<UserSignup> {
   FocusNode emailFocus = FocusNode();
   FocusNode phoneNumberFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
+  FocusNode confirmPasswordFocus = FocusNode();
   FocusNode otherRoleFocus = FocusNode();
 
   @override
@@ -113,7 +114,8 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                     onPressed: () {
                       // Navigate back to the previous screen
-                      Navigator.pop(context);
+                      Navigator.of(context).push(slidingFromRight(LoginScreen()));
+                      //Navigator.pop(context);
                     },
                   ),
                 ),
@@ -138,7 +140,7 @@ class _UserSignupState extends State<UserSignup> {
                       borderSide: BorderSide(
                           width: 2.0,
                           color: isFullNameValid
-                              ? primaryColor
+                              ? ColorsReference.borderColorGray
                               : const Color.fromRGBO(244, 67, 54, 1)),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -146,8 +148,8 @@ class _UserSignupState extends State<UserSignup> {
                       borderSide: BorderSide(
                         width: 2.0,
                         color: isFullNameValid
-                            ? primaryColor
-                            : errorColor,
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed,
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -186,15 +188,15 @@ class _UserSignupState extends State<UserSignup> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: primaryColor),
+                          color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         width: 2.0,
                         color: isLastNameValid
-                            ? primaryColor
-                            : errorColor,
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed,
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -230,15 +232,15 @@ class _UserSignupState extends State<UserSignup> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: primaryColor),
+                          color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         width: 2.0,
                         color: isEmailValid
-                            ? primaryColor
-                            : errorColor,
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed,
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -274,15 +276,15 @@ class _UserSignupState extends State<UserSignup> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 2.0,
-                          color: primaryColor),
+                          color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         width: 2.0,
                         color: isPhoneNumberValid
-                            ? primaryColor
-                            : errorColor,
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed,
                       ),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -322,15 +324,15 @@ class _UserSignupState extends State<UserSignup> {
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               width: 2.0,
-                              color: primaryColor),
+                              color: ColorsReference.borderColorGray),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             width: 2.0,
                             color: isPasswordValid
-                                ? primaryColor
-                                : errorColor,
+                                ? ColorsReference.borderColorGray
+                                : ColorsReference.errorColorRed,
                           ),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
@@ -361,6 +363,64 @@ class _UserSignupState extends State<UserSignup> {
                 ),
               ]),
             ),
+            // Confirmation Password text field
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+              child: Row(
+                children: [
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: Container(
+                      child: TextField(
+                        controller: confirmPasswordController,
+                        focusNode: confirmPasswordFocus,
+                        obscureText: passwordVisible,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2.0,
+                              color: ColorsReference.borderColorGray,
+                            ),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2.0,
+                              color: ColorsReference.borderColorGray,
+                            ),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          labelText: 'Confirm Password*',
+                          hintText: 'Confirm your password',
+                          errorText: confirmPasswordController.text == passwordController.text
+                              ? null
+                              : 'Passwords do not match',
+                          contentPadding: const EdgeInsets.all(20.0),
+                          suffixIcon: IconButton(
+                            icon: Icon(passwordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(
+                                () {
+                                  passwordVisible = !passwordVisible;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        onSubmitted: (_) {
+                          _validateAndSubmitForm();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // Roles drop down field
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -383,13 +443,13 @@ class _UserSignupState extends State<UserSignup> {
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               width: 2.0,
-                              color: primaryColor),
+                              color: ColorsReference.borderColorGray),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               width: 2.0,
-                              color: primaryColor),
+                              color: ColorsReference.borderColorGray),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         labelText: 'Role',
@@ -418,7 +478,7 @@ class _UserSignupState extends State<UserSignup> {
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                 width: 2.0,
-                                color: primaryColor,
+                                color: ColorsReference.borderColorGray,
                               ),
                               borderRadius: BorderRadius.circular(50.0),
                             ),
@@ -426,8 +486,8 @@ class _UserSignupState extends State<UserSignup> {
                               borderSide: BorderSide(
                                 width: 2.0,
                                 color: isOtherRoleValid
-                                    ? primaryColor
-                                    : errorColor,
+                                    ? ColorsReference.borderColorGray
+                                    : ColorsReference.errorColorRed,
                               ),
                               borderRadius: BorderRadius.circular(50.0),
                             ),
@@ -523,6 +583,7 @@ class _UserSignupState extends State<UserSignup> {
       isEmailValid = emailController.text.isNotEmpty && _isValidEmail(emailController.text);
       isPhoneNumberValid = phoneNumberController.text.isEmpty || _isValidPhoneNumber(phoneNumberController.text);
       isPasswordValid = passwordController.text.isNotEmpty && _isPasswordValid(passwordController.text);
+      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty && confirmPasswordController.text == passwordController.text;
       isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
 
       // Move focus to the first field with an invalid value
@@ -536,6 +597,8 @@ class _UserSignupState extends State<UserSignup> {
         FocusScope.of(context).requestFocus(phoneNumberFocus);
       if (!isPasswordValid) 
         FocusScope.of(context).requestFocus(passwordFocus);
+      if (!isConfirmPasswordValid) 
+        FocusScope.of(context).requestFocus(confirmPasswordFocus);
       if (!isOtherRoleValid) 
         FocusScope.of(context).requestFocus(otherRoleFocus);
       // Submit the form if all fields are valid
