@@ -55,12 +55,8 @@ class LoginState extends State<LoginScreen> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     SvgPicture.asset(
-            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
-            SizedBox(height: 16,),
-          
-                    
-                    
+                    SvgPicture.asset('assets/speaksy_blue_logo.svg', height: 100, width: 200,),
+                    SizedBox(height: 16,),
                     const Text(
                       'Login to your account',
                       textAlign: TextAlign.center,
@@ -81,16 +77,22 @@ class LoginState extends State<LoginScreen> {
       Form(
           key: formField,
           child: Column(children: [
+            // Email field
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
               child: Row(children: [
                 const SizedBox(height: 20),
                 Expanded(
-                  child: RequiredTextField(hintText: "Enter your email", labelText: "Email", textController: emailController)
+                  child: RequiredTextField(
+                    hintText: "Enter your email", 
+                    labelText: "Email", 
+                    textController: emailController,
+                  )
                 ),
               ]),
             ),
             const SizedBox(height: 5),
+            // Password field
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               child: Row(children: [
@@ -175,45 +177,7 @@ class LoginState extends State<LoginScreen> {
             ),
             child: TextButton(
                 onPressed: () {
-                  if (formField.currentState!.validate()) {
-                    FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text)
-                        .then((value) {
-                      Navigator.pushReplacementNamed(context, '/home');
-                    }).onError((error, stackTrace) {
-                      if (kDebugMode) {
-                        print("Error ${error.toString()}");
-                        // const snackBar = SnackBar(
-                        //   content: Text('Account not found. Please check your username or password and try again.'),
-                        //   backgroundColor: Color(0xFF2CA6A4),
-                        //   behavior: SnackBarBehavior.floating,
-                        //   duration: Duration(seconds: 3), // Adjust the duration as needed
-                        // );
-                        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        AlertDialog alert = AlertDialog(
-                          title: Text("Account Not Found"),
-                          content: Text(
-                              "Account not found. Kindly verify your username or password and try again."),
-                          actions: [
-                            TextButton(
-                              child: Text("OK"),
-                              onPressed: () {},
-                            )
-                          ],
-                        );
-
-                        // show the dialog
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return alert;
-                          },
-                        );
-                      }
-                    });
-                  }
+                  handleLogin();
                 },
                 child: const Text("Login",
                     style: TextStyle(
@@ -259,5 +223,118 @@ class LoginState extends State<LoginScreen> {
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regExp = RegExp(p);
     return regExp.hasMatch(em);
+  }
+
+  void handleLogin () {
+    if (formField.currentState!.validate()) {
+      FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text
+        )
+        .then((value) {
+          Navigator.pushReplacementNamed(context, '/home');
+        })
+        .catchError((error) {
+          print('Error to login: $error');
+          switch (error.code) {
+            case 'invalid-email':
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Invalid Email'),
+                    content: const Text('Please enter a valid email address.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              break;
+            case 'INVALID_LOGIN_CREDENTIALS':
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Invalid Crendentials'),
+                    content: const Text('Please check your email or password and try again.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              break;
+            case 'user-not-found':
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Account Not Found'),
+                    content: const Text('An account with this email does not exist. Please check your email or try to register a new account.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              break;
+            case 'wrong-password':
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Password Incorrect'),
+                    content: const Text('Please enter a correct password.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              break;
+            default:
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Error'),
+                    content: const Text('An error occurred. Please try again.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+              break;
+          }
+        });
+    }
   }
 }
