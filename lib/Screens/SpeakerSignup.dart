@@ -7,10 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speak_iq/Screens/login.dart';
 import 'package:speak_iq/Style/style.dart';
 import 'package:speak_iq/backend/firebase.dart';
 import 'package:speak_iq/style/colors.dart';
-import 'package:speak_iq/style/route_animation.dart';
+import 'package:speak_iq/Style/route_animation.dart';
 
 class SpeakerSignUp extends StatefulWidget {
   const SpeakerSignUp({super.key});
@@ -31,6 +32,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   String? _imageDownloadUrl;
   final Reference _storageReference = FirebaseStorage.instance.ref();
   bool passwordVisible = true;
+  bool confirmPasswordVisible = true;
   Color borderColorGray = const Color.fromRGBO(206, 206, 206, 0.5);
   Color textColorBlack = Color.fromARGB(255, 66, 66, 66);
   Color primaryColorGreen = const Color(0xFF2CA6A4);
@@ -41,6 +43,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   TextEditingController linkController = TextEditingController();
 
@@ -159,7 +162,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
-                        Navigator.pop(context);
+                        Navigator.of(context).push(slidingFromRight(LoginScreen()));
                       },
                     ),
                   ),
@@ -283,7 +286,58 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                     ),
                   ),
-
+                  // Confirm Password text field
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 16),
+                    child: Container(
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty || value != passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                        },
+                        controller: confirmPasswordController,
+                        obscureText: confirmPasswordVisible,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: textColorBlack),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(206, 206, 206, 0.5)),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2.0,
+                                color: Color.fromRGBO(44, 44, 44, 0.494)),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          labelText: 'Confirm Password',
+                          hintText: 'Confirm your password',
+                          contentPadding:
+                              const EdgeInsets.only(top: 20, left: 25),
+                          suffixIcon: IconButton(
+                            color: textColorBlack,
+                            icon: Icon(confirmPasswordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(
+                                () {
+                                  confirmPasswordVisible = !confirmPasswordVisible;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   // Phone number text field
                   Padding(
                       padding:
