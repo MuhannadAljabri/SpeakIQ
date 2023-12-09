@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:speak_iq/Screens/Home.dart';
 import 'package:speak_iq/Style/route_animation.dart';
 import 'package:speak_iq/Style/colors.dart';
 import 'package:speak_iq/Screens/login.dart';
@@ -598,42 +599,91 @@ class _UserSignupState extends State<UserSignup> {
         FocusScope.of(context).requestFocus(passwordFocus);
       if (!isConfirmPasswordValid) 
         FocusScope.of(context).requestFocus(confirmPasswordFocus);
-      if (!isOtherRoleValid) 
+      String adjustedRole = selectedRole == 'Other' ? '$selectedRole: $otherRoleText' : selectedRole;
+      if (selectedRole.toString() == 'Other' && !isOtherRoleValid) 
         FocusScope.of(context).requestFocus(otherRoleFocus);
       // Submit the form if all fields are valid
       else {
         FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text,
-                password: passwordController.text)
-            .then((value) {
-          FirebaseDatabase.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text
+          )
+          .then((value) {
+            FirebaseDatabase.instance
               .ref()
               .child("users")
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-            'first name': fullNameController.text,
-            'email': emailController.text,
-            'role': selectedRole.toString() + otherRoleText
-          });
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Congratulations!'),
-                content: const Text('You have successfully created an account!'),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context); // Close the dialog
-                      Navigator.pushReplacementNamed(context, '/home');
-                    },
-                  ),
-                ],
+              'first name': fullNameController.text,
+              'email': emailController.text,
+              'role': adjustedRole
+            }).then((_) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Congratulations!'),
+                    content: const Text('You have successfully created an account!'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                          Navigator.of(context).push(slidingFromLeft(HomePage()));
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
-            },
-          );
+            }).catchError((error) {
+              // Handle database write error
+              print('Error writing to the database: $error');
+              // You can show an error message to the user if needed
+            });
+          }).catchError((error) {
+          // Handle authentication error
+          print('Error creating user: $error');
+          // Check if the error is due to the email already being in use
+            if (error.code == 'email-already-in-use') {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Account Exists'),
+                    content: const Text('An account with this email already exists. Please login or use a different email.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              // You can show a generic error message for other authentication errors
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Error'),
+                    content: const Text('An error occurred. Please try again.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
         });
       }
     });
