@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:speak_iq/Screens/login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:speak_iq/Style/route_animation.dart';
@@ -115,7 +114,6 @@ class _UserSignupState extends State<UserSignup> {
                     onPressed: () {
                       // Navigate back to the previous screen
                       Navigator.of(context).push(slidingFromRight(LoginScreen()));
-                      //Navigator.pop(context);
                     },
                   ),
                 ),
