@@ -34,6 +34,7 @@ class _UserSignupState extends State<UserSignup> {
   String selectedRole = 'None'; // Set a default role
   String otherRoleText = ''; // Text entered for "Other" role
   bool passwordVisible = true;
+  bool confirmPasswordVisible = true;
   
   // Validation status for each text field
   bool isFullNameValid = true;
@@ -372,7 +373,7 @@ class _UserSignupState extends State<UserSignup> {
                       child: TextField(
                         controller: confirmPasswordController,
                         focusNode: confirmPasswordFocus,
-                        obscureText: passwordVisible,
+                        obscureText: confirmPasswordVisible,
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -398,13 +399,13 @@ class _UserSignupState extends State<UserSignup> {
                               : 'Passwords do not match',
                           contentPadding: const EdgeInsets.all(20.0),
                           suffixIcon: IconButton(
-                            icon: Icon(passwordVisible
+                            icon: Icon(confirmPasswordVisible
                                 ? Icons.visibility_off
                                 : Icons.visibility),
                             onPressed: () {
                               setState(
                                 () {
-                                  passwordVisible = !passwordVisible;
+                                  confirmPasswordVisible = !confirmPasswordVisible;
                                 },
                               );
                             },
