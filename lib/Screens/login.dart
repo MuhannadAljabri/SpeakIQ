@@ -85,7 +85,7 @@ class LoginState extends State<LoginScreen> {
           child: Column(children: [
             // Email field
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               child: Row(children: [
                 const SizedBox(height: 20),
                 Expanded(
@@ -96,10 +96,9 @@ class LoginState extends State<LoginScreen> {
                 )),
               ]),
             ),
-            const SizedBox(height: 5),
             // Password field
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Row(children: [
                 const SizedBox(height: 20),
                 Expanded(

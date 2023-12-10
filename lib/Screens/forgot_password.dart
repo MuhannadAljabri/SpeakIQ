@@ -90,13 +90,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               )
             ],
           ),
-          const SizedBox(height: 10),
+          const Padding(
+                  padding: EdgeInsets.only(top: 50, bottom: 30, left: 50, right: 50),
+                  child: Text(
+                    "Enter your email below! A password reset email will be sent to you if an account exists.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  )),
           Form(
               key: formField,
               child: Column(children: [
                 // Email field
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 29),
                   child: Row(children: [
                     const SizedBox(height: 20),
                     Expanded(
@@ -161,7 +171,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Text('OK'),
                   onPressed: () {
                     Navigator.pop(context); // Close the dialog
-                    Navigator.of(context).push(slidingFromDown(LoginScreen()));
+                    Navigator.pop(context); // Return to the login page
                   },
                 ),
               ],
