@@ -55,8 +55,14 @@ class LoginState extends State<LoginScreen> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset('assets/speaksy_blue_logo.svg', height: 100, width: 200,),
-                    SizedBox(height: 16,),
+                    SvgPicture.asset(
+                      'assets/speaksy_blue_logo.svg',
+                      height: 100,
+                      width: 200,
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
                     const Text(
                       'Login to your account',
                       textAlign: TextAlign.center,
@@ -83,12 +89,11 @@ class LoginState extends State<LoginScreen> {
               child: Row(children: [
                 const SizedBox(height: 20),
                 Expanded(
-                  child: RequiredTextField(
-                    hintText: "Enter your email", 
-                    labelText: "Email", 
-                    textController: emailController,
-                  )
-                ),
+                    child: RequiredTextField(
+                  hintText: "Enter your email",
+                  labelText: "Email",
+                  textController: emailController,
+                )),
               ]),
             ),
             const SizedBox(height: 5),
@@ -99,52 +104,53 @@ class LoginState extends State<LoginScreen> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: Container(
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'This field is required';
-                          }
-                        },
-                        controller: passwordController,
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: ColorsReference.textColorBlack),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0,
-                                color: Color.fromRGBO(206, 206, 206, 0.5)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2.0,
-                                color: Color.fromRGBO(44, 44, 44, 0.494)),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                          contentPadding:
-                              const EdgeInsets.only(top: 20, left: 25),
-                          suffixIcon: IconButton(
-                            color: ColorsReference.darkBlue,
-                            icon: Icon(passwordVisible
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(
-                                () {
-                                  passwordVisible = !passwordVisible;
-                                },
-                              );
-                            },
-                          ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required';
+                        }
+                      },
+                      controller: passwordController,
+                      obscureText: passwordVisible,
+                      decoration: InputDecoration(
+                        labelStyle:
+                            TextStyle(color: ColorsReference.textColorBlack),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Color.fromRGBO(206, 206, 206, 0.5)),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Color.fromRGBO(44, 44, 44, 0.494)),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                        contentPadding:
+                            const EdgeInsets.only(top: 20, left: 25),
+                        suffixIcon: IconButton(
+                          color: ColorsReference.darkBlue,
+                          icon: Icon(passwordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(
+                              () {
+                                passwordVisible = !passwordVisible;
+                              },
+                            );
+                          },
                         ),
                       ),
                     ),
+                  ),
                 ),
               ]),
             ),
@@ -200,21 +206,23 @@ class LoginState extends State<LoginScreen> {
             ))
       ]),
       const Spacer(),
-     Padding(padding: EdgeInsets.only(bottom: 30),child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text("Are you a speaker?",
-            style:
-                TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 14)),
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).push(slidingFromDown(SpeakerSignUp()));
-            },
-            child: const Text(
-              "Join Now",
-              style: TextStyle(
-                color: ColorsReference.lightBlue,
-              ),
-            ))
-      ]))
+      Padding(
+          padding: EdgeInsets.only(bottom: 30),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text("Are you a speaker?",
+                style: TextStyle(
+                    color: Colors.black.withOpacity(0.5), fontSize: 14)),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(slidingFromDown(SpeakerSignUp()));
+                },
+                child: const Text(
+                  "Join Now",
+                  style: TextStyle(
+                    color: ColorsReference.lightBlue,
+                  ),
+                ))
+          ]))
     ]);
   }
 
@@ -225,116 +233,115 @@ class LoginState extends State<LoginScreen> {
     return regExp.hasMatch(em);
   }
 
-  void handleLogin () {
+  void handleLogin() {
     if (formField.currentState!.validate()) {
       FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text
-        )
-        .then((value) {
-          Navigator.pushReplacementNamed(context, '/home');
-        })
-        .catchError((error) {
-          print('Error to login: $error');
-          switch (error.code) {
-            case 'invalid-email':
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Invalid Email'),
-                    content: const Text('Please enter a valid email address.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-              break;
-            case 'INVALID_LOGIN_CREDENTIALS':
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Invalid Crendentials'),
-                    content: const Text('Please check your email or password and try again.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-              break;
-            case 'user-not-found':
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Account Not Found'),
-                    content: const Text('An account with this email does not exist. Please check your email or try to register a new account.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-              break;
-            case 'wrong-password':
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Password Incorrect'),
-                    content: const Text('Please enter a correct password.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-              break;
-            default:
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: const Text('An error occurred. Please try again.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-              break;
-          }
-        });
+          .signInWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text)
+          .then((value) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }).catchError((error) {
+        print('Error to login: $error');
+        switch (error.code) {
+          case 'invalid-email':
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Invalid Email'),
+                  content: const Text('Please enter a valid email address.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            break;
+          case 'INVALID_LOGIN_CREDENTIALS':
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Invalid Crendentials'),
+                  content: const Text(
+                      'Please check your email or password and try again.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            break;
+          case 'user-not-found':
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Account Not Found'),
+                  content: const Text(
+                      'An account with this email does not exist. Please check your email or try to register a new account.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            break;
+          case 'wrong-password':
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Password Incorrect'),
+                  content: const Text('Please enter a correct password.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            break;
+          default:
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text('An error occurred. Please try again.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            break;
+        }
+      });
     }
   }
 }
