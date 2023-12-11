@@ -26,13 +26,15 @@ class SpeakerProfile extends StatefulWidget {
 }
 
 class SpeakerProfileState extends State<SpeakerProfile> {
-  final String speakerId = "JdWElFv1GQWlNrwxNC8Ba1jUTf33";
 
+  String speakerId = "";
   String firstName = "";
   String lastName = "";
   String link = "";
   String pdfUrl = "";
   String pictureUrl = "";
+
+
 
   Future<Map<dynamic, dynamic>?> getSpeaker() async {
     try {
@@ -49,6 +51,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ModalRoute.of(context)?.settings.arguments;
+    speakerId = data.toString();
     getSpeaker();
     return SafeArea(
         child: Scaffold(
