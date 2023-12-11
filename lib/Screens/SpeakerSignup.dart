@@ -255,8 +255,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       ),
                       onPressed: () {
                         // Navigate back to the previous screen
-                        Navigator.of(context)
-                            .push(slidingFromRight(LoginScreen()));
+                        Navigator.pop(context);
                       },
                     ),
                   ),
