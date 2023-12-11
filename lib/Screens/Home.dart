@@ -1,415 +1,186 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
-class ExampleStaggeredAnimations extends StatefulWidget {
-  const ExampleStaggeredAnimations({
-    super.key,
-  });
-
-  @override
-  State<ExampleStaggeredAnimations> createState() =>
-      _ExampleStaggeredAnimationsState();
-}
-
-class _ExampleStaggeredAnimationsState extends State<ExampleStaggeredAnimations>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _drawerSlideController;
-    String firstName = '';
-
-
-
-  @override
-  void initState() {
-    super.initState();
-        _loadFirstName();
-    _drawerSlideController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-  }
-
-
-Future<void> _loadFirstName() async {
-  final ref = FirebaseDatabase.instance.ref();
-final snapshot = await ref.child('users').child(FirebaseAuth.instance.currentUser!.uid).child('first name').get();
-if (snapshot.exists) {
-    firstName = snapshot.value.toString();
-
-} else {
-    firstName = 'no';
-}
-  }
-
-  @override
-  void dispose() {
-    _drawerSlideController.dispose();
-    super.dispose();
-  }
-
-  bool _isDrawerOpen() {
-    return _drawerSlideController.value == 1.0;
-  }
-
-  bool _isDrawerOpening() {
-    return _drawerSlideController.status == AnimationStatus.forward;
-  }
-
-  bool _isDrawerClosed() {
-    return _drawerSlideController.value == 0.0;
-  }
-
-  void _toggleDrawer() {
-    if (_isDrawerOpen() || _isDrawerOpening()) {
-      _drawerSlideController.reverse();
-    } else {
-      _drawerSlideController.forward();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          _buildContent(),
-          _buildDrawer(),
-        ],
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: Text.rich( TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Good day,\n ',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.5),
-                          fontSize: 14,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          height: 0,
-                        ),
-                      ),
-                      TextSpan(
-                        text: firstName ,
-                        style: TextStyle(
-                          color: Color(0xFF2CA6A4),
-                          fontSize: 14,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      ),
-                    ],
-                  ),),
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
-      automaticallyImplyLeading: false,
-      actions: [
-        AnimatedBuilder(
-          animation: _drawerSlideController,
-          builder: (context, child) {
-            return IconButton(
-              onPressed: _toggleDrawer,
-              icon: _isDrawerOpen() || _isDrawerOpening()
-                  ? const Icon(
-                      Icons.clear,
-                      color: Colors.black,
-                    )
-                  : const Icon(
-                      Icons.menu,
-                      color: Colors.black,
-                    ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContent() {
-    // Put page content here.
-    return const SizedBox();
-  }
-
-  Widget _buildDrawer() {
-    return AnimatedBuilder(
-      animation: _drawerSlideController,
-      builder: (context, child) {
-        return FractionalTranslation(
-          translation: Offset(1.0 - _drawerSlideController.value, 0.0),
-          child: _isDrawerClosed() ? const SizedBox() : const Menu(),
-        );
-      },
-    );
-  }
-}
-
-class Menu extends StatefulWidget {
-  const Menu({super.key});
-
-  @override
-  State<Menu> createState() => _MenuState();
-}
-
-class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
-  static const _menuTitles = [
-    'Declarative style',
-    'Premade widgets',
-    'Stateful hot reload',
-    'Native performance',
-    'Great community',
-  ];
-
-  static const _initialDelayTime = Duration(milliseconds: 50);
-  static const _itemSlideTime = Duration(milliseconds: 250);
-  static const _staggerTime = Duration(milliseconds: 50);
-  static const _buttonDelayTime = Duration(milliseconds: 150);
-  static const _buttonTime = Duration(milliseconds: 500);
-  final _animationDuration = _initialDelayTime +
-      (_staggerTime * _menuTitles.length) +
-      _buttonDelayTime +
-      _buttonTime;
-
-  late AnimationController _staggeredController;
-  final List<Interval> _itemSlideIntervals = [];
-  late Interval _buttonInterval;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _createAnimationIntervals();
-
-    _staggeredController = AnimationController(
-      vsync: this,
-      duration: _animationDuration,
-    )..forward();
-  }
-
-  void _createAnimationIntervals() {
-    for (var i = 0; i < _menuTitles.length; ++i) {
-      final startTime = _initialDelayTime + (_staggerTime * i);
-      final endTime = startTime + _itemSlideTime;
-      _itemSlideIntervals.add(
-        Interval(
-          startTime.inMilliseconds / _animationDuration.inMilliseconds,
-          endTime.inMilliseconds / _animationDuration.inMilliseconds,
-        ),
-      );
-    }
-
-    final buttonStartTime =
-        Duration(milliseconds: (_menuTitles.length * 50)) + _buttonDelayTime;
-    final buttonEndTime = buttonStartTime + _buttonTime;
-    _buttonInterval = Interval(
-      buttonStartTime.inMilliseconds / _animationDuration.inMilliseconds,
-      buttonEndTime.inMilliseconds / _animationDuration.inMilliseconds,
-    );
-  }
-
-  @override
-  void dispose() {
-    _staggeredController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildFlutterLogo(),
-          _buildContent(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFlutterLogo() {
-    return const Positioned(
-      right: -100,
-      bottom: -30,
-      child: Opacity(
-        opacity: 0.2,
-        child: FlutterLogo(
-          size: 400,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        ..._buildListItems(),
-        const Spacer(),
-        _buildGetStartedButton(),
-      ],
-    );
-  }
-
-  List<Widget> _buildListItems() {
-    final listItems = <Widget>[];
-    for (var i = 0; i < _menuTitles.length; ++i) {
-      listItems.add(
-        AnimatedBuilder(
-          animation: _staggeredController,
-          builder: (context, child) {
-            final animationPercent = Curves.easeOut.transform(
-              _itemSlideIntervals[i].transform(_staggeredController.value),
-            );
-            final opacity = animationPercent;
-            final slideDistance = (1.0 - animationPercent) * 150;
-
-            return Opacity(
-              opacity: opacity,
-              child: Transform.translate(
-                offset: Offset(slideDistance, 0),
-                child: child,
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-            child: Text(
-              _menuTitles[i],
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    return listItems;
-  }
-
-  Widget _buildGetStartedButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: AnimatedBuilder(
-          animation: _staggeredController,
-          builder: (context, child) {
-            final animationPercent = Curves.elasticOut.transform(
-                _buttonInterval.transform(_staggeredController.value));
-            final opacity = animationPercent.clamp(0.0, 1.0);
-            final scale = (animationPercent * 0.5) + 0.5;
-
-            return Opacity(
-              opacity: opacity,
-              child: Transform.scale(
-                scale: scale,
-                child: child,
-              ),
-            );
-          },
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              backgroundColor: Colors.blue,
-              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 14),
-            ),
-            onPressed: () {},
-            child: const Text(
-              'Get started',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/svg.dart';
+import '../backend/firebase.dart';
+import 'package:firebase_database/firebase_database.dart';
+import '../style/colors.dart';
 
 class HomePage extends StatelessWidget {
+  HomePage({super.key});
+
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<String> names = ['John', 'Jane', 'Bob', 'Alice'];
+
+  bool isFilterVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              // Handle menu icon click
-              print('Menu icon clicked');
-            },
+        title: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'Good day,\n ',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontSize: 15,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              TextSpan(
+                text: 'John',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 23,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w300,
+                  height: 0,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            // List of clickable rectangular boxes
-            ElevatedButton(
-              onPressed: () {
-                // Handle box click
-                print('Box 1 clicked');
-              },
-              child: Container(
-                width: 300,
-                height: 100,
-                child: Center(
-                  child: Text('Box 1'),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle box click
-                print('Box 2 clicked');
-              },
-              child: Container(
-                width: 200,
-                height: 100,
-                child: Center(
-                  child: Text('Box 2'),
-                ),
-              ),
-            ),
-          ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        actions: [
+          // Filter button
+          IconButton(
+            iconSize: 30,
+            padding: EdgeInsets.only(right: 16),
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              setState(() {
+                isFilterVisible = !isFilterVisible;
+              });
+            },
+            color: Colors.black,
           ),
         ],
-        onTap: (index) {
-          // Handle bottom navigation bar item clicks
-          if (index == 0) {
-            print('Home icon clicked');
-          } else if (index == 1) {
-            print('Profile icon clicked');
-          }
-        },
       ),
+      body: Column(children: [SizedBox(height: 15,),Expanded(child: ListView.builder(
+          itemCount: names.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: GestureDetector(
+                onTap: () {
+                  // Handle box click, you can navigate to another screen or perform an action
+                  print('Name clicked: ${names[index]}');
+                },
+                child: Container(
+                  height: 144,
+                  decoration: BoxDecoration(
+                    border:Border.all(color: ColorsReference.borderColorGray),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                        children: [
+                          // Circle at the far left
+                          Container(
+                            width: 70,
+                            height: 70,
+                            margin: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: ColorsReference.borderColorGray) ,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Picture',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Name in the center
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                names[index],
+                                style: TextStyle(
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                ),
+              ),
+            ),);
+          })),]),
+      bottomNavigationBar: Container(
+          height: 85,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromARGB(255, 223, 223, 223),
+                blurRadius: 5.0,
+                spreadRadius: 0.5,
+                offset: Offset(0, -4.0),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent,
+            selectedItemColor: ColorsReference.darkBlue,
+            elevation:
+                0.0, // Set to 0.0 to remove the default BottomNavigationBar shadow
+
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/home_icon.svg',
+                  width: 24,
+                  height: 24,
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/profile_icon.svg',
+                  width: 24,
+                  height: 24,
+                ),
+                label: 'Profile',
+              ),
+            ],
+            onTap: (index) {
+              // Handle bottom navigation item clicks
+              if (index == 0) {
+                print('Home Screen');
+              } else {
+                print('Profile Picture');
+              }
+            },
+          )),
     );
   }
 }
