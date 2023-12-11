@@ -19,9 +19,7 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-    );
+    return MyHomePage();
   }
 }
 
@@ -128,6 +126,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         vertical: 10, horizontal: 20),
                     child: GestureDetector(
                       onTap: () {
+                         final speakerId = _speakers[index].userID;
+                        Navigator.pushNamed(
+                          context,
+                          '/speaker_profile',
+                          arguments: speakerId,
+                        );
                         // Handle box click, you can navigate to another screen or perform an action
                         print('Name clicked: ${_speakers[index].firstName}');
                       },
