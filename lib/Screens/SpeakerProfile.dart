@@ -124,7 +124,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             ),
             onPressed: () {
               // Navigate back to the previous screen
-              Navigator.of(context).push(slidingFromRight(LoginScreen()));
+              Navigator.pop(context);
             },
           ),
         ),

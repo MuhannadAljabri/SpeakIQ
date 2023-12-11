@@ -5,6 +5,15 @@ import 'package:flutter_svg/svg.dart';
 import '../backend/firebase.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../style/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+class Speaker {
+  final String userID;
+  final String firstName;
+  final String pictureUrl;
+
+  Speaker(this.userID, this.firstName, this.pictureUrl);
+}
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -23,6 +32,38 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> names = ['John', 'Jane', 'Bob', 'Alice'];
+
+  final DatabaseReference _speakersRef =
+      FirebaseDatabase.instance.ref().child('speaker_requests');
+
+  List<Speaker> _speakers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSpeakers();
+  }
+
+  Future<void> _loadSpeakers() async {
+    final snapshot = await _speakersRef.once();
+    List<Speaker> speakers = [];
+
+    Map<dynamic, dynamic> data =
+        snapshot.snapshot.value as Map<dynamic, dynamic>;
+    if (data != null) {
+      data.forEach((key, value) {
+        speakers.add(Speaker(
+          key, // userID
+          value['firstName'] ?? '',
+          value['pictureUrl'] ?? '',
+        ));
+      });
+    }
+
+    setState(() {
+      _speakers = speakers;
+    });
+  }
 
   bool isFilterVisible = false;
 
@@ -74,63 +115,84 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Column(children: [SizedBox(height: 15,),Expanded(child: ListView.builder(
-          itemCount: names.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: GestureDetector(
-                onTap: () {
-                  // Handle box click, you can navigate to another screen or perform an action
-                  print('Name clicked: ${names[index]}');
-                },
-                child: Container(
-                  height: 144,
-                  decoration: BoxDecoration(
-                    border:Border.all(color: ColorsReference.borderColorGray),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                        children: [
-                          // Circle at the far left
-                          Container(
-                            width: 70,
-                            height: 70,
-                            margin: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: ColorsReference.borderColorGray) ,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              shape: BoxShape.circle,
+      body: Column(children: [
+        SizedBox(
+          height: 15,
+        ),
+        Expanded(
+            child: ListView.builder(
+                itemCount: _speakers.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Handle box click, you can navigate to another screen or perform an action
+                        print('Name clicked: ${_speakers[index].firstName}');
+                      },
+                      child: Container(
+                        height: 144,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: ColorsReference.borderColorGray),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            // Circle at the far left
+                            Container(
+                              width: 70,
+                              height: 70,
+                              margin: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: ColorsReference.borderColorGray),
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30.0),
+                                child: Container(
+                                    height: 70,
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                    color: ColorsReference.borderColorGray),
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                shape: BoxShape.circle,
+                                    ),
+                                    child: CachedNetworkImage(
+                                imageUrl: _speakers[index].pictureUrl,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              ),),
+                              )
                             ),
-                            child: Center(
-                              child: Text(
-                                'Picture',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontWeight: FontWeight.w500,
+                            // Name in the center
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  _speakers[index].firstName,
+                                  style: TextStyle(
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          // Name in the center
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                names[index],
-                                style: TextStyle(
-                                  color: const Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                ),
-              ),
-            ),);
-          })),]),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                })),
+      ]),
       bottomNavigationBar: Container(
           height: 85,
           decoration: BoxDecoration(
