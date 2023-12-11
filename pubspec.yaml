@@ -45,6 +45,9 @@ dependencies:
   firebase_storage: ^11.5.1
   image_picker: ^1.0.4
   file_picker: ^6.1.1
+  url_launcher: ^6.2.2
+  path_provider: ^2.1.1
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +82,12 @@ flutter:
     - assets/camera_icon.svg
     - assets/speaksy_blue_with_slogan.svg
     - assets/speaksy_blue_logo.svg
+    - assets/background.png
+    - assets/role_icon.png
+    - assets/link_icon.png
+    - assets/sheet_icon.png
+    - assets/topic_icon.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
