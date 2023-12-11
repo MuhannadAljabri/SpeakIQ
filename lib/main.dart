@@ -5,6 +5,7 @@ import '../Screens/splash.dart';
 import '../Screens/UserSignup.dart';
 import '../Screens/login.dart';
 import '../Screens/Home.dart';
+import '../Screens/SpeakerProfile.dart';
 import '../Screens/Onboarding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/speaker_signup': (context) => SpeakerSignUp(),
-        '/forgot_password': (context) => const ForgotPasswordScreen()
+        '/forgot_password': (context) => const ForgotPasswordScreen(),
+        '/speaker_profile': (context) => SpeakerProfile()
       },
     );
   }
