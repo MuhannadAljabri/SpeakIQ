@@ -26,13 +26,15 @@ class SpeakerProfile extends StatefulWidget {
 }
 
 class SpeakerProfileState extends State<SpeakerProfile> {
-  final String speakerId = "JdWElFv1GQWlNrwxNC8Ba1jUTf33";
 
+  String speakerId = "";
   String firstName = "";
   String lastName = "";
   String link = "";
   String pdfUrl = "";
   String pictureUrl = "";
+  String bio = "";
+
 
   Future<Map<dynamic, dynamic>?> getSpeaker() async {
     try {
@@ -49,6 +51,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final data = ModalRoute.of(context)?.settings.arguments;
+    speakerId = data.toString();
     getSpeaker();
     return SafeArea(
         child: Scaffold(
@@ -69,6 +73,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               lastName = speakerInfo['lastName'];
               link = speakerInfo['link'];
               pdfUrl = speakerInfo['pdfUrl'];
+              bio = speakerInfo['bio'];
               return content();
             }
           },
@@ -106,7 +111,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover),
         Container(
-          height: 40,
+          height: 200,
           decoration: const BoxDecoration(
             color: Color.fromRGBO(0,0,0,0),
             borderRadius: BorderRadius.only(
@@ -152,13 +157,13 @@ class SpeakerProfileState extends State<SpeakerProfile> {
       ]),
       const SizedBox(height: 80),
       Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Lorem ipsum dolor sit amet consectetur. Id tortor ut phasellus volutpat orci tellus elementum est mollis. Euismod aliquet leo euismod senectus in.',
-              style: TextStyle(
+            Text(
+              bio,
+              style: const TextStyle(
                 color: Color.fromRGBO(136, 136, 136, 1),
                 fontSize: 16,
               ),
@@ -297,11 +302,15 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   }
 
   _launchYouTube() async {
-    Uri uri = Uri.parse(link);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch speaker video';
+    String url = link;
+    try {
+      if (await launchUrl(
+          Uri.parse(url), mode: LaunchMode.externalApplication)) {
+      } else {
+        throw '#1: Could not launch $url';
+      }
+    } catch (e) {
+      throw '#2: Could not launch $url';
     }
   }
 
