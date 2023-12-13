@@ -238,7 +238,11 @@ class LoginState extends State<LoginScreen> {
           .signInWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((value) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(
+  context,
+  '/home', // This will clear the navigation stack
+  (Route<dynamic> route) => false,
+);;
       }).catchError((error) {
         print('Error to login: $error');
         switch (error.code) {
