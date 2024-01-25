@@ -16,6 +16,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 
 
 class SpeakerProfile extends StatefulWidget {
@@ -105,7 +108,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
       Stack(clipBehavior: Clip.none, children: [
         Image(
             image: AssetImage('assets/background.png'),
-            height: (254 / 812) *
+            height: (298 / 812) *
                 (MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top),
             width: MediaQuery.of(context).size.width,
@@ -137,7 +140,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
           left: 16.0,
           bottom: -60.0,
           child: ClipRRect(
-            borderRadius: new BorderRadius.circular(40.0),
+            borderRadius: new BorderRadius.circular(50.0),
             child: Image.network(pictureUrl,
                 height: 96, width: 96, fit: BoxFit.cover),
           ),
@@ -150,7 +153,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ))
@@ -165,7 +168,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               bio,
               style: const TextStyle(
                 color: Color.fromRGBO(136, 136, 136, 1),
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
             SizedBox(height: 16.0), // Adjust the space between text and rows
@@ -173,11 +176,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
-                  child: const Image(
-                    image: AssetImage('assets/role_icon.png'),
-                    height: 56,
-                    width: 56,
-                  ),
+                  child: SvgPicture.asset(
+                    'assets/role_icon.svg',),
                 ),
                 const SizedBox(width: 16.0),
                 // Adjust the space between image and text
@@ -189,7 +189,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 18,
+                        fontSize: 14,
                       ),
                     ),
                     SizedBox(height: 10.0),
@@ -197,7 +197,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                       'General Manager',
                       style: TextStyle(
                         color: Color.fromRGBO(136, 136, 136, 1),
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                     ),
                   ],
@@ -209,11 +209,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
-                  child: const Image(
-                    image: AssetImage('assets/topic_icon.png'),
-                    height: 56,
-                    width: 56,
-                  ),
+                  child: SvgPicture.asset(
+                    'assets/topic_icon.svg',),
                 ),
                 const SizedBox(width: 16.0),
                 Column(crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +220,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 18,
+                        fontSize: 14,
                       ),
                     ),
                       SizedBox(height: 10.0),
@@ -239,13 +236,10 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
-                  child: const Image(
-                    image: AssetImage('assets/sheet_icon.png'),
-                    height: 56,
-                    width: 56,
-                  ),
+                  child: SvgPicture.asset(
+                    'assets/sheet_icon.svg',),
                 ),
-                const SizedBox(width: 16.0),
+                const SizedBox(width: 10.0),
                 // Adjust the space between image and text
                 TextButton(
                   onPressed: () {
@@ -256,7 +250,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
@@ -268,13 +262,10 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
-                  child: const Image(
-                    image: AssetImage('assets/link_icon.png'),
-                    height: 56,
-                    width: 56,
-                  ),
+                  child: SvgPicture.asset(
+                    'assets/link_icon.svg',),
                 ),
-                const SizedBox(width: 16.0),
+                const SizedBox(width: 10.0),
                 // Adjust the space between image and text
                 TextButton(
                   onPressed: () {
@@ -286,7 +277,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -314,8 +305,35 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     }
   }
 
+  // Future<String> downloadFile() async {
+  //   String myUrl = pdfUrl;
+  //   String filePath = '';
+  //   try {
+  //     final taskId = await FlutterDownloader.enqueue(
+  //       url: myUrl,
+  //       savedDir: '/storage/emulated/0/Download/',
+  //       fileName: 'speaker_sheet_${firstName}_$lastName.pdf',
+  //       showNotification: true, // Set to true to show a download notification
+  //       openFileFromNotification: true,
+  //     );
+  //     FlutterDownloader.registerCallback((id, status, progress) {
+  //       if (status == DownloadTaskStatus.complete) {
+  //         // Download completed, show a notification
+  //         showDownloadNotification('Download complete');
+  //       }
+  //     });
+  //     filePath = '/storage/emulated/0/Download/speaker_sheet_${firstName}_$lastName.pdf';
+  //   } catch (ex) {
+  //     filePath = 'Can not fetch url';
+  //   }
+  //
+  //   return filePath;
+  // }
+  //   flutterLocalNotificationsPlugin.show(0, 'Download Notification', message, NotificationDetails());
+  // }
+
   Future<String> downloadFile() async {
-    HttpClient httpClient = new HttpClient();
+    HttpClient httpClient = HttpClient();
     File file;
     String filePath = '';
     String myUrl = '';
@@ -326,12 +344,13 @@ class SpeakerProfileState extends State<SpeakerProfile> {
       var response = await request.close();
       if(response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        filePath = '/storage/emulated/0/Download/speakerSheet.pdf';
+        filePath = '/storage/emulated/0/Download/speaker_sheet_${firstName}_$lastName.pdf';
         file = File(filePath);
         await file.writeAsBytes(bytes);
       }
-      else
+      else {
         filePath = 'Error code: '+response.statusCode.toString();
+      }
     }
     catch(ex){
       filePath = 'Can not fetch url';
@@ -355,7 +374,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             padding: EdgeInsets.all(6), // Adjust padding as needed
             child: Text(
               'Entrepreneurship',
-              style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
+              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
             ),
           ),
         ),
