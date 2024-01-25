@@ -16,8 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:flutter_downloader/flutter_downloader.dart';
 
 
 
