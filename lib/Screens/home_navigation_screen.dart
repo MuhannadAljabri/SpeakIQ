@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'Home.dart'; // Import your home page
-import 'profile_page.dart'; // Import your profile page
+import './Home.dart';
+import './profile_page.dart';
 
 import 'package:flutter_svg/svg.dart';
 import '../style/colors.dart';
 
 class HomeNavigationScreen extends StatefulWidget {
+  const HomeNavigationScreen({super.key});
+
   @override
-  _HomeNavigationScreenState createState() => _HomeNavigationScreenState();
+  State<HomeNavigationScreen> createState() => HomeNavigationScreenState();
 }
 
-class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
+class HomeNavigationScreenState extends State<HomeNavigationScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(), // Your home page
-    ProfilePage(), // Your profile page
+    HomePage(), 
+    const ProfilePage(), 
   ];
 
   @override
@@ -25,7 +27,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
       
       bottomNavigationBar: Container(
           height: 85,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12.0),
@@ -43,9 +45,8 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
           child: BottomNavigationBar(
             backgroundColor: Colors.transparent,
             selectedItemColor: ColorsReference.darkBlue,
-            elevation:
-                0.0, // Set to 0.0 to remove the default BottomNavigationBar shadow
-
+            selectedIconTheme: const IconThemeData(color: ColorsReference.darkBlue),
+            elevation:0.0, 
             items: [
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
