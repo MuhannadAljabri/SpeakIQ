@@ -367,14 +367,20 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     File file;
     String filePath = '';
     String myUrl = '';
-
     try {
       myUrl = pdfUrl;
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if(response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
-        filePath = '/storage/emulated/0/Download/speaker_sheet_${firstName}_$lastName.pdf';
+        if(Platform.isIOS) {
+          Directory appDocDir = await getApplicationDocumentsDirectory();
+          String appDocPath = appDocDir.path;
+          filePath = '$appDocPath/${firstName}_$lastName.pdf';
+        }
+          else{
+          filePath = '/storage/emulated/0/Download/${firstName}_$lastName.pdf';
+        }
         file = File(filePath);
         await file.writeAsBytes(bytes);
       }
