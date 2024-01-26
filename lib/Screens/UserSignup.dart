@@ -615,6 +615,7 @@ class _UserSignupState extends State<UserSignup> {
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
             'firstName': fullNameController.text,
+            'last name': lastNameController.text,
             'email': emailController.text,
             'role': adjustedRole
           }).then((_) {
