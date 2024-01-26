@@ -251,56 +251,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 })),
       ]),
-      bottomNavigationBar: Container(
-          height: 85,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 223, 223, 223),
-                blurRadius: 5.0,
-                spreadRadius: 0.5,
-                offset: Offset(0, -4.0),
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent,
-            selectedItemColor: ColorsReference.darkBlue,
-            elevation:
-                0.0, // Set to 0.0 to remove the default BottomNavigationBar shadow
-
-            items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/home_icon.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/profile_icon.svg',
-                  width: 24,
-                  height: 24,
-                ),
-                label: 'Profile',
-              ),
-            ],
-            onTap: (index) {
-              // Handle bottom navigation item clicks
-              if (index == 0) {
-                print('Home Screen');
-              } else {
-                print('Profile Picture');
-              }
-            },
-          )),
     );
   }
 }
