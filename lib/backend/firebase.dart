@@ -11,6 +11,7 @@ class UserUploader {
   Future<void> uploadUserData({
     required String firstName,
     required String lastName,
+    required String phoneNum,
     required String email,
     required String bio,
     required String link,
@@ -33,12 +34,13 @@ class UserUploader {
               await _uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
 
           // Store user information in Realtime Database
-          await _database                                                     // If both fies were uploaded
+          await _database // If both fies were uploaded
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
             'firstName': firstName,
             'lastName': lastName,
+            'phoneNumber': phoneNum,
             'email': email,
             'bio': bio,
             'link': link,
@@ -49,7 +51,8 @@ class UserUploader {
           });
 
           print('User data uploaded successfully.');
-        } else {                                                            // If picture only provided without the pdf file
+        } else {
+          // If picture only provided without the pdf file
           // Store user information in Realtime Database without PDF URL
           await _database
               .child('speaker_requests')
@@ -57,6 +60,7 @@ class UserUploader {
               .set({
             'firstName': firstName,
             'lastName': lastName,
+            'phoneNumber': phoneNum,
             'email': email,
             'bio': bio,
             'link': link,
@@ -68,7 +72,8 @@ class UserUploader {
 
           print('User data uploaded with only picture.');
         }
-      } else if (pdfFile.existsSync() && pdfFile.lengthSync() > 0) {    // If pdf only provided without the picture
+      } else if (pdfFile.existsSync() && pdfFile.lengthSync() > 0) {
+        // If pdf only provided without the picture
         // Upload PDF file to Firebase Storage
         String pdfDownloadUrl =
             await _uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
@@ -81,6 +86,7 @@ class UserUploader {
             .set({
           'firstName': firstName,
           'lastName': lastName,
+          'phoneNumber': phoneNum,
           'email': email,
           'bio': bio,
           'link': link,
@@ -91,13 +97,15 @@ class UserUploader {
         });
 
         print('User data uploaded with only PDF.');
-      } else {                                            // If none of the files was uploaded
+      } else {
+        // If none of the files was uploaded
         await _database
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
           'firstName': firstName,
           'lastName': lastName,
+          'phoneNumber': phoneNum,
           'email': email,
           'bio': bio,
           'link': link,
@@ -138,17 +146,17 @@ class UserUploader {
   }
 }
 
-
-
 Future<Map<String, dynamic>> getUserInfoByUID(String uid) async {
   final DatabaseReference usersRef = FirebaseDatabase.instance.ref();
 
   try {
-    DatabaseEvent userSnapshot = await usersRef.child('users').child(uid).once();
-    
+    DatabaseEvent userSnapshot =
+        await usersRef.child('users').child(uid).once();
+
     if (userSnapshot.snapshot.value != null) {
-      Map<String, dynamic> userData = Map<String, dynamic>.from(userSnapshot.snapshot.value as Map<String, dynamic>) ;
-      
+      Map<String, dynamic> userData = Map<String, dynamic>.from(
+          userSnapshot.snapshot.value as Map<String, dynamic>);
+
       // Example: Extracting the first name
       String firstName = userData['firstName'];
 
@@ -175,7 +183,3 @@ void main() async {
     print('Error: ${result['message']}');
   }
 }
-
-
-
-

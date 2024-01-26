@@ -85,6 +85,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
         UserUploader userUploader = UserUploader();
         String firstName = firstNameController.text;
         String lastName = lastNameController.text;
+        String phoneNumber = phoneNumberController.text;
         String email = emailController.text;
         File pictureFile = File(_imagePath);
         File pdfFile = File(_filePath);
@@ -93,6 +94,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
             firstName: firstName,
             lastName: lastName,
             email: email,
+            phoneNum: phoneNumber,
             bio: bioController.text,
             link: linkController.text,
             topics: selectedTopics,

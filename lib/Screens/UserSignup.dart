@@ -18,7 +18,6 @@ class UserSignup extends StatefulWidget {
 }
 
 class _UserSignupState extends State<UserSignup> {
-
   // Declare controllers for each text field
   TextEditingController fullNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -36,7 +35,7 @@ class _UserSignupState extends State<UserSignup> {
   String otherRoleText = ''; // Text entered for "Other" role
   bool passwordVisible = true;
   bool confirmPasswordVisible = true;
-  
+
   // Validation status for each text field
   bool isFullNameValid = true;
   bool isLastNameValid = true;
@@ -66,36 +65,41 @@ class _UserSignupState extends State<UserSignup> {
           children: [
             // Header (Logo, Text, Back Button, background)
             Stack(
-              children: [Container(
-            height: 200,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 245, 245, 245),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(100),
-                bottomRight: Radius.circular(100),
-              ),
-            ),
-            child: Container(
-              alignment: Alignment.center,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                     SvgPicture.asset(
-            'assets/speaksy_blue_logo.svg', height: 100, width: 200,),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Register new account',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF212121),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            height: 0,
+              children: [
+                Container(
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 245, 245, 245),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100),
+                      bottomRight: Radius.circular(100),
+                    ),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/speaksy_blue_logo.svg',
+                            height: 100,
+                            width: 200,
                           ),
-                        ),
-                      ]),
-                ),),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Register new account',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF212121),
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w700,
+                              height: 0,
+                            ),
+                          ),
+                        ]),
+                  ),
+                ),
                 Container(
                   height: 200,
                   decoration: const BoxDecoration(
@@ -130,10 +134,10 @@ class _UserSignupState extends State<UserSignup> {
                   focusNode: fullNameFocus,
                   onChanged: (value) {
                     setState(() {
-                        isFullNameValid = formSubmitted
-                            ? value.isNotEmpty
-                            : true; // Only validate if the form is submitted
-                      });
+                      isFullNameValid = formSubmitted
+                          ? value.isNotEmpty
+                          : true; // Only validate if the form is submitted
+                    });
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -155,9 +159,8 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                     labelText: 'First Name*',
                     hintText: 'Enter your first name',
-                    errorText: isFullNameValid
-                        ? null
-                        : 'Please enter your first name',
+                    errorText:
+                        isFullNameValid ? null : 'Please enter your first name',
                     contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
@@ -165,8 +168,8 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                   ),
                   onSubmitted: (_) {
-                      _validateAndSubmitForm();
-                    },
+                    _validateAndSubmitForm();
+                  },
                 ),
               ),
             ),
@@ -179,16 +182,15 @@ class _UserSignupState extends State<UserSignup> {
                   focusNode: lastNameFocus,
                   onChanged: (value) {
                     setState(() {
-                        isLastNameValid = formSubmitted
-                            ? value.isNotEmpty
-                            : true; // Only validate if the form is submitted
-                      });
+                      isLastNameValid = formSubmitted
+                          ? value.isNotEmpty
+                          : true; // Only validate if the form is submitted
+                    });
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: ColorsReference.borderColorGray),
+                          width: 2.0, color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -202,9 +204,8 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                     labelText: 'Last Name*',
                     hintText: 'Enter your last name',
-                    errorText: isLastNameValid
-                        ? null
-                        : 'Please enter your last name',
+                    errorText:
+                        isLastNameValid ? null : 'Please enter your last name',
                     contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
@@ -223,16 +224,15 @@ class _UserSignupState extends State<UserSignup> {
                   focusNode: emailFocus,
                   onChanged: (value) {
                     setState(() {
-                        isEmailValid = formSubmitted
-                            ? value.isNotEmpty
-                            : true; // Only validate if the form is submitted
-                      });
+                      isEmailValid = formSubmitted
+                          ? value.isNotEmpty
+                          : true; // Only validate if the form is submitted
+                    });
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: ColorsReference.borderColorGray),
+                          width: 2.0, color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -246,9 +246,8 @@ class _UserSignupState extends State<UserSignup> {
                     ),
                     labelText: 'Email*',
                     hintText: 'Enter your email',
-                    errorText: isEmailValid
-                        ? null
-                        : 'Please enter a valid email',
+                    errorText:
+                        isEmailValid ? null : 'Please enter a valid email',
                     contentPadding: const EdgeInsets.all(20.0),
                     //prefixText: prefixText,
                     border: OutlineInputBorder(
@@ -267,16 +266,15 @@ class _UserSignupState extends State<UserSignup> {
                   focusNode: phoneNumberFocus,
                   onChanged: (value) {
                     setState(() {
-                        isPhoneNumberValid = formSubmitted
-                            ? value.isNotEmpty
-                            : true; // Only validate if the form is submitted
-                      });
+                      isPhoneNumberValid = formSubmitted
+                          ? value.isNotEmpty
+                          : true; // Only validate if the form is submitted
+                    });
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          width: 2.0,
-                          color: ColorsReference.borderColorGray),
+                          width: 2.0, color: ColorsReference.borderColorGray),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -315,10 +313,10 @@ class _UserSignupState extends State<UserSignup> {
                       obscureText: passwordVisible,
                       onChanged: (value) {
                         setState(() {
-                            isPasswordValid = formSubmitted
-                                ? value.isNotEmpty
-                                : true; // Only validate if the form is submitted
-                          });
+                          isPasswordValid = formSubmitted
+                              ? value.isNotEmpty
+                              : true; // Only validate if the form is submitted
+                        });
                       },
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -342,8 +340,8 @@ class _UserSignupState extends State<UserSignup> {
                         labelText: 'Password*',
                         hintText: 'Enter your password',
                         errorText: isPasswordValid
-                          ? null
-                          : 'Your password should have at least 6 characters',
+                            ? null
+                            : 'Your password should have at least 6 characters',
                         contentPadding: const EdgeInsets.all(20.0),
                         suffixIcon: IconButton(
                           icon: Icon(passwordVisible
@@ -395,7 +393,8 @@ class _UserSignupState extends State<UserSignup> {
                           ),
                           labelText: 'Confirm Password*',
                           hintText: 'Confirm your password',
-                          errorText: confirmPasswordController.text == passwordController.text
+                          errorText: confirmPasswordController.text ==
+                                  passwordController.text
                               ? null
                               : 'Passwords do not match',
                           contentPadding: const EdgeInsets.all(20.0),
@@ -406,7 +405,8 @@ class _UserSignupState extends State<UserSignup> {
                             onPressed: () {
                               setState(
                                 () {
-                                  confirmPasswordVisible = !confirmPasswordVisible;
+                                  confirmPasswordVisible =
+                                      !confirmPasswordVisible;
                                 },
                               );
                             },
@@ -423,90 +423,89 @@ class _UserSignupState extends State<UserSignup> {
             ),
             // Roles drop down field
             Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              child: Column(
-                children: [
-                  Container(
-                    child: DropdownButtonFormField(
-                      items: roles.map((role) {
-                        return DropdownMenuItem(
-                          value: role,
-                          child: Text(role),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedRole = value.toString();
-                        });
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: ColorsReference.borderColorGray),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 2.0,
-                              color: ColorsReference.borderColorGray),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        labelText: 'Role',
-                        hintText: 'Select your role',
-                        contentPadding: const EdgeInsets.all(20.0),
-                        //prefixText: prefixText,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Additional text field for "Other" role
-                  if (selectedRole == 'Other')
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Container(
-                        child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              otherRoleText = value;
-                            });
-                          },
-                          focusNode: otherRoleFocus,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Column(
+                  children: [
+                    Container(
+                      child: DropdownButtonFormField(
+                        items: roles.map((role) {
+                          return DropdownMenuItem(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRole = value.toString();
+                          });
+                        },
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
                                 width: 2.0,
-                                color: ColorsReference.borderColorGray,
-                              ),
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
+                                color: ColorsReference.borderColorGray),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
                                 width: 2.0,
-                                color: isOtherRoleValid
-                                    ? ColorsReference.borderColorGray
-                                    : ColorsReference.errorColorRed,
-                              ),
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                            labelText: 'Other Role*',
-                            hintText: 'Enter your role',
-                            errorText: isOtherRoleValid
-                              ? null
-                              : 'Please enter your role',
-                            contentPadding: const EdgeInsets.all(20.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
+                                color: ColorsReference.borderColorGray),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          labelText: 'Role',
+                          hintText: 'Select your role',
+                          contentPadding: const EdgeInsets.all(20.0),
+                          //prefixText: prefixText,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                       ),
                     ),
-                ],
-              )
-            ),
+                    // Additional text field for "Other" role
+                    if (selectedRole == 'Other')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Container(
+                          child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                otherRoleText = value;
+                              });
+                            },
+                            focusNode: otherRoleFocus,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2.0,
+                                  color: ColorsReference.borderColorGray,
+                                ),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2.0,
+                                  color: isOtherRoleValid
+                                      ? ColorsReference.borderColorGray
+                                      : ColorsReference.errorColorRed,
+                                ),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              labelText: 'Other Role*',
+                              hintText: 'Enter your role',
+                              errorText: isOtherRoleValid
+                                  ? null
+                                  : 'Please enter your role',
+                              contentPadding: const EdgeInsets.all(20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                )),
             // Register button
             Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -514,8 +513,8 @@ class _UserSignupState extends State<UserSignup> {
                   height: 48,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(ColorsReference.darkBlue),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          ColorsReference.darkBlue),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -580,110 +579,113 @@ class _UserSignupState extends State<UserSignup> {
     setState(() {
       isFullNameValid = fullNameController.text.isNotEmpty;
       isLastNameValid = lastNameController.text.isNotEmpty;
-      isEmailValid = emailController.text.isNotEmpty && _isValidEmail(emailController.text);
-      isPhoneNumberValid = phoneNumberController.text.isEmpty || _isValidPhoneNumber(phoneNumberController.text);
-      isPasswordValid = passwordController.text.isNotEmpty && _isPasswordValid(passwordController.text);
-      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty && confirmPasswordController.text == passwordController.text;
+      isEmailValid = emailController.text.isNotEmpty &&
+          _isValidEmail(emailController.text);
+      isPhoneNumberValid = phoneNumberController.text.isEmpty ||
+          _isValidPhoneNumber(phoneNumberController.text);
+      isPasswordValid = passwordController.text.isNotEmpty &&
+          _isPasswordValid(passwordController.text);
+      isConfirmPasswordValid = confirmPasswordController.text.isNotEmpty &&
+          confirmPasswordController.text == passwordController.text;
       isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
 
       // Move focus to the first field with an invalid value
-      if (!isFullNameValid) 
-        FocusScope.of(context).requestFocus(fullNameFocus);
-      if (!isLastNameValid) 
-        FocusScope.of(context).requestFocus(lastNameFocus);
-      if (!isEmailValid) 
-        FocusScope.of(context).requestFocus(emailFocus);
-      if (!isPhoneNumberValid) 
+      if (!isFullNameValid) FocusScope.of(context).requestFocus(fullNameFocus);
+      if (!isLastNameValid) FocusScope.of(context).requestFocus(lastNameFocus);
+      if (!isEmailValid) FocusScope.of(context).requestFocus(emailFocus);
+      if (!isPhoneNumberValid)
         FocusScope.of(context).requestFocus(phoneNumberFocus);
-      if (!isPasswordValid) 
-        FocusScope.of(context).requestFocus(passwordFocus);
-      if (!isConfirmPasswordValid) 
+      if (!isPasswordValid) FocusScope.of(context).requestFocus(passwordFocus);
+      if (!isConfirmPasswordValid)
         FocusScope.of(context).requestFocus(confirmPasswordFocus);
-      String adjustedRole = selectedRole == 'Other' ? '$selectedRole: $otherRoleText' : selectedRole;
-      if (selectedRole.toString() == 'Other' && !isOtherRoleValid) 
+      String adjustedRole = selectedRole == 'Other'
+          ? '$selectedRole: $otherRoleText'
+          : selectedRole;
+      if (selectedRole.toString() == 'Other' && !isOtherRoleValid)
         FocusScope.of(context).requestFocus(otherRoleFocus);
       // Submit the form if all fields are valid
       else {
         FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text
-          )
-          .then((value) {
-            FirebaseDatabase.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text)
+            .then((value) {
+          FirebaseDatabase.instance
               .ref()
               .child("users")
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-              'first name': fullNameController.text,
-              'email': emailController.text,
-              'role': adjustedRole
-            }).then((_) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Congratulations!'),
-                    content: const Text('You have successfully created an account!'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                          Navigator.of(context).push(slidingFromLeft(HomePage()));
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            }).catchError((error) {
-              // Handle database write error
-              print('Error writing to the database: $error');
-              // You can show an error message to the user if needed
-            });
+            'first name': fullNameController.text,
+            'last name': lastNameController.text,
+            'email': emailController.text,
+            'role': adjustedRole,
+          }).then((_) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Congratulations!'),
+                  content:
+                      const Text('You have successfully created an account!'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                        Navigator.of(context).push(slidingFromLeft(HomePage()));
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
           }).catchError((error) {
+            // Handle database write error
+            print('Error writing to the database: $error');
+            // You can show an error message to the user if needed
+          });
+        }).catchError((error) {
           // Handle authentication error
           print('Error creating user: $error');
           // Check if the error is due to the email already being in use
-            if (error.code == 'email-already-in-use') {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Account Exists'),
-                    content: const Text('An account with this email already exists. Please login or use a different email.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else {
-              // You can show a generic error message for other authentication errors
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: const Text('An error occurred. Please try again.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context); // Close the dialog
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
+          if (error.code == 'email-already-in-use') {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Account Exists'),
+                  content: const Text(
+                      'An account with this email already exists. Please login or use a different email.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            // You can show a generic error message for other authentication errors
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text('An error occurred. Please try again.'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
         });
       }
     });
