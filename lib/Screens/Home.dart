@@ -36,6 +36,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String userStatus = "";
+  bool isSpeaker = false; // Flag to check if the user is a speaker
+
   String firstName = "";
 
   final DatabaseReference _speakersRef =
@@ -51,6 +54,25 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     loadUsers();
     _loadSpeakers();
+    checkIfSpeaker();
+  }
+
+  void checkIfSpeaker() async {
+    // Assuming you're using Firebase Authentication
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final snapshot = await _speakersRef.child(user!.uid).once();
+
+    if (snapshot != null) {
+      Map<dynamic, dynamic> userData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      setState(() {
+        userStatus = userData["status"];
+        isSpeaker = true; // User is a speaker
+        print(isSpeaker.toString());
+      });
+    }
   }
 
   Future<void> loadUsers() async {
@@ -137,6 +159,26 @@ class _MyHomePageState extends State<MyHomePage> {
         SizedBox(
           height: 5,
         ),
+        if (userStatus.isNotEmpty && isSpeaker)
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Container(
+                alignment: Alignment.center,
+                width: 400,
+                height: 50,
+                decoration: BoxDecoration(
+                  border: Border.all(color: ColorsReference.borderColorGray),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Text(
+                  "Your request's Status: $userStatus",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )),
         Expanded(
             child: ListView.builder(
                 itemCount: _speakers.length,
@@ -145,109 +187,120 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
                     child: GestureDetector(
-                      onTap: () {
-                        final speakerId = _speakers[index].userID;
-                        Navigator.pushNamed(
-                          context,
-                          '/speaker_profile',
-                          arguments: speakerId,
-                        );
-                        // Handle box click, you can navigate to another screen or perform an action
-                        print('Name clicked: ${_speakers[index].firstName}');
-                      },
-                      child: Container(
-                        height: 144,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: ColorsReference.borderColorGray),
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                                width: double.maxFinite,
-                                height: 80,
-                                margin: EdgeInsets.only(left: 20, bottom: 5),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: ColorsReference.borderColorGray,
+                        onTap: () {
+                          final speakerId = _speakers[index].userID;
+                          Navigator.pushNamed(
+                            context,
+                            '/speaker_profile',
+                            arguments: speakerId,
+                          );
+                          // Handle box click, you can navigate to another screen or perform an action
+                          print('Name clicked: ${_speakers[index].firstName}');
+                        },
+                        child: Container(
+                          height: 144,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: ColorsReference.borderColorGray),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                  width: double.maxFinite,
+                                  height: 80,
+                                  margin: EdgeInsets.only(left: 20, bottom: 5),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: ColorsReference.borderColorGray,
+                                      ),
                                     ),
+                                    color: Color.fromARGB(255, 255, 255, 255),
                                   ),
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                ),
-                                child: Row(
-                                    // Circle at the far left
+                                  child: Row(
+                                      // Circle at the far left
+                                      children: [
+                                        ClipOval(
+                                          child: Container(
+                                            height: 65,
+                                            width: 65,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: ColorsReference
+                                                      .borderColorGray),
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  _speakers[index].pictureUrl,
+                                              placeholder: (context, url) =>
+                                                  CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                          '${_speakers[index].firstName} ${_speakers[index].lastName}',
+                                          style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ])),
+                              // Name in the center
+
+                              Padding(
+                                  padding: EdgeInsets.only(top: 5, left: 20),
+                                  child: Row(
                                     children: [
-                                      ClipOval(
-                                        child: Container(
-                                          height: 65,
-                                          width: 65,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: ColorsReference
-                                                    .borderColorGray),
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                _speakers[index].pictureUrl,
-                                            placeholder: (context, url) =>
-                                                CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
-                                            fit: BoxFit.cover,
-                                          ),
+                                      SvgPicture.asset(
+                                        "assets/hashtag_icon.svg",
+                                        height: 15,
+                                        width: 15,
+                                        color: Colors.black,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'Topics',
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 108, 108, 108),
+                                          fontSize: 15,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 20,
                                       ),
-                                      Text(
-                                        '${_speakers[index].firstName} ${_speakers[index].lastName}',
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ])),
-                            // Name in the center
-
-                            Padding(
-                                padding: EdgeInsets.only(top: 5, left: 20),
-                                child: Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/hashtag_icon.svg",
-                                      height: 15,
-                                      width: 15,
-                                      color: Colors.black,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Topics',
-                                      style: TextStyle(
-                                        color: const Color.fromARGB(
-                                            255, 108, 108, 108),
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Wrap(spacing: 8.0,children: _speakers[index].topics.map((topic) => Chip(label: Text(topic, style: TextStyle(fontSize: 12),))).toList()),
-                                  ],
-                                ))
-                          ],
-                        ),
-                      ),
-                    ),
+                                      Wrap(
+                                          spacing: 8.0,
+                                          children: _speakers[index]
+                                              .topics
+                                              .map((topic) => Chip(
+                                                      label: Text(
+                                                    topic,
+                                                    style:
+                                                        TextStyle(fontSize: 12),
+                                                  )))
+                                              .toList()),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        )),
                   );
                 })),
       ]),
