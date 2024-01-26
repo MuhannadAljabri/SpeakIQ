@@ -37,7 +37,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   String pdfUrl = "";
   String pictureUrl = "";
   String bio = "";
-
+  late List<String> topics;
+  late List<String> languages;
 
   Future<Map<dynamic, dynamic>?> getSpeaker() async {
     try {
@@ -77,6 +78,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               link = speakerInfo['link'];
               pdfUrl = speakerInfo['pdfUrl'];
               bio = speakerInfo['bio'];
+              topics = List.from(speakerInfo['topics']);
+              languages = List.from(speakerInfo['languages']);
               return content();
             }
           },
@@ -225,8 +228,35 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                     ),
                       SizedBox(height: 10.0),
                     Row(
-                      children: buildTopicWidgets(),
+                      children: buildItemWidgets(topics),
                     )
+                    ]
+                )
+              ],
+            ),
+            SizedBox(height: 16.0), // Adjust the space between rows
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(40.0),
+                  child: SvgPicture.asset(
+                    'assets/topic_icon.svg',),
+                ),
+                const SizedBox(width: 16.0),
+                Column(crossAxisAlignment: CrossAxisAlignment.start,
+                    children:[
+                      const Text(
+                        'Languages',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Row(
+                        children: buildItemWidgets(languages),
+                      )
                     ]
                 )
               ],
@@ -358,22 +388,22 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     return filePath;
   }
 
-  List<Widget> buildTopicWidgets() {
-    int count = 1;
+  List<Widget> buildItemWidgets(List<String>items) {
+
     List<Widget> textWidgets = [];
 
-    for (int i = 0; i < count; i++) {
+    for (var item in items) {
       textWidgets.add(
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 8), // Adjust margin as needed
+          margin: const EdgeInsets.symmetric(horizontal: 4), // Adjust margin as needed
           decoration: BoxDecoration(
             color: ColorsReference.lightBlue, // Adjust color as needed
             borderRadius: BorderRadius.circular(36), // Adjust border radius as needed
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(6), // Adjust padding as needed
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12,4,12,4), // Adjust padding as needed
             child: Text(
-              'Entrepreneurship',
+              item,
               style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
             ),
           ),
