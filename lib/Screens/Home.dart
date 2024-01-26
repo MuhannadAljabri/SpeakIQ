@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +12,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 class Speaker {
   final String userID;
   final String firstName;
+  final String lastName;
+  final List<String> topics;
+  final List<String> languages;
+
   final String pictureUrl;
 
-  Speaker(this.userID, this.firstName, this.pictureUrl);
+  Speaker(this.userID, this.firstName, this.pictureUrl, this.lastName,
+      this.topics, this.languages);
 }
 
 class HomePage extends StatelessWidget {
@@ -29,17 +36,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> names = ['John', 'Jane', 'Bob', 'Alice'];
+  String firstName = "";
 
   final DatabaseReference _speakersRef =
       FirebaseDatabase.instance.ref().child('speaker_requests');
+
+  final DatabaseReference _userssRef =
+      FirebaseDatabase.instance.ref().child('users');
 
   List<Speaker> _speakers = [];
 
   @override
   void initState() {
     super.initState();
+    loadUsers();
     _loadSpeakers();
+  }
+
+  Future<void> loadUsers() async {
+    GetUserInfo try1 = GetUserInfo();
+    firstName = await try1.loadUserInfo();
   }
 
   Future<void> _loadSpeakers() async {
@@ -51,10 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     if (data != null) {
       data.forEach((key, value) {
         speakers.add(Speaker(
-          key, // userID
-          value['firstName'] ?? '',
-          value['pictureUrl'] ?? '',
-        ));
+            key, // userID
+            value['firstName'] ?? '',
+            value['pictureUrl'] ?? '',
+            value['lastName'] ?? '',
+            List<String>.from(value['topics']),
+            List<String>.from(value['languages'])));
       });
     }
 
@@ -69,6 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         title: Text.rich(
           TextSpan(
             children: [
@@ -76,26 +96,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: 'Good day,\n ',
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.5),
-                  fontSize: 15,
+                  fontSize: 12,
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
-                  height: 0,
+                  height: 2,
                 ),
               ),
               TextSpan(
-                text: 'John',
+                text: firstName,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 23,
+                  fontSize: 18,
                   fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w300,
+                  fontWeight: FontWeight.w500,
                   height: 0,
                 ),
               ),
             ],
           ),
         ),
-        toolbarHeight: 100,
+        toolbarHeight: 75,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: [
@@ -115,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(children: [
         SizedBox(
-          height: 15,
+          height: 5,
         ),
         Expanded(
             child: ListView.builder(
@@ -126,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         vertical: 10, horizontal: 20),
                     child: GestureDetector(
                       onTap: () {
-                         final speakerId = _speakers[index].userID;
+                        final speakerId = _speakers[index].userID;
                         Navigator.pushNamed(
                           context,
                           '/speaker_profile',
@@ -143,53 +163,87 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Row(
+                        child: Column(
                           children: [
-                            // Circle at the far left
                             Container(
-                              width: 70,
-                              height: 70,
-                              margin: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: ColorsReference.borderColorGray),
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                shape: BoxShape.circle,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(30.0),
-                                child: Container(
-                                    height: 70,
-                                    width: 70,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                    color: ColorsReference.borderColorGray),
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                shape: BoxShape.circle,
+                                width: double.maxFinite,
+                                height: 80,
+                                margin: EdgeInsets.only(left: 20, bottom: 5),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: ColorsReference.borderColorGray,
                                     ),
-                                    child: CachedNetworkImage(
-                                imageUrl: _speakers[index].pictureUrl,
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                                fit: BoxFit.cover,
-                              ),),
-                              )
-                            ),
-                            // Name in the center
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  _speakers[index].firstName,
-                                  style: TextStyle(
-                                    color: const Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
                                   ),
+                                  color: Color.fromARGB(255, 255, 255, 255),
                                 ),
-                              ),
-                            ),
+                                child: Row(
+                                    // Circle at the far left
+                                    children: [
+                                      ClipOval(
+                                        child: Container(
+                                          height: 71,
+                                          width: 71,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: ColorsReference
+                                                    .borderColorGray),
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                _speakers[index].pictureUrl,
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        '${_speakers[index].firstName} ${_speakers[index].lastName}',
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 0, 0, 0),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ])),
+                            // Name in the center
+
+                            Padding(
+                                padding: EdgeInsets.only(top: 5, left: 20),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/hashtag_icon.svg",
+                                      height: 15,
+                                      width: 15,
+                                      color: Colors.black,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Topics',
+                                      style: TextStyle(
+                                        color: const Color.fromARGB(
+                                            255, 108, 108, 108),
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    Wrap(spacing: 8.0,children: _speakers[index].topics.map((topic) => Chip(label: Text(topic, style: TextStyle(fontSize: 12),))).toList()),
+                                  ],
+                                ))
                           ],
                         ),
                       ),

@@ -614,10 +614,9 @@ class _UserSignupState extends State<UserSignup> {
               .child("users")
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-            'first name': fullNameController.text,
-            'last name': lastNameController.text,
+            'firstName': fullNameController.text,
             'email': emailController.text,
-            'role': adjustedRole,
+            'role': adjustedRole
           }).then((_) {
             showDialog(
               context: context,
@@ -631,7 +630,11 @@ class _UserSignupState extends State<UserSignup> {
                       child: Text('OK'),
                       onPressed: () {
                         Navigator.pop(context); // Close the dialog
-                        Navigator.of(context).push(slidingFromLeft(HomePage()));
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home', // This will clear the navigation stack
+                          (Route<dynamic> route) => false,
+                        );
                       },
                     ),
                   ],

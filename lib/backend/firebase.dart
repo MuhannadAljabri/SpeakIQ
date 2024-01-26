@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+// The following class is for uploading speakers info to firebase storage and firebase database
+
 class UserUploader {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
   final Reference _storageRoot = FirebaseStorage.instance.ref();
@@ -146,40 +148,66 @@ class UserUploader {
   }
 }
 
-Future<Map<String, dynamic>> getUserInfoByUID(String uid) async {
-  final DatabaseReference usersRef = FirebaseDatabase.instance.ref();
+final DatabaseReference _userssRef =
+    FirebaseDatabase.instance.ref().child('users');
 
-  try {
-    DatabaseEvent userSnapshot =
-        await usersRef.child('users').child(uid).once();
+final DatabaseReference _speakersRef =
+    FirebaseDatabase.instance.ref().child('speaker_requests');
 
-    if (userSnapshot.snapshot.value != null) {
-      Map<String, dynamic> userData = Map<String, dynamic>.from(
-          userSnapshot.snapshot.value as Map<String, dynamic>);
+class Speaker {
+  final String userID;
+  final String firstName;
+  final String pictureUrl;
 
-      // Example: Extracting the first name
-      String firstName = userData['firstName'];
+  Speaker(this.userID, this.firstName, this.pictureUrl);
+}
 
-      return {'success': true, 'userData': userData, 'firstName': firstName};
-    } else {
-      return {'success': false, 'message': 'User not found'};
-    }
-  } catch (error) {
-    print('Error fetching user info: $error');
-    return {'success': false, 'message': 'Error fetching user info'};
+List<Speaker> _speakers = [];
+
+Future<void> _loadSpeakers() async {
+  final snapshot = await _speakersRef.once();
+  List<Speaker> speakers = [];
+
+  Map<dynamic, dynamic> data = snapshot.snapshot.value as Map<dynamic, dynamic>;
+  if (data != null) {
+    data.forEach((key, value) {
+      speakers.add(Speaker(
+        key, // userID
+        value['firstName'] ?? '',
+        value['pictureUrl'] ?? '',
+      ));
+    });
   }
 }
 
-void main() async {
-  // Replace 'your_uid_here' with the actual UID you want to retrieve
-  String uid = FirebaseAuth.instance.currentUser!.uid;
+// Get the user information from Firebase Database
 
-  Map<String, dynamic> result = await getUserInfoByUID(uid);
+class GetUserInfo {
+  String firstName = "";
 
-  if (result['success']) {
-    print('User Data: ${result['userData']}');
-    print('First Name: ${result['firstName']}');
-  } else {
-    print('Error: ${result['message']}');
+  Future<bool> isUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final snapshot = await _userssRef.child(user!.uid).once();
+    return snapshot.snapshot.value != null;
+  }
+
+  Future<String> loadUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (await isUser()) {
+      final snapshot = await _userssRef.child(user!.uid).once();
+      Map<dynamic, dynamic> userData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      firstName = userData["firstName"];
+
+      return firstName;
+    } else {
+      final snapshot = await _speakersRef.child(user!.uid).once();
+      Map<dynamic, dynamic> userData =
+          snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      firstName = userData["firstName"];
+      return firstName;
+    }
   }
 }

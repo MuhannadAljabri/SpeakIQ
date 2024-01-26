@@ -120,7 +120,11 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                   child: Text('OK'),
                   onPressed: () {
                     Navigator.pop(context); // Close the dialog
-                    Navigator.of(context).push(slidingFromLeft(HomePage()));
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/home', // This will clear the navigation stack
+                      (Route<dynamic> route) => false,
+                    );
                   },
                 ),
               ],
