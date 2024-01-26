@@ -90,6 +90,8 @@ flutter:
     - assets/link_icon.png
     - assets/sheet_icon.png
     - assets/topic_icon.png
+    - assets/role_icon.svg
+    - assets/hashtag_icon.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

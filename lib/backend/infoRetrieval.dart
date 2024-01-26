@@ -1,0 +1,1 @@
+// This file is to move any function for speaker or user info retrieval here
