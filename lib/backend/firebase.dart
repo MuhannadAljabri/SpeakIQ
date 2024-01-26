@@ -50,6 +50,7 @@ class UserUploader {
             'languages': languages,
             'pictureUrl': pictureDownloadUrl,
             'pdfUrl': pdfDownloadUrl,
+            'status': 'pending'
           });
 
           print('User data uploaded successfully.');
@@ -69,7 +70,9 @@ class UserUploader {
             'topics': topics,
             'languages': languages,
             'pictureUrl': pictureDownloadUrl,
-            'pdfUrl': 'Not provided'
+            'pdfUrl': 'Not provided',
+                        'status': 'pending'
+
           });
 
           print('User data uploaded with only picture.');
@@ -96,6 +99,8 @@ class UserUploader {
           'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': pdfDownloadUrl,
+                      'status': 'pending'
+
         });
 
         print('User data uploaded with only PDF.');
@@ -115,6 +120,8 @@ class UserUploader {
           'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': 'Not provided',
+                      'status': 'pending'
+
         });
         print(
             'Both picture and PDF files are empty or do not exist. Aborting upload.');

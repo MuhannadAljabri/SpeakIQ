@@ -182,8 +182,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     children: [
                                       ClipOval(
                                         child: Container(
-                                          height: 71,
-                                          width: 71,
+                                          height: 65,
+                                          width: 65,
                                           decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: ColorsReference
