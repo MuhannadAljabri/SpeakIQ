@@ -617,6 +617,7 @@ class _UserSignupState extends State<UserSignup> {
             'firstName': fullNameController.text,
             'last name': lastNameController.text,
             'email': emailController.text,
+            'phoneNumber': phoneNumberController.text,
             'role': adjustedRole
           }).then((_) {
             showDialog(

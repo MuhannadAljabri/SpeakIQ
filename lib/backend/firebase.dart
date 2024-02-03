@@ -10,11 +10,10 @@ class UserUploader {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
   final Reference _storageRoot = FirebaseStorage.instance.ref();
 
-  Future<void> uploadUserData({
+  Future<void> uploadSpeakerInfo
+  ({
     required String firstName,
     required String lastName,
-    required String phoneNum,
-    required String email,
     required String bio,
     required String link,
     required File picture,
@@ -40,10 +39,7 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-            'firstName': firstName,
-            'lastName': lastName,
-            'phoneNumber': phoneNum,
-            'email': email,
+           
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -61,10 +57,7 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-            'firstName': firstName,
-            'lastName': lastName,
-            'phoneNumber': phoneNum,
-            'email': email,
+            
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -90,9 +83,7 @@ class UserUploader {
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
           'firstName': firstName,
-          'lastName': lastName,
-          'phoneNumber': phoneNum,
-          'email': email,
+            'lastName': lastName,
           'bio': bio,
           'link': link,
           'topics': topics,
@@ -110,10 +101,8 @@ class UserUploader {
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
-          'firstName': firstName,
-          'lastName': lastName,
-          'phoneNumber': phoneNum,
-          'email': email,
+              'firstName': firstName,
+            'lastName': lastName,
           'bio': bio,
           'link': link,
           'topics': topics,
@@ -129,6 +118,9 @@ class UserUploader {
     } catch (error) {
       print('Error uploading user data: $error');
     }
+
+
+
   }
 
   // funcrion to upload the image or pdf file to firebase storage
@@ -153,6 +145,30 @@ class UserUploader {
       rethrow; // Rethrow the error to handle it in the calling function
     }
   }
+
+    Future<void> uploadUserInfo({
+    required String firstName,
+    required String lastName,
+    required String phoneNum,
+    required String email,
+  }) async {
+    
+       await _database // If both fies were uploaded
+              .child('users')
+              .child(FirebaseAuth.instance.currentUser!.uid)
+              .set({
+            'firstName': firstName,
+            'lastName': lastName,
+            'phoneNumber': phoneNum,
+            'email': email,
+            'role': 'pending speaker approval'
+          });
+      
+
+
+    }
+
+
 }
 
 final DatabaseReference _userssRef =

@@ -41,6 +41,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String firstName = "";
 
+  User? user = FirebaseAuth.instance.currentUser;
+
+
   final DatabaseReference _speakersRef =
       FirebaseDatabase.instance.ref().child('speaker_requests');
 
@@ -59,18 +62,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void checkIfSpeaker() async {
     // Assuming you're using Firebase Authentication
-    User? user = FirebaseAuth.instance.currentUser;
 
-    final snapshot = await _speakersRef.child(user!.uid).once();
+    final speakerSnapshot = await _speakersRef.child(user!.uid).once();
+    final userSnapshot = await _userssRef.child(user!.uid).once();
 
-    if (snapshot != null) {
+
+    if (speakerSnapshot != null) {
+
+      Map<dynamic, dynamic> speakerData =
+          speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
       Map<dynamic, dynamic> userData =
-          snapshot.snapshot.value as Map<dynamic, dynamic>;
+          userSnapshot.snapshot.value as Map<dynamic, dynamic>;
 
       setState(() {
-        userStatus = userData["status"];
+        userStatus = speakerData["status"];
         isSpeaker = true; // User is a speaker
-        print(isSpeaker.toString());
+        print('${isSpeaker.toString()}, ${userData['firstName']}');
       });
     }
   }
@@ -81,20 +89,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _loadSpeakers() async {
-    final snapshot = await _speakersRef.once();
+    final speakerSnapshot = await _speakersRef.once();
+    final userSnapshot = await _userssRef.child(user!.uid).once();
+    
     List<Speaker> speakers = [];
 
-    Map<dynamic, dynamic> data =
-        snapshot.snapshot.value as Map<dynamic, dynamic>;
-    if (data != null) {
-      data.forEach((key, value) {
+    Map<dynamic, dynamic> speakerData =
+        speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+    Map<dynamic, dynamic> userData =
+        userSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+    if (speakerData != null) {
+      speakerData.forEach((key, value) {
+        if (value['status'] == 'pending'){ //Change to approved when the app is ready
         speakers.add(Speaker(
             key, // userID
-            value['firstName'] ?? '',
+             userData['firstName']?? '',
             value['pictureUrl'] ?? '',
-            value['lastName'] ?? '',
+            userData['lastName'] ?? '',
             List<String>.from(value['topics']),
-            List<String>.from(value['languages'])));
+            List<String>.from(value['languages'])));}
       });
     }
 

@@ -90,11 +90,10 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
         File pictureFile = File(_imagePath);
         File pdfFile = File(_filePath);
         // Upload the speaker information to the database
-        await userUploader.uploadUserData(
+        await userUploader.uploadUserInfo(firstName: firstName, lastName: lastName, phoneNum: phoneNumber, email: email);
+        await userUploader.uploadSpeakerInfo(
             firstName: firstName,
             lastName: lastName,
-            email: email,
-            phoneNum: phoneNumber,
             bio: bioController.text,
             link: linkController.text,
             topics: selectedTopics,
