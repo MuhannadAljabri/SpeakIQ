@@ -42,6 +42,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
 
   Future<Map<dynamic, dynamic>?> getSpeaker() async {
     try {
+      print(speakerId);
       final snapshot = await FirebaseDatabase.instance
           .ref('speaker_requests')
           .child(speakerId)

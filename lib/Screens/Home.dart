@@ -41,7 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String firstName = "";
 
-  User? user = FirebaseAuth.instance.currentUser;
 
 
   final DatabaseReference _speakersRef =
@@ -62,6 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void checkIfSpeaker() async {
     // Assuming you're using Firebase Authentication
+
+      User? user = FirebaseAuth.instance.currentUser;
+
 
     final speakerSnapshot = await _speakersRef.child(user!.uid).once();
     final userSnapshot = await _userssRef.child(user!.uid).once();
@@ -89,6 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _loadSpeakers() async {
+    
+      User? user = FirebaseAuth.instance.currentUser;
+
     final speakerSnapshot = await _speakersRef.once();
     final userSnapshot = await _userssRef.child(user!.uid).once();
     
@@ -277,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               // Name in the center
 
                               Padding(
-                                  padding: EdgeInsets.only(top: 5, left: 20),
+                                  padding: EdgeInsets.only(top: 10, left: 20),
                                   child: Row(
                                     children: [
                                       SvgPicture.asset(
@@ -300,17 +305,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       SizedBox(
                                         width: 20,
                                       ),
-                                      Wrap(
-                                          spacing: 8.0,
-                                          children: _speakers[index]
-                                              .topics
-                                              .map((topic) => Chip(
-                                                      label: Text(
-                                                    topic,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  )))
-                                              .toList()),
+
+                                      Row(children: buildItemWidgets(_speakers[index].topics))
+                                         
                                     ],
                                   ))
                             ],
@@ -322,3 +319,30 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+List<Widget> buildItemWidgets(List<String>items) {
+
+    List<Widget> textWidgets = [];
+
+    for (var item in items) {
+      textWidgets.add(
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4), // Adjust margin as needed
+          decoration: BoxDecoration(
+            color: ColorsReference.lightBlue, // Adjust color as needed
+            borderRadius: BorderRadius.circular(36), // Adjust border radius as needed
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12,4,12,4), // Adjust padding as needed
+            child: Text(
+              item,
+              style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
+            ),
+          ),
+        ),
+      );
+    }
+
+    return textWidgets;
+  }
+
