@@ -355,6 +355,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   Future<String> downloadFile() async {
     String myUrl = pdfUrl;
     String filePath = '';
+    String fileName = 'speaker_sheet_${firstName}_$lastName.pdf';
 
     if(Platform.isIOS) {
               Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -369,7 +370,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
       final taskId = await FlutterDownloader.enqueue(
         url: pdfUrl,
         savedDir: filePath,
-        fileName: 'speaker_sheet_${firstName}_$lastName.pdf',
+        fileName: fileName,
         showNotification: true, // Set to true to show a download notification
         openFileFromNotification: true,
       );
@@ -382,7 +383,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             label: 'Open',
             onPressed: () async {
               // Open the downloaded file in the Files app
-              await OpenFile.open("${filePath}123speaker_sheet_${firstName}_$lastName.pdf");
+              await OpenFile.open("${filePath}${fileName}");
             },
           ),
         ),
