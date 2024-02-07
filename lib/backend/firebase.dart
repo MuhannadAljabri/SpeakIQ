@@ -26,13 +26,13 @@ class UserUploader {
       if (picture.existsSync() && picture.lengthSync() > 0) {
         // Upload picture to Firebase Storage
         String pictureDownloadUrl =
-            await _uploadFile(picture, 'profile_pics', firstName, lastName);
+            await uploadFile(picture, 'profile_pics', firstName, lastName);
 
         // Check if pdf file exists and is not empty
         if (pdfFile.existsSync() && pdfFile.lengthSync() > 0) {
           // Upload PDF file to Firebase Storage
           String pdfDownloadUrl =
-              await _uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
+              await uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
 
           // Store user information in Realtime Database
           await _database // If both fies were uploaded
@@ -64,7 +64,7 @@ class UserUploader {
             'languages': languages,
             'pictureUrl': pictureDownloadUrl,
             'pdfUrl': 'Not provided',
-                        'status': 'pending'
+            'status': 'pending'
 
           });
 
@@ -74,7 +74,7 @@ class UserUploader {
         // If pdf only provided without the picture
         // Upload PDF file to Firebase Storage
         String pdfDownloadUrl =
-            await _uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
+            await uploadFile(pdfFile, 'speaker_sheets', firstName, lastName);
 
         print('Picture file is empty or does not exist. Uploading only PDF.');
         // Store user information in Realtime Database without picture URL
@@ -90,7 +90,7 @@ class UserUploader {
           'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': pdfDownloadUrl,
-                      'status': 'pending'
+          'status': 'pending'
 
         });
 
@@ -118,14 +118,10 @@ class UserUploader {
     } catch (error) {
       print('Error uploading user data: $error');
     }
-
-
-
   }
 
-  // funcrion to upload the image or pdf file to firebase storage
-  Future<String> _uploadFile(File file, String storageFolder, String firstName,
-      String lastName) async {
+  // function to upload the image or pdf file to firebase storage
+  Future<String> uploadFile(File file, String storageFolder, String firstName, String lastName) async {
     try {
       if (storageFolder == 'speaker_sheets') {
         String fileName = file!.path.split('.').last;
@@ -205,8 +201,62 @@ Future<void> _loadSpeakers() async {
 
 // Get the user information from Firebase Database
 
+class UserData {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phoneNumber;
+  final String role;
+  //final String otherRole;
+
+  UserData({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phoneNumber,
+    required this.role,
+    //required this.otherRole,
+  });
+}
+
+class SpeakerData {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phoneNumber;
+  final String role;
+  //final String otherRole;
+  final String bio;
+  final String link;
+  final String pdfUrl;
+  final String pictureUrl;
+  final String status;
+  final List<String> languages;
+  final List<String> topics;
+
+  SpeakerData({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phoneNumber,
+    required this.role,
+    //required this.otherRole,
+    required this.bio,
+    required this.link,
+    required this.pdfUrl,
+    required this.pictureUrl,
+    required this.status,
+    required this.languages,
+    required this.topics,
+  });
+}
+
 class GetUserInfo {
   String firstName = "";
+  String lastName = "";
+  String email = "";
+  String phoneNumber = "";
+  String role = "";
 
   Future<bool> isUser() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -232,6 +282,89 @@ class GetUserInfo {
       firstName = userData["firstName"];
       return firstName;
     }
+  }
+
+  Future<UserData> loadUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final snapshot = await _userssRef.child(user!.uid).once();
+    Map<dynamic, dynamic> userData = snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+    // Extract user information from the retrieved data
+    String firstName = userData['firstName'] ?? '';
+    String lastName = userData['lastName'] ?? '';
+    String email = userData['email'] ?? '';
+    String phoneNumber = userData['phoneNumber'] ?? '';
+    String role = userData['role'] ?? '';
+    //String otherRole = userData['otherRole'] ?? ';
+
+    // Create a UserData object with the extracted information
+    UserData userInfo = UserData(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      role: role,
+      //otherRole: otherRole,
+    );
+
+    return userInfo;
+  }
+}
+
+class GetSpeakerInfo {
+  String firstName = "";
+  String lastName = "";
+  String email = "";
+  String phoneNumber = "";
+  String role = "";
+  String bio = "";
+  String link = "";
+  String pdfUrl = "";
+  String pictureUrl = "";
+  String status = "";
+  List<String> languages = [];
+  List<String> topics = [];
+
+  Future<SpeakerData> loadSpeaker() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userSnapshot = await _userssRef.child(user!.uid).once();
+    Map<dynamic, dynamic> userData = userSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+    final speakerSnapshot = await _speakersRef.child(user!.uid).once();
+    Map<dynamic, dynamic> speakerData = speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+    // Extract user information from the retrieved data
+    String firstName = userData['firstName'] ?? '';
+    String lastName = userData['lastName'] ?? '';
+    String email = userData['email'] ?? '';
+    String phoneNumber = userData['phoneNumber'] ?? '';
+    String role = userData['role'] ?? '';
+    //String otherRole = userData['otherRole'] ?? ';
+    String bio = speakerData['bio'] ?? '';
+    String link = speakerData['link'] ?? '';
+    String pdfUrl = speakerData['pdfUrl'] ?? '';
+    String pictureUrl = speakerData['pictureUrl'] ?? '';
+    String status = speakerData['status'] ?? '';
+    List<String> languages = List<String>.from(speakerData['languages'] ?? []);
+    List<String> topics = List<String>.from(speakerData['topics'] ?? []);
+
+    // Create a UserData object with the extracted information
+    SpeakerData speakerInfo = SpeakerData(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      role: role,
+      //otherRole: otherRole,
+      bio: bio,
+      link: link,
+      pdfUrl: pdfUrl,
+      pictureUrl: pictureUrl,
+      status: status,
+      languages: languages,
+      topics: topics,
+    );
+    return speakerInfo;
   }
 }
 
