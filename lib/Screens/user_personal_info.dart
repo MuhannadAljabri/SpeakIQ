@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:speak_iq/Screens/change_password.dart';
+import '../backend/firebase.dart';
 import '../Style/route_animation.dart';
 import '../Style/colors.dart';
 
@@ -11,6 +14,11 @@ class UserPersonalInfo extends StatefulWidget {
 }
 
 class UserPersonalInfoState extends State<UserPersonalInfo> {
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
   
   List<String> roles = [
       'Event Planner',
@@ -19,10 +27,102 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
     ];
   String selectedRole = 'None'; // Original role
   String otherRoleText = ''; // Text entered for "Other" role
+  bool hasChanges = false;
 
+  // Validation status for each text field
+  bool isFirstNameValid = true;
+  bool isLastNameValid = true;
+  bool isPhoneNumberValid = true;
   bool isOtherRoleValid = true;
 
   bool formSubmitted = false;
+
+  FocusNode firstNameFocus = FocusNode();
+  FocusNode lastNameFocus = FocusNode();
+  FocusNode phoneNumberFocus = FocusNode();
+  FocusNode otherRoleFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    loadData(); // Load data when the widget is initialized
+  }
+
+  Future<void> loadData() async {
+    await getUser(); // Load user info
+    setState(() {
+      // Set the state to update the UI
+    });
+  }
+
+  Future<void> getUser() async {
+    GetUserInfo userInfoGetter = GetUserInfo();
+    UserData user = await userInfoGetter.loadUser();
+    setState(() {
+      firstNameController.text = user.firstName;
+      lastNameController.text = user.lastName;
+      emailController.text = user.email;
+      phoneNumberController.text = user.phoneNumber;
+      // if (user.role.startsWith('Other: ')){
+
+      // }
+      selectedRole = user.role;
+    });
+  }
+
+  Future<void> updateUser() async {
+
+    setState(() {
+      formSubmitted = true;
+      isFirstNameValid = firstNameController.text.isNotEmpty;
+      isLastNameValid = lastNameController.text.isNotEmpty;
+      isPhoneNumberValid = phoneNumberController.text.isEmpty ||
+        _isValidPhoneNumber(phoneNumberController.text);
+      isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
+      
+      // Maintain focus on the field with an empty value
+      if (!isFirstNameValid) {
+        FocusScope.of(context).requestFocus(firstNameFocus);
+      } else if (!isLastNameValid) {
+        FocusScope.of(context).requestFocus(lastNameFocus);
+      } else if (!isPhoneNumberValid) {
+        FocusScope.of(context).requestFocus(phoneNumberFocus);
+      } else if (selectedRole == 'Other' && !isOtherRoleValid) {
+        FocusScope.of(context).requestFocus(otherRoleFocus);
+      }
+      // Call a method to update user information in Firebase
+      else {
+        String adjustedRole = selectedRole == 'Other' ? '$selectedRole: $otherRoleText' : selectedRole;
+        FirebaseDatabase.instance
+          .ref()
+          .child("users")
+          .child(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+            'firstName': firstNameController.text,
+            'lastName': lastNameController.text,
+            //'email': emailController.text,
+            'phoneNumber': phoneNumberController.text,
+            'role': adjustedRole
+          });
+        // Show a dialog if update is successful
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Update Successful'),
+            content: const Text('Your information has been updated.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +151,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
           centerTitle: true,
           actions: [
             TextButton(
-              onPressed: () {
-                // Handle save button click
-              },
+              onPressed: hasChanges ? updateUser : null,
               child: const Text(
                 'Save',
                 style: TextStyle(
@@ -71,28 +169,41 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                //controller: firstNameController,
-                readOnly: true,
+                controller: firstNameController,
+                focusNode: firstNameFocus,
+                onChanged: (value) {
+                  setState(() {
+                    hasChanges = true;
+                    isFirstNameValid = value.isNotEmpty;
+                  });
+                },
+                //readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'First Name',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: 'Dan',
+                  hintText: 'Enter your first name',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
                     color: ColorsReference.textColorBlack, 
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(30),                    
-                  ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
+                    borderSide: BorderSide(
+                        width: 2.0,
+                        color: isFirstNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       width: 2.0,
+                      color: isFirstNameValid
+                          ? ColorsReference.borderColorGray
+                          : ColorsReference.errorColorRed,
                     ),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  errorText:
+                    isFirstNameValid ? null : 'Please enter your first name',
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
@@ -102,28 +213,41 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                //controller: lastNameController,
-                readOnly: true,
+                controller: lastNameController,
+                focusNode: lastNameFocus,
+                onChanged: (value) {
+                  setState(() {
+                    hasChanges = true;
+                    isLastNameValid = value.isNotEmpty; 
+                  });
+                },
+                // readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Last Name',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: 'John',
+                  hintText: 'Enter your last name',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
                     color: ColorsReference.textColorBlack, 
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(30),                    
-                  ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
+                    borderSide: BorderSide(
+                        width: 2.0,
+                        color: isLastNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       width: 2.0,
+                      color: isLastNameValid
+                          ? ColorsReference.borderColorGray
+                          : ColorsReference.errorColorRed,
                     ),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  errorText:
+                    isLastNameValid ? null : 'Please enter your last name',
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
@@ -133,12 +257,13 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                //controller: emailController,
+                style: const TextStyle(color: ColorsReference.textColorBlack),
+                controller: emailController,
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: 'john@mail.com',
+                  hintText: 'You are not alllowed to change your email address',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
                     color: ColorsReference.textColorBlack,
@@ -164,28 +289,41 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                //controller: phoneNumberController,
+                controller: phoneNumberController,
+                focusNode: phoneNumberFocus,
+                onChanged: (value) {
+                  setState(() {
+                    hasChanges = true;
+                    isPhoneNumberValid = value.isEmpty || _isValidPhoneNumber(value);
+                  });
+                },
                 //readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Phone number',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: '+1 1234567890',
+                  hintText: 'Enter your phone number',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
                     color: ColorsReference.textColorBlack,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(30),                    
-                  ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: ColorsReference.borderColorGray,
+                    borderSide: BorderSide(
+                        width: 2.0,
+                        color: isPhoneNumberValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       width: 2.0,
+                      color: isPhoneNumberValid
+                          ? ColorsReference.borderColorGray
+                          : ColorsReference.errorColorRed,
                     ),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  errorText:
+                    isPhoneNumberValid ? null : 'Please a valid phone number',
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
@@ -197,6 +335,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
               child: Column(
                 children: [
                   DropdownButtonFormField(
+                    iconEnabledColor: Colors.black,
                     items: roles.map((role) {
                       return DropdownMenuItem(
                         value: role,
@@ -206,6 +345,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                     onChanged: (value) {
                       setState(() {
                         selectedRole = value.toString();
+                        hasChanges = true;
                       });
                     },
                     decoration: InputDecoration(
@@ -242,9 +382,10 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                         onChanged: (value) {
                           setState(() {
                             otherRoleText = value;
+                            isOtherRoleValid = value.isNotEmpty;
                           });
                         },
-                        //focusNode: otherRoleFocus,
+                        focusNode: otherRoleFocus,
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -257,7 +398,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                             borderSide: BorderSide(
                               width: 2.0,
                               color: isOtherRoleValid
-                                  ? ColorsReference.borderColorGray
+                                  ? Colors.grey
                                   : ColorsReference.errorColorRed,
                             ),
                             borderRadius: BorderRadius.circular(50.0),
@@ -337,4 +478,16 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
       ),
     );
   }
+
+  bool _isValidPhoneNumber(String phoneNumber) {
+    // Use a regular expression to check the phone number format
+    // ^ asserts the start of the string.
+    // \+? allows an optional plus sign for the country code.
+    // \d{0,3} allows for up to 3 digits for the country code.
+    // \d{10} requires exactly 10 digits for the main part of the phone number.
+    // $ asserts the end of the string.
+    RegExp phoneRegex = RegExp(r'^\+?\d{0,3}?\d{8,15}$');
+    return phoneRegex.hasMatch(phoneNumber);
+  }
+
 }
