@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
+import '../backend/firebase.dart';
 import '../Style/colors.dart';
 import '../Style/route_animation.dart';
 import './user_personal_info.dart';
@@ -14,6 +18,66 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  String userStatus = "";
+  bool isSpeaker = false; // Flag to check if the user is a speaker
+
+  String firstName = "";
+  String userCreationTime = "";
+
+  final DatabaseReference _speakersRef =
+      FirebaseDatabase.instance.ref().child('speaker_requests');
+
+  final DatabaseReference _userssRef =
+      FirebaseDatabase.instance.ref().child('users');
+
+  @override
+  void initState() {
+    super.initState();
+    loadData(); // Load data when the widget is initialized
+  }
+
+  Future<void> loadData() async {
+    await loadUsers(); // Load user info
+    await checkIfSpeaker(); // Check if the user is a speaker
+    setState(() {
+      // Set the state to update the UI
+    });
+  }
+
+  Future<void> loadUsers() async {
+    GetUserInfo try1 = GetUserInfo();
+    firstName = await try1.loadUserInfo();
+    User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DateTime creationTime = user.metadata.creationTime!;
+        DateFormat formatter = DateFormat.yMd();
+        userCreationTime = formatter.format(creationTime);
+      }
+  }
+
+  Future<void> checkIfSpeaker() async {
+    // Assuming you're using Firebase Authentication
+
+    User? user = FirebaseAuth.instance.currentUser;
+    
+    final speakerSnapshot = await _speakersRef.child(user!.uid).once();
+    final userSnapshot = await _userssRef.child(user!.uid).once();
+
+    if (speakerSnapshot.snapshot.value != null && userSnapshot.snapshot.value != null) {
+
+      Map<dynamic, dynamic> speakerData =
+          speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      Map<dynamic, dynamic> userData =
+          userSnapshot.snapshot.value as Map<dynamic, dynamic>;
+
+      setState(() {
+        userStatus = speakerData["status"];
+        isSpeaker = true; // User is a speaker
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,11 +95,11 @@ class ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Name',
+            Text(
+              firstName,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF212121),
+              style: const TextStyle(
+                color: Colors.black,
                 fontSize: 16,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
@@ -44,7 +108,7 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 5),
             Text(
-              "Join on 10/10/2020",
+              userCreationTime,
               style: TextStyle(
                 color: Colors.black.withOpacity(0.5),
                 fontSize: 14,
@@ -52,15 +116,15 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView(
+              child: Column(
                 children: [
                   // Personal Information Box
                   buttonBox('Personal Information', Icons.person_outline, () {
-                    Navigator.of(context).push(slidingFromLeft(const UserPersonalInfo()));
-                  }),
-
-                  buttonBox('Speaker Personal Information', Icons.person_outline, () {
-                    Navigator.of(context).push(slidingFromLeft(const SpeakerPersonalInfo()));
+                    if (isSpeaker){
+                      Navigator.of(context).push(slidingFromLeft(const SpeakerPersonalInfo()));
+                    } else {
+                      Navigator.of(context).push(slidingFromLeft(const UserPersonalInfo()));
+                    }
                   }),
 
                   // Privacy Policy Box
@@ -73,8 +137,13 @@ class ProfilePageState extends State<ProfilePage> {
                     Navigator.of(context).push(slidingFromLeft(const TermsAndConditions()));
                   }),
 
+                  Expanded(
+                        child: Container(
+                        ),
+                      ),
                   // Logout Box
-                  buttonBox('Logout', Icons.logout_outlined, () {
+                  buttonBox('Logout', Icons.logout_outlined, () async {
+                    await FirebaseAuth.instance.signOut(); // Sign out the user from Firebase
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/login',
