@@ -1,23 +1,13 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:speak_iq/Screens/SpeakerSignup.dart';
-import 'package:speak_iq/Screens/UserSignup.dart';
-import 'package:speak_iq/Screens/forgot_password.dart';
-import 'package:speak_iq/Screens/login.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:speak_iq/style/colors.dart';
-import 'package:speak_iq/style/route_animation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:speak_iq/style/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'dart:io';
-//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-//import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 
 
@@ -43,11 +33,19 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   Future<Map<dynamic, dynamic>?> getSpeaker() async {
     try {
       print(speakerId);
-      final snapshot = await FirebaseDatabase.instance
+      final speakerSnapshot = await FirebaseDatabase.instance
           .ref('speaker_requests')
           .child(speakerId)
           .once();
-      return snapshot.snapshot.value as Map<dynamic, dynamic>;
+      final userSnapshot = await FirebaseDatabase.instance
+          .ref('users')
+          .child(speakerId)
+          .once();
+      Map<dynamic, dynamic> combinedSnapshot = {
+        'speaker' : speakerSnapshot.snapshot.value,
+        'user' : userSnapshot.snapshot.value
+      };
+      return combinedSnapshot;
     } catch (error) {
       print('Error fetching user data: $error');
       return null;
@@ -66,16 +64,17 @@ class SpeakerProfileState extends State<SpeakerProfile> {
           future: getSpeaker(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data == null) {
-              return Text('Data not available');
+              return const Text('Data not available');
             } else {
-              Map<dynamic, dynamic> speakerInfo = snapshot.data!;
+              Map<dynamic, dynamic> speakerInfo = snapshot.data?['speaker'];
+              Map<dynamic, dynamic> userInfo = snapshot.data?['user'];
               pictureUrl = speakerInfo['pictureUrl'];
-              firstName = speakerInfo['firstName'];
-              lastName = speakerInfo['lastName'];
+              firstName = userInfo['firstName'];
+              lastName = userInfo['lastName'];
               link = speakerInfo['link'];
               pdfUrl = speakerInfo['pdfUrl'];
               bio = speakerInfo['bio'];
@@ -110,8 +109,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   Widget content() {
     return Column(children: [
       Stack(clipBehavior: Clip.none, children: [
-        Image(
-            image: AssetImage('assets/background.png'),
+        Image.network(
+            pictureUrl,
             height: (298 / 812) *
                 (MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top),
@@ -140,18 +139,19 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             },
           ),
         ),
+        // Positioned(
+        //   left: 16.0,
+        //   bottom: -60.0,
+        //   child: ClipRRect(
+        //     borderRadius: new BorderRadius.circular(50.0),
+        //     child: Image.network(pictureUrl,
+        //         height: 96, width: 96, fit: BoxFit.cover),
+        //   ),
+        // ),
         Positioned(
-          left: 16.0,
-          bottom: -60.0,
-          child: ClipRRect(
-            borderRadius: new BorderRadius.circular(50.0),
-            child: Image.network(pictureUrl,
-                height: 96, width: 96, fit: BoxFit.cover),
-          ),
-        ),
-        Positioned(
-            left: 128.0,
-            bottom: -30.0,
+            bottom: -30,
+            child: Container(
+            width: MediaQuery.of(context).size.width,
             child: Text(
               '$firstName $lastName',
               textAlign: TextAlign.center,
@@ -160,9 +160,9 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
-            ))
+            )))
       ]),
-      const SizedBox(height: 80),
+      const SizedBox(height: 50),
       Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -328,70 +328,70 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     try {
       if (await launchUrl(
           Uri.parse(url), mode: LaunchMode.externalApplication)) {
-      } else {
+      }
+      else {
         throw '#1: Could not launch $url';
+
       }
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('Unable to open the video. The link is invalid'),
+          action: SnackBarAction(
+            label: 'Close',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
       throw '#2: Could not launch $url';
+
+
     }
   }
 
-  // Future<String> downloadFile() async {
-  //   String myUrl = pdfUrl;
-  //   String filePath = '';
-  //   try {
-  //     final taskId = await FlutterDownloader.enqueue(
-  //       url: myUrl,
-  //       savedDir: '/storage/emulated/0/Download/',
-  //       fileName: 'speaker_sheet_${firstName}_$lastName.pdf',
-  //       showNotification: true, // Set to true to show a download notification
-  //       openFileFromNotification: true,
-  //     );
-  //     FlutterDownloader.registerCallback((id, status, progress) {
-  //       if (status == DownloadTaskStatus.complete) {
-  //         // Download completed, show a notification
-  //         showDownloadNotification('Download complete');
-  //       }
-  //     });
-  //     filePath = '/storage/emulated/0/Download/speaker_sheet_${firstName}_$lastName.pdf';
-  //   } catch (ex) {
-  //     filePath = 'Can not fetch url';
-  //   }
-  //
-  //   return filePath;
-  // }
-  //   flutterLocalNotificationsPlugin.show(0, 'Download Notification', message, NotificationDetails());
-  // }
-
   Future<String> downloadFile() async {
-    HttpClient httpClient = HttpClient();
-    File file;
+    String myUrl = pdfUrl;
     String filePath = '';
-    String myUrl = '';
-    try {
-      myUrl = pdfUrl;
-      var request = await httpClient.getUrl(Uri.parse(myUrl));
-      var response = await request.close();
-      if(response.statusCode == 200) {
-        var bytes = await consolidateHttpClientResponseBytes(response);
-        if(Platform.isIOS) {
-          Directory appDocDir = await getApplicationDocumentsDirectory();
-          String appDocPath = appDocDir.path;
-          filePath = '$appDocPath/${firstName}_$lastName.pdf';
-        }
-          else{
-          filePath = '/storage/emulated/0/Download/${firstName}_$lastName.pdf';
-        }
-        file = File(filePath);
-        await file.writeAsBytes(bytes);
-      }
-      else {
-        filePath = 'Error code: '+response.statusCode.toString();
-      }
+
+    if(Platform.isIOS) {
+              Directory appDocDir = await getApplicationDocumentsDirectory();
+              String appDocPath = appDocDir.path;
+              filePath = '$appDocPath/';
     }
-    catch(ex){
+    else{
+      filePath = '/storage/emulated/0/Download/';
+    }
+
+    try {
+      final taskId = await FlutterDownloader.enqueue(
+        url: pdfUrl,
+        savedDir: filePath,
+        fileName: 'speaker_sheet_${firstName}_$lastName.pdf',
+        showNotification: true, // Set to true to show a download notification
+        openFileFromNotification: true,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: const Text('Download completed'),
+          action: SnackBarAction(
+            label: 'Open',
+            onPressed: () async {
+              // Open the downloaded file in the Files app
+              await OpenFile.open("${filePath}123speaker_sheet_${firstName}_$lastName.pdf");
+            },
+          ),
+        ),
+      );
+
+    } catch (ex) {
       filePath = 'Can not fetch url';
     }
+
     return filePath;
   }
 
