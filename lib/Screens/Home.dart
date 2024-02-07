@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
       User? user = FirebaseAuth.instance.currentUser;
 
     final speakerSnapshot = await _speakersRef.once();
-    final userSnapshot = await _userssRef.child(user!.uid).once();
+    final userSnapshot = await _userssRef.once();
     
     List<Speaker> speakers = [];
 
@@ -110,9 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
         if (value['status'] == 'pending'){ //Change to approved when the app is ready
         speakers.add(Speaker(
             key, // userID
-             userData['firstName']?? '',
+            userData[key]['firstName']?? '',
             value['pictureUrl'] ?? '',
-            userData['lastName'] ?? '',
+            userData[key]['lastName'] ?? '',
             List<String>.from(value['topics']),
             List<String>.from(value['languages'])));}
       });
