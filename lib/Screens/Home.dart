@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool isDrawerOpen = false;
-
+  bool isFilterPageOpen = false;
   bool isFilterVisible = false;
 
   @override
@@ -181,110 +181,29 @@ class _MyHomePageState extends State<MyHomePage> {
         toolbarHeight: 75,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        actions: [],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            iconSize: 34,
+            onPressed: () {
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FilterPage(
+                  selectedTopics: selectedTopics,
+                  selectedLanguages: selectedLanguages,
+                  allSpeakers: _speakers,
+                )),
+              ).then((value) {
+                if (value != null && value is List<Speaker>) {
+                  setState(() {
+                    filteredSpeakers = value;
+                  });
+                };}
 
-      ),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text('Filter', style: TextStyle(fontSize: 35, color: Colors.white, fontFamily: 'Poppins'),),
-              decoration: BoxDecoration(
-                color: ColorsReference.darkBlue,
-              ),
-            ), ListTile(
-                title: Text('Topics:'),
-                subtitle: Wrap(
-                  children: List<Widget>.generate(
-                    _speakers
-                        .expand((speaker) => speaker.topics)
-                        .toSet()
-                        .toList()
-                        .length,
-                    (index) {
-                      String topic = _speakers
-                          .expand((speaker) => speaker.topics)
-                          .toSet()
-                          .toList()[index];
-                      return CheckboxListTile(
-                        title: Text(topic),
-                        value: selectedTopics.contains(topic),
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value != null) {
-                              if (value) {
-                                selectedTopics.add(topic);
-                              } else {
-                                selectedTopics.remove(topic);
-                              }
-                            }
-                          });
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Languages:'),
-                subtitle: Wrap(
-                  children: List<Widget>.generate(
-                    _speakers
-                        .expand((speaker) => speaker.languages)
-                        .toSet()
-                        .toList()
-                        .length,
-                    (index) {
-                      String language = _speakers
-                          .expand((speaker) => speaker.languages)
-                          .toSet()
-                          .toList()[index];
-                      return CheckboxListTile(
-                        title: Text(language),
-                        value: selectedLanguages.contains(language),
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value != null) {
-                              if (value) {
-                                selectedLanguages.add(language);
-                              } else {
-                                selectedLanguages.remove(language);
-                              }
-                            }
-                          });
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Clear Filters'),
-                onTap: () {
-                  setState(() {
-                    selectedTopics.clear();
-                    selectedLanguages.clear();
-                  });
-                },
-              ),
-              ListTile(
-                title: Text('Apply Filters'),
-                onTap: () {
-                  filteredSpeakers = _speakers.where((speaker) {
-                      bool topicsMatch = selectedTopics.isEmpty ||
-                          speaker.topics.any((topic) => selectedTopics.contains(topic));
-                      bool languagesMatch = selectedLanguages.isEmpty ||
-                          speaker.languages.any((language) => selectedLanguages.contains(language));
-                      return topicsMatch && languagesMatch;
-                    }).toList();
-                  setState(() {
-                    isDrawerOpen = false;
-                  });
-                },
-              ),
-          ],
-        ),
+              );})
+        ],
+
       ),
            
       body: Column(children: [
@@ -297,19 +216,21 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 alignment: Alignment.center,
                 width: 400,
-                height: 50,
+                height: 52,
                 decoration: BoxDecoration(
                   border: Border.all(color: ColorsReference.borderColorGray),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+                  color: ColorsReference.darkBlue,
+                  borderRadius: BorderRadius.circular(17),
                 ),
-                child: Text(
-                  "Your request's Status: $userStatus",
+                child: Row(children: [SizedBox(width: 15,),Text(
+                  "Your request's Status:",
                   style: TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w400, color: Colors.white
                   ),
-                ),
+                ),Spacer(), Text(userStatus, style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500, color: Colors.white)), SizedBox(width: 15)])
               )),
         Expanded(
             child: ListView.builder(
@@ -458,3 +379,138 @@ List<Widget> buildItemWidgets(List<String>items) {
     return textWidgets;
   }
 
+class FilterPage extends StatefulWidget {
+  final List<String> selectedTopics;
+  final List<String> selectedLanguages;
+  final List<Speaker> allSpeakers;
+
+  FilterPage({
+    required this.selectedTopics,
+    required this.selectedLanguages,
+    required this.allSpeakers,
+  });
+
+  @override
+  _FilterPageState createState() => _FilterPageState();
+}
+
+class _FilterPageState extends State<FilterPage> {
+  List<String> _selectedTopics = [];
+  List<String> _selectedLanguages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTopics = List.from(widget.selectedTopics);
+    _selectedLanguages = List.from(widget.selectedLanguages);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Filter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+         leading: IconButton(
+    icon: Icon(Icons.arrow_back_ios_new_rounded), // Change the back button icon here
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              List<Speaker> filteredSpeakers = widget.allSpeakers.where((speaker) {
+                bool topicsMatch = _selectedTopics.isEmpty ||
+                    speaker.topics.any((topic) => _selectedTopics.contains(topic));
+                bool languagesMatch = _selectedLanguages.isEmpty ||
+                    speaker.languages.any((language) => _selectedLanguages.contains(language));
+                return topicsMatch && languagesMatch;
+              }).toList();
+              Navigator.pop(context, filteredSpeakers);
+            },
+            child: Text(
+              'Apply',
+              style: TextStyle(color: ColorsReference.lightBlue, fontSize: 16, fontWeight: FontWeight.w400),
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        children: [
+          ListTile(
+            title: Text('Select topics:', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+            subtitle: Wrap(
+              children: List<Widget>.generate(
+                widget.allSpeakers
+                    .expand((speaker) => speaker.topics)
+                    .toSet()
+                    .toList()
+                    .length,
+                (index) {
+                  String topic = widget.allSpeakers
+                      .expand((speaker) => speaker.topics)
+                      .toSet()
+                      .toList()[index];
+                  return CheckboxListTile(
+                    title: Text(topic, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
+                    value: _selectedTopics.contains(topic),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        if (value != null) {
+                          if (value) {
+                            _selectedTopics.add(topic);
+                          } else {
+                            _selectedTopics.remove(topic);
+                          }
+                        }
+                      });
+                    },
+                    checkColor: Colors.white,
+                    activeColor: ColorsReference.lightBlue,
+                  );
+                },
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text('Select spoken languages:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+            subtitle: Wrap(
+              children: List<Widget>.generate(
+                widget.allSpeakers
+                    .expand((speaker) => speaker.languages)
+                    .toSet()
+                    .toList()
+                    .length,
+                (index) {
+                  String language = widget.allSpeakers
+                      .expand((speaker) => speaker.languages)
+                      .toSet()
+                      .toList()[index];
+                  return CheckboxListTile(
+                    title: Text(language, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+                    value: _selectedLanguages.contains(language),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        if (value != null) {
+                          if (value) {
+                            _selectedLanguages.add(language);
+                          } else {
+                            _selectedLanguages.remove(language);
+                          }
+                        }
+                      });
+                    },
+                    checkColor: Colors.white,
+                    activeColor: ColorsReference.lightBlue,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
