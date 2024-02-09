@@ -56,6 +56,24 @@ class _MyHomePageState extends State<MyHomePage> {
     loadUsers();
     _loadSpeakers();
     checkIfSpeaker();
+
+  }
+
+  List<Speaker> filteredSpeakers = [];
+
+  List<String> selectedLanguages = [];
+  List<String> selectedTopics = [];
+
+  void filterSpeakers() {
+    setState(() {
+      filteredSpeakers = _speakers.where((speaker) {
+        bool matchesLanguage = selectedLanguages.isEmpty ||
+            speaker.languages.any((language) => selectedLanguages.contains(language));
+        bool matchesTopic = selectedTopics.isEmpty ||
+            speaker.topics.any((topic) => selectedTopics.contains(topic));
+        return matchesLanguage && matchesTopic;
+      }).toList();
+    });
   }
 
   void checkIfSpeaker() async {
@@ -119,8 +137,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _speakers = speakers;
+      filteredSpeakers = speakers;
     });
   }
+
+  bool isDrawerOpen = false;
 
   bool isFilterVisible = false;
 
@@ -128,6 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black), // Change icon color to black
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: Text.rich(
@@ -159,21 +181,112 @@ class _MyHomePageState extends State<MyHomePage> {
         toolbarHeight: 75,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        actions: [
-          // Filter button
-          IconButton(
-            iconSize: 30,
-            padding: EdgeInsets.only(right: 16),
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              setState(() {
-                isFilterVisible = !isFilterVisible;
-              });
-            },
-            color: Colors.black,
-          ),
-        ],
+        actions: [],
+
       ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Text('Filter', style: TextStyle(fontSize: 35, color: Colors.white, fontFamily: 'Poppins'),),
+              decoration: BoxDecoration(
+                color: ColorsReference.darkBlue,
+              ),
+            ), ListTile(
+                title: Text('Topics:'),
+                subtitle: Wrap(
+                  children: List<Widget>.generate(
+                    _speakers
+                        .expand((speaker) => speaker.topics)
+                        .toSet()
+                        .toList()
+                        .length,
+                    (index) {
+                      String topic = _speakers
+                          .expand((speaker) => speaker.topics)
+                          .toSet()
+                          .toList()[index];
+                      return CheckboxListTile(
+                        title: Text(topic),
+                        value: selectedTopics.contains(topic),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value != null) {
+                              if (value) {
+                                selectedTopics.add(topic);
+                              } else {
+                                selectedTopics.remove(topic);
+                              }
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+              ListTile(
+                title: Text('Languages:'),
+                subtitle: Wrap(
+                  children: List<Widget>.generate(
+                    _speakers
+                        .expand((speaker) => speaker.languages)
+                        .toSet()
+                        .toList()
+                        .length,
+                    (index) {
+                      String language = _speakers
+                          .expand((speaker) => speaker.languages)
+                          .toSet()
+                          .toList()[index];
+                      return CheckboxListTile(
+                        title: Text(language),
+                        value: selectedLanguages.contains(language),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            if (value != null) {
+                              if (value) {
+                                selectedLanguages.add(language);
+                              } else {
+                                selectedLanguages.remove(language);
+                              }
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+              ListTile(
+                title: Text('Clear Filters'),
+                onTap: () {
+                  setState(() {
+                    selectedTopics.clear();
+                    selectedLanguages.clear();
+                  });
+                },
+              ),
+              ListTile(
+                title: Text('Apply Filters'),
+                onTap: () {
+                  filteredSpeakers = _speakers.where((speaker) {
+                      bool topicsMatch = selectedTopics.isEmpty ||
+                          speaker.topics.any((topic) => selectedTopics.contains(topic));
+                      bool languagesMatch = selectedLanguages.isEmpty ||
+                          speaker.languages.any((language) => selectedLanguages.contains(language));
+                      return topicsMatch && languagesMatch;
+                    }).toList();
+                  setState(() {
+                    isDrawerOpen = false;
+                  });
+                },
+              ),
+          ],
+        ),
+      ),
+           
       body: Column(children: [
         SizedBox(
           height: 5,
@@ -200,21 +313,21 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
         Expanded(
             child: ListView.builder(
-                itemCount: _speakers.length,
+                itemCount: filteredSpeakers.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
                     child: GestureDetector(
                         onTap: () {
-                          final speakerId = _speakers[index].userID;
+                          final speakerId = filteredSpeakers[index].userID;
                           Navigator.pushNamed(
                             context,
                             '/speaker_profile',
                             arguments: speakerId,
                           );
                           // Handle box click, you can navigate to another screen or perform an action
-                          print('Name clicked: ${_speakers[index].firstName}');
+                          print('Name clicked: ${filteredSpeakers[index].firstName}');
                         },
                         child: Container(
                           height: 144,
@@ -255,7 +368,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ),
                                             child: CachedNetworkImage(
                                               imageUrl:
-                                                  _speakers[index].pictureUrl,
+                                                  filteredSpeakers[index].pictureUrl,
                                               placeholder: (context, url) =>
                                                   CircularProgressIndicator(),
                                               errorWidget:
@@ -269,7 +382,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           width: 20,
                                         ),
                                         Text(
-                                          '${_speakers[index].firstName} ${_speakers[index].lastName}',
+                                          '${filteredSpeakers[index].firstName} ${filteredSpeakers[index].lastName}',
                                           style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 0, 0, 0),
@@ -305,7 +418,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 20,
                                       ),
 
-                                      Row(children: buildItemWidgets(_speakers[index].topics))
+                                      Row(children: buildItemWidgets(filteredSpeakers[index].topics))
                                          
                                     ],
                                   ))
