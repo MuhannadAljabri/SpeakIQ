@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
+import '../backend/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:speak_iq/style/colors.dart';
@@ -9,7 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SpeakerProfile extends StatefulWidget {
   const SpeakerProfile({super.key});
@@ -19,6 +21,15 @@ class SpeakerProfile extends StatefulWidget {
 }
 
 class SpeakerProfileState extends State<SpeakerProfile> {
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+
+  TextEditingController userfirstNameController = TextEditingController();
+  TextEditingController userlastNameController = TextEditingController();
+  TextEditingController useremailController = TextEditingController();
+  TextEditingController userphoneNumberController = TextEditingController();
 
   String speakerId = "";
   String firstName = "";
@@ -37,19 +48,46 @@ class SpeakerProfileState extends State<SpeakerProfile> {
           .ref('speaker_requests')
           .child(speakerId)
           .once();
-      final userSnapshot = await FirebaseDatabase.instance
-          .ref('users')
-          .child(speakerId)
-          .once();
+      final userSnapshot =
+          await FirebaseDatabase.instance.ref('users').child(speakerId).once();
       Map<dynamic, dynamic> combinedSnapshot = {
-        'speaker' : speakerSnapshot.snapshot.value,
-        'user' : userSnapshot.snapshot.value
+        'speaker': speakerSnapshot.snapshot.value,
+        'user': userSnapshot.snapshot.value
       };
       return combinedSnapshot;
     } catch (error) {
       print('Error fetching user data: $error');
       return null;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadData(); // Load data when the widget is initialized
+  }
+
+  Future<void> loadData() async {
+    await getUser(); // Load user info
+    setState(() {
+      // Set the state to update the UI
+    });
+  }
+
+//NEW
+  Future<void> getUser() async {
+    GetUserInfo userInfoGetter = GetUserInfo();
+    UserData user = await userInfoGetter.loadUser();
+    setState(() {
+      userfirstNameController.text = user.firstName;
+      userlastNameController.text = user.lastName;
+      useremailController.text = user.email;
+      userphoneNumberController.text = user.phoneNumber;
+
+      // if (user.role.startsWith('Other: ')){
+
+      // }
+    });
   }
 
   @override
@@ -95,7 +133,11 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             borderRadius: BorderRadius.circular(50.0),
           ),
           child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                showAlertDialog(context);
+                sendEmail();
+                null;
+              },
               child: const Text("Book Now",
                   style: TextStyle(
                     color: Colors.white,
@@ -109,8 +151,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   Widget content() {
     return Column(children: [
       Stack(clipBehavior: Clip.none, children: [
-        Image.network(
-            pictureUrl,
+        Image.network(pictureUrl,
             height: (298 / 812) *
                 (MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top),
@@ -119,7 +160,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
         Container(
           height: 200,
           decoration: const BoxDecoration(
-            color: Color.fromRGBO(0,0,0,0),
+            color: Color.fromRGBO(0, 0, 0, 0),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(100),
               bottomRight: Radius.circular(100),
@@ -131,7 +172,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
             iconSize: 28,
             icon: const Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: Color.fromRGBO(255,255,255,1),
+              color: Color.fromRGBO(255, 255, 255, 1),
             ),
             onPressed: () {
               // Navigate back to the previous screen
@@ -151,16 +192,16 @@ class SpeakerProfileState extends State<SpeakerProfile> {
         Positioned(
             bottom: -30,
             child: Container(
-            width: MediaQuery.of(context).size.width,
-            child: Text(
-              '$firstName $lastName',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            )))
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  '$firstName $lastName',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )))
       ]),
       const SizedBox(height: 50),
       Padding(
@@ -181,7 +222,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/role_icon.svg',),
+                    'assets/role_icon.svg',
+                  ),
                 ),
                 const SizedBox(width: 16.0),
                 // Adjust the space between image and text
@@ -214,25 +256,24 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/topic_icon.svg',),
+                    'assets/topic_icon.svg',
+                  ),
                 ),
                 const SizedBox(width: 16.0),
-                Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                    const Text(
-                      'Topics',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text(
+                    'Topics',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
                     ),
-                      SizedBox(height: 10.0),
-                    Row(
-                      children: buildItemWidgets(topics),
-                    )
-                    ]
-                )
+                  ),
+                  SizedBox(height: 10.0),
+                  Row(
+                    children: buildItemWidgets(topics),
+                  )
+                ])
               ],
             ),
             SizedBox(height: 16.0), // Adjust the space between rows
@@ -241,25 +282,24 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/topic_icon.svg',),
+                    'assets/topic_icon.svg',
+                  ),
                 ),
                 const SizedBox(width: 16.0),
-                Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                      const Text(
-                        'Languages',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: buildItemWidgets(languages),
-                      )
-                    ]
-                )
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text(
+                    'Languages',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  Row(
+                    children: buildItemWidgets(languages),
+                  )
+                ])
               ],
             ),
             SizedBox(height: 16.0), // Adjust the space between rows
@@ -268,13 +308,14 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/sheet_icon.svg',),
+                    'assets/sheet_icon.svg',
+                  ),
                 ),
                 const SizedBox(width: 10.0),
                 // Adjust the space between image and text
                 TextButton(
                   onPressed: () {
-                   downloadFile();
+                    downloadFile();
                   },
                   child: const Text(
                     'Download a Speaker Sheet',
@@ -294,7 +335,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/link_icon.svg',),
+                    'assets/link_icon.svg',
+                  ),
                 ),
                 const SizedBox(width: 10.0),
                 // Adjust the space between image and text
@@ -326,12 +368,10 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   _launchYouTube() async {
     String url = link;
     try {
-      if (await launchUrl(
-          Uri.parse(url), mode: LaunchMode.externalApplication)) {
-      }
-      else {
+      if (await launchUrl(Uri.parse(url),
+          mode: LaunchMode.externalApplication)) {
+      } else {
         throw '#1: Could not launch $url';
-
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -347,8 +387,6 @@ class SpeakerProfileState extends State<SpeakerProfile> {
         ),
       );
       throw '#2: Could not launch $url';
-
-
     }
   }
 
@@ -357,12 +395,11 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     String filePath = '';
     String fileName = 'speaker_sheet_${firstName}_$lastName.pdf';
 
-    if(Platform.isIOS) {
-              Directory appDocDir = await getApplicationDocumentsDirectory();
-              String appDocPath = appDocDir.path;
-              filePath = '$appDocPath/';
-    }
-    else{
+    if (Platform.isIOS) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+      filePath = '$appDocPath/';
+    } else {
       filePath = '/storage/emulated/0/Download/';
     }
 
@@ -388,7 +425,6 @@ class SpeakerProfileState extends State<SpeakerProfile> {
           ),
         ),
       );
-
     } catch (ex) {
       filePath = 'Can not fetch url';
     }
@@ -396,23 +432,28 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     return filePath;
   }
 
-  List<Widget> buildItemWidgets(List<String>items) {
-
+  List<Widget> buildItemWidgets(List<String> items) {
     List<Widget> textWidgets = [];
 
     for (var item in items) {
       textWidgets.add(
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4), // Adjust margin as needed
+          margin: const EdgeInsets.symmetric(
+              horizontal: 4), // Adjust margin as needed
           decoration: BoxDecoration(
             color: ColorsReference.lightBlue, // Adjust color as needed
-            borderRadius: BorderRadius.circular(36), // Adjust border radius as needed
+            borderRadius:
+                BorderRadius.circular(36), // Adjust border radius as needed
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12,4,12,4), // Adjust padding as needed
+            padding: const EdgeInsets.fromLTRB(
+                12, 4, 12, 4), // Adjust padding as needed
             child: Text(
               item,
-              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
+              style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600), // Adjust text style as needed
             ),
           ),
         ),
@@ -422,4 +463,51 @@ class SpeakerProfileState extends State<SpeakerProfile> {
     return textWidgets;
   }
 
+//call emailjs API to send email
+  Future sendEmail() async {
+    const serviceId = 'service_z3a99hz';
+    const templateId = 'template_jy4hno1';
+    const userId = 'KBalXQHMW6Y-vzaQk';
+
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(url,
+        headers: {
+          'origin': 'http:localhost',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "service_id": serviceId,
+          "template_id": templateId,
+          "user_id": userId,
+          "template_params": {
+            "first_name": userfirstNameController.text,
+            "last_name": userlastNameController.text,
+            "speaker_name": firstName,
+            "email_name": useremailController.text,
+            "phone_num": userphoneNumberController.text
+          }
+        }));
+    print(response.body);
+  }
+
+  //Alert popup for booking
+
+  showAlertDialog(BuildContext context) {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {},
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Booking Request Sent"),
+      content: Text("Please allow the request to be processed and reviewed"),
+      actions: [okButton],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }

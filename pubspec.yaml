@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.17.0
   flutter_downloader: ^1.11.6
   open_file_plus: ^3.4.1
+  flutter_email_sender: ^6.0.2
   
 dev_dependencies:
   flutter_test:
