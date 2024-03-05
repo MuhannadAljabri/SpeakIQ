@@ -39,7 +39,8 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-           
+                          'fullName': "$firstName $lastName",
+
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -57,7 +58,7 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-            
+                          'fullName': "$firstName $lastName",
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -82,8 +83,8 @@ class UserUploader {
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
-          'firstName': firstName,
-            'lastName': lastName,
+                          'fullName': "$firstName $lastName",
+
           'bio': bio,
           'link': link,
           'topics': topics,
@@ -101,8 +102,8 @@ class UserUploader {
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
-              'firstName': firstName,
-            'lastName': lastName,
+                          'fullName': "$firstName $lastName",
+
           'bio': bio,
           'link': link,
           'topics': topics,

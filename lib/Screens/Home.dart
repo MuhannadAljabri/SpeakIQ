@@ -369,7 +369,7 @@ List<Widget> buildItemWidgets(List<String>items) {
             padding: const EdgeInsets.fromLTRB(12,4,12,4), // Adjust padding as needed
             child: Text(
               item,
-              style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
+              style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
             ),
           ),
         ),
