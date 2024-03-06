@@ -45,7 +45,8 @@ class HomeNavigationScreenState extends State<HomeNavigationScreen> {
           child: BottomNavigationBar(
             backgroundColor: Colors.transparent,
             selectedItemColor: ColorsReference.darkBlue,
-            selectedIconTheme: const IconThemeData(color: ColorsReference.darkBlue),
+            unselectedItemColor: Colors.grey,
+            currentIndex: _currentIndex,
             elevation:0.0, 
             items: [
               BottomNavigationBarItem(
@@ -53,6 +54,9 @@ class HomeNavigationScreenState extends State<HomeNavigationScreen> {
                   'assets/home_icon.svg',
                   width: 24,
                   height: 24,
+                  color: _currentIndex == 0
+                      ? ColorsReference.darkBlue
+                      : Colors.grey,
                 ),
                 label: 'Home',
               ),
@@ -61,6 +65,9 @@ class HomeNavigationScreenState extends State<HomeNavigationScreen> {
                   'assets/profile_icon.svg',
                   width: 24,
                   height: 24,
+                  color: _currentIndex == 1
+                      ? ColorsReference.darkBlue
+                      : Colors.grey,
                 ),
                 label: 'Profile',
               ),
