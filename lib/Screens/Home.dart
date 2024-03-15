@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (speakerData != null) {
       speakerData.forEach((key, value) {
-        if (value['status'] == 'pending'){ //Change to approved when the app is ready
+        if (value['status'] == 'approved'){ //Change to approved when the app is ready
         speakers.add(Speaker(
             key, // userID
             userData[key]['firstName']?? '',
