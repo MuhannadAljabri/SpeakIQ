@@ -524,7 +524,7 @@ class _UserSignupState extends State<UserSignup> {
                     onPressed: () {
                       _validateAndSubmitForm();
                     },
-                    child: Text('Register'),
+                    child: Text('Register', style: TextStyle(color: Colors.white),),
                   ),
                 )),
             // Navigate to login page

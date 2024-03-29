@@ -67,26 +67,6 @@ class _Onboard extends State<OnboardingScreen> {
               SizedBox(height: 40),
               Row(
                 children: [
-                  IconButton(
-                    padding: EdgeInsets.only(left: 35, right: 10),
-                    iconSize: 28,
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Color.fromRGBO(33, 33, 33, 0.2),
-                    ),
-                    onPressed: () {},
-                  ),
-                  const Text(
-                    'PREVIOUS',
-                    style: TextStyle(
-                      color: Color.fromRGBO(33, 33, 33, 0.2),
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                      letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
                   Spacer(),
                   GestureDetector(
                     onTap: () {

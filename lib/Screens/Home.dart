@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +6,7 @@ import '../backend/firebase.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../style/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../backend/infoRetrieval.dart';
 
 class Speaker {
   final String userID;
@@ -35,13 +35,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   String userStatus = "";
   bool isSpeaker = false; // Flag to check if the user is a speaker
 
   String firstName = "";
-
-
-
   final DatabaseReference _speakersRef =
       FirebaseDatabase.instance.ref().child('speaker_requests');
 
@@ -64,18 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> selectedLanguages = [];
   List<String> selectedTopics = [];
 
-  void filterSpeakers() {
-    setState(() {
-      filteredSpeakers = _speakers.where((speaker) {
-        bool matchesLanguage = selectedLanguages.isEmpty ||
-            speaker.languages.any((language) => selectedLanguages.contains(language));
-        bool matchesTopic = selectedTopics.isEmpty ||
-            speaker.topics.any((topic) => selectedTopics.contains(topic));
-        return matchesLanguage && matchesTopic;
-      }).toList();
-    });
-  }
-
   void checkIfSpeaker() async {
     // Assuming you're using Firebase Authentication
 
@@ -84,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final speakerSnapshot = await _speakersRef.child(user!.uid).once();
     final userSnapshot = await _userssRef.child(user!.uid).once();
-
 
     if (speakerSnapshot != null) {
 
@@ -109,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _loadSpeakers() async {
     
-      User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
     final speakerSnapshot = await _speakersRef.once();
     final userSnapshot = await _userssRef.once();

@@ -164,6 +164,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
           .child("speaker_requests")
           .child(FirebaseAuth.instance.currentUser!.uid)
           .update({
+            'fullName': '${firstNameController.text} ${lastNameController.text}',
             'bio': bioController.text,
             'link': linkController.text,
             'pictureUrl': pictureUrl,

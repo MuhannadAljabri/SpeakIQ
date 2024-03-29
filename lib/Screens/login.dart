@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:speak_iq/Screens/LoadingScreen.dart';
 import 'package:speak_iq/Screens/SpeakerSignup.dart';
 import 'package:speak_iq/Screens/UserSignup.dart';
 import 'package:speak_iq/Screens/forgot_password.dart';
@@ -238,11 +239,8 @@ class LoginState extends State<LoginScreen> {
           .signInWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((value) {
-        Navigator.pushNamedAndRemoveUntil(
-  context,
-  '/home', // This will clear the navigation stack
-  (Route<dynamic> route) => false,
-);;
+        Navigator.of(context).pushAndRemoveUntil(
+            slidingFromLeft(LoadingScreen()), (Route<dynamic> route) => false);
       }).catchError((error) {
         print('Error to login: $error');
         switch (error.code) {

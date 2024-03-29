@@ -8,6 +8,7 @@ import '../Screens/login.dart';
 import '../Screens/SpeakerProfile.dart';
 import '../Screens/Onboarding.dart';
 import '../Screens/home_navigation_screen.dart';
+import '../Screens/LoadingScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -33,12 +34,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/user_signup': (context) => const UserSignup(),
-        '/home': (context) => HomeNavigationScreen(),
+        '/home': (context) => const HomeNavigationScreen(),
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/speaker_signup': (context) => const SpeakerSignUp(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
-        '/speaker_profile': (context) => const SpeakerProfile()
+        '/speaker_profile': (context) => const SpeakerProfile(),
+        '/loading_screen':(context) =>  LoadingScreen(),
       },
     );
   }

@@ -10,8 +10,7 @@ class UserUploader {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
   final Reference _storageRoot = FirebaseStorage.instance.ref();
 
-  Future<void> uploadSpeakerInfo
-  ({
+  Future<void> uploadSpeakerInfo({
     required String firstName,
     required String lastName,
     required String bio,
@@ -39,8 +38,7 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-                          'fullName': "$firstName $lastName",
-
+            'fullName': "$firstName $lastName",
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -58,7 +56,7 @@ class UserUploader {
               .child('speaker_requests')
               .child(FirebaseAuth.instance.currentUser!.uid)
               .set({
-                          'fullName': "$firstName $lastName",
+            'fullName': "$firstName $lastName",
             'bio': bio,
             'link': link,
             'topics': topics,
@@ -66,7 +64,6 @@ class UserUploader {
             'pictureUrl': pictureDownloadUrl,
             'pdfUrl': 'Not provided',
             'status': 'pending'
-
           });
 
           print('User data uploaded with only picture.');
@@ -83,8 +80,7 @@ class UserUploader {
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
-                          'fullName': "$firstName $lastName",
-
+          'fullName': "$firstName $lastName",
           'bio': bio,
           'link': link,
           'topics': topics,
@@ -92,7 +88,6 @@ class UserUploader {
           'pictureUrl': 'Not provided',
           'pdfUrl': pdfDownloadUrl,
           'status': 'pending'
-
         });
 
         print('User data uploaded with only PDF.');
@@ -102,16 +97,14 @@ class UserUploader {
             .child('speaker_requests')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .set({
-                          'fullName': "$firstName $lastName",
-
+          'fullName': "$firstName $lastName",
           'bio': bio,
           'link': link,
           'topics': topics,
           'languages': languages,
           'pictureUrl': 'Not provided',
           'pdfUrl': 'Not provided',
-                      'status': 'pending'
-
+          'status': 'pending'
         });
         print(
             'Both picture and PDF files are empty or do not exist. Aborting upload.');
@@ -122,7 +115,8 @@ class UserUploader {
   }
 
   // function to upload the image or pdf file to firebase storage
-  Future<String> uploadFile(File file, String storageFolder, String firstName, String lastName) async {
+  Future<String> uploadFile(File file, String storageFolder, String firstName,
+      String lastName) async {
     try {
       if (storageFolder == 'speaker_sheets') {
         String fileName = file!.path.split('.').last;
@@ -143,29 +137,23 @@ class UserUploader {
     }
   }
 
-    Future<void> uploadUserInfo({
+  Future<void> uploadUserInfo({
     required String firstName,
     required String lastName,
     required String phoneNum,
     required String email,
   }) async {
-    
-       await _database // If both fies were uploaded
-              .child('users')
-              .child(FirebaseAuth.instance.currentUser!.uid)
-              .set({
-            'firstName': firstName,
-            'lastName': lastName,
-            'phoneNumber': phoneNum,
-            'email': email,
-            'role': 'pending speaker approval'
-          });
-      
-
-
-    }
-
-
+    await _database // If both fies were uploaded
+        .child('users')
+        .child(FirebaseAuth.instance.currentUser!.uid)
+        .set({
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber': phoneNum,
+      'email': email,
+      'role': 'pending speaker approval'
+    });
+  }
 }
 
 final DatabaseReference _userssRef =
@@ -182,23 +170,6 @@ class Speaker {
   Speaker(this.userID, this.firstName, this.pictureUrl);
 }
 
-List<Speaker> _speakers = [];
-
-Future<void> _loadSpeakers() async {
-  final snapshot = await _speakersRef.once();
-  List<Speaker> speakers = [];
-
-  Map<dynamic, dynamic> data = snapshot.snapshot.value as Map<dynamic, dynamic>;
-  if (data != null) {
-    data.forEach((key, value) {
-      speakers.add(Speaker(
-        key, // userID
-        value['firstName'] ?? '',
-        value['pictureUrl'] ?? '',
-      ));
-    });
-  }
-}
 
 // Get the user information from Firebase Database
 
@@ -288,7 +259,8 @@ class GetUserInfo {
   Future<UserData> loadUser() async {
     final user = FirebaseAuth.instance.currentUser;
     final snapshot = await _userssRef.child(user!.uid).once();
-    Map<dynamic, dynamic> userData = snapshot.snapshot.value as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> userData =
+        snapshot.snapshot.value as Map<dynamic, dynamic>;
 
     // Extract user information from the retrieved data
     String firstName = userData['firstName'] ?? '';
@@ -329,10 +301,12 @@ class GetSpeakerInfo {
   Future<SpeakerData> loadSpeaker() async {
     final user = FirebaseAuth.instance.currentUser;
     final userSnapshot = await _userssRef.child(user!.uid).once();
-    Map<dynamic, dynamic> userData = userSnapshot.snapshot.value as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> userData =
+        userSnapshot.snapshot.value as Map<dynamic, dynamic>;
 
     final speakerSnapshot = await _speakersRef.child(user!.uid).once();
-    Map<dynamic, dynamic> speakerData = speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
+    Map<dynamic, dynamic> speakerData =
+        speakerSnapshot.snapshot.value as Map<dynamic, dynamic>;
 
     // Extract user information from the retrieved data
     String firstName = userData['firstName'] ?? '';
@@ -368,5 +342,3 @@ class GetSpeakerInfo {
     return speakerInfo;
   }
 }
-
-

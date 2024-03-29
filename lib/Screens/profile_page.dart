@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:speak_iq/Screens/home.dart';
+import 'package:speak_iq/Screens/home_navigation_screen.dart';
 import '../backend/firebase.dart';
 import '../Style/colors.dart';
 import '../Style/route_animation.dart';
@@ -9,6 +11,9 @@ import './user_personal_info.dart';
 import './speaker_personal_info.dart';
 import './privacy_policy.dart';
 import './terms_and_conditions.dart';
+import './Home.dart';
+
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,6 +23,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+
   String userStatus = "";
   bool isSpeaker = false; // Flag to check if the user is a speaker
 

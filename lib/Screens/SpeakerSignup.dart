@@ -678,7 +678,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                           submission();
                         }
                       },
-                      child: Text('Register'),
+                      child: Text('Register', style: TextStyle(color: Colors.white),),
                     ),
                   )),
               // Navigate to login page
