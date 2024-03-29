@@ -282,7 +282,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: SvgPicture.asset(
-                    'assets/topic_icon.svg',
+                    'assets/language_icon.svg',
                   ),
                 ),
                 const SizedBox(width: 16.0),

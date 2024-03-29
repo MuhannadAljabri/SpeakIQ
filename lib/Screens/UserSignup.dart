@@ -604,7 +604,7 @@ class _UserSignupState extends State<UserSignup> {
       if (selectedRole.toString() == 'Other' && !isOtherRoleValid)
         FocusScope.of(context).requestFocus(otherRoleFocus);
       // Submit the form if all fields are valid
-      else {
+      if (isFullNameValid && isLastNameValid && isEmailValid && isPhoneNumberValid && isPasswordValid && isConfirmPasswordValid && isOtherRoleValid) {
         FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text)

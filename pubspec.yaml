@@ -97,7 +97,8 @@ flutter:
     - assets/link_icon.svg
     - assets/sheet_icon.svg
     - assets/topic_icon.svg
-
+    - assets/language_icon.svg
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
