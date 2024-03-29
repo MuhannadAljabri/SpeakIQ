@@ -423,55 +423,55 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
               )
             ),
             // Change password
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(slidingFromLeft(const ChangePassword()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  padding: const EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: const BorderSide(
-                      width: 2.0,
-                      color: ColorsReference.borderColorGray,
-                    ),
-                  ),
-                  elevation: 0, // Set elevation to 0 to remove the shadow
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.lock_outline_rounded,
-                          color: ColorsReference.textColorBlack,
-                          size: 24,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Change Password',
-                          style: TextStyle(
-                            color: ColorsReference.textColorBlack,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: ColorsReference.textColorBlack,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.of(context).push(slidingFromLeft(const ChangePassword()));
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Colors.white,
+            //       padding: const EdgeInsets.all(16),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(30.0),
+            //         side: const BorderSide(
+            //           width: 2.0,
+            //           color: ColorsReference.borderColorGray,
+            //         ),
+            //       ),
+            //       elevation: 0, // Set elevation to 0 to remove the shadow
+            //     ),
+            //     child: const Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Row(
+            //           children: [
+            //             Icon(
+            //               Icons.lock_outline_rounded,
+            //               color: ColorsReference.textColorBlack,
+            //               size: 24,
+            //             ),
+            //             SizedBox(width: 10),
+            //             Text(
+            //               'Change Password',
+            //               style: TextStyle(
+            //                 color: ColorsReference.textColorBlack,
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w400,
+            //                 fontFamily: 'Poppins',
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //         Icon(
+            //           Icons.arrow_forward_ios_rounded,
+            //           color: ColorsReference.textColorBlack,
+            //           size: 20,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 16),
           ],
         ),
