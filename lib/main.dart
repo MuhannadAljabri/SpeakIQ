@@ -11,37 +11,36 @@ import '../Screens/home_navigation_screen.dart';
 import '../Screens/LoadingScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await FlutterDownloader.initialize(
-      debug: true, // optional: set to false to disable printing logs to console (default: true)
-      ignoreSsl: true // option: set to false to disable working with http links (default: false)
+  await FlutterDownloader.initialize(
+    debug: true,
+    ignoreSsl: true,
   );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
-}
+  // Check if the user is logged in using shared preferences
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // Determine which screen to show based on the user's login status
+  Widget initialScreen = isLoggedIn ? const HomeNavigationScreen() : const SplashScreen();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      // Routes
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/user_signup': (context) => const UserSignup(),
-        '/home': (context) => const HomeNavigationScreen(),
-        '/onboarding': (context) => OnboardingScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/speaker_signup': (context) => const SpeakerSignUp(),
-        '/forgot_password': (context) => const ForgotPasswordScreen(),
-        '/speaker_profile': (context) => const SpeakerProfile(),
-        '/loading_screen':(context) =>  LoadingScreen(),
-      },
-    );
-  }
+  runApp(MaterialApp(
+    initialRoute: '/',
+    routes: {
+      '/': (context) => initialScreen,
+      '/splash': (context) => const SplashScreen(),
+      '/user_signup': (context) => const UserSignup(),
+      '/home': (context) => const HomeNavigationScreen(),
+      '/onboarding': (context) => OnboardingScreen(),
+      '/login': (context) => const LoginScreen(),
+      '/speaker_signup': (context) => const SpeakerSignUp(),
+      '/forgot_password': (context) => const ForgotPasswordScreen(),
+      '/speaker_profile': (context) => const SpeakerProfile(),
+      '/loading_screen': (context) => LoadingScreen(),
+    },
+  ));
 }
