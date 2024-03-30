@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speak_iq/Screens/home.dart';
 import 'package:speak_iq/Screens/home_navigation_screen.dart';
 import '../backend/firebase.dart';
@@ -150,6 +151,8 @@ class ProfilePageState extends State<ProfilePage> {
                   // Logout Box
                   buttonBox('Logout', Icons.logout_outlined, () async {
                     await FirebaseAuth.instance.signOut(); // Sign out the user from Firebase
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('isLoggedIn', false);
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/login',
