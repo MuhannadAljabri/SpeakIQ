@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../backend/firebase.dart';
 import './change_password.dart';
 import '../Style/route_animation.dart';
@@ -296,8 +297,10 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                               )
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(30),
-                                child: Image.network(
-                                  pictureUrl.startsWith('http') ? pictureUrl : '',
+                                child: CachedNetworkImage(
+                                  imageUrl: pictureUrl.startsWith('http') ? pictureUrl : '',
+                                  placeholder: (context, url) => CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
                                   height: 85,
                                   width: 85,
                                   fit: BoxFit.cover,
