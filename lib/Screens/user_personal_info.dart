@@ -257,7 +257,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: TextField(
-                style: const TextStyle(color: ColorsReference.textColorBlack),
+                style: const TextStyle(color: Colors.grey),
                 controller: emailController,
                 readOnly: true,
                 decoration: InputDecoration(
@@ -282,6 +282,8 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                     ),
                     borderRadius: BorderRadius.circular(30),
                   ),
+                  filled: true,
+                  fillColor: ColorsReference.borderColorGray.withOpacity(0.1),
                 ),
               ),
             ),
