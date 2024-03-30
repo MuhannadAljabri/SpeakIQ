@@ -368,6 +368,9 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   _launchYouTube() async {
     String url = link;
     try {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
       if (await launchUrl(Uri.parse(url),
           mode: LaunchMode.externalApplication)) {
       } else {
