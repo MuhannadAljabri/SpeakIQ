@@ -419,7 +419,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: TextField(
-                    style: const TextStyle(color: ColorsReference.textColorBlack),
+                    style: const TextStyle(color: Colors.grey),
                     controller: emailController,
                     readOnly: true,
                     decoration: InputDecoration(
@@ -444,6 +444,8 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         ),
                         borderRadius: BorderRadius.circular(30),
                       ),
+                      filled: true,  // Add this line
+                      fillColor: ColorsReference.borderColorGray.withOpacity(0.1) // Add this line,
                     ),
                   ),
                 ),
