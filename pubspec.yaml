@@ -54,6 +54,7 @@ dependencies:
   open_file_plus: ^3.4.1
   flutter_email_sender: ^6.0.2
   getwidget: ^4.0.0
+  shared_preferences: ^2.0.8
   
 dev_dependencies:
   flutter_test:
