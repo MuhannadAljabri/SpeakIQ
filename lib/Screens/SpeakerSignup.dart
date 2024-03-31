@@ -1,19 +1,15 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:speak_iq/Style/style.dart';
 import 'package:speak_iq/backend/firebase.dart';
 import 'package:speak_iq/style/colors.dart';
-import 'package:speak_iq/Style/route_animation.dart';
-
-import 'package:speak_iq/Screens/login.dart';
-import 'package:speak_iq/Screens/home.dart';
 
 class SpeakerSignUp extends StatefulWidget {
   const SpeakerSignUp({super.key});
@@ -130,6 +126,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
             );
           },
         );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('showStatusBar', true);
       }
     } catch (e) {
       // Handle authentication error
@@ -277,7 +275,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         alignment: Alignment.center,
                         height: 85,
                         width: 85,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Color.fromARGB(250, 240, 240, 240),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(30))),
@@ -350,13 +348,13 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         decoration: InputDecoration(
                           labelStyle: TextStyle(color: textColorBlack),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(206, 206, 206, 0.5)),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(44, 44, 44, 0.494)),
                             borderRadius: BorderRadius.circular(50.0),
@@ -404,13 +402,13 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         decoration: InputDecoration(
                           labelStyle: TextStyle(color: textColorBlack),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(206, 206, 206, 0.5)),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(44, 44, 44, 0.494)),
                             borderRadius: BorderRadius.circular(50.0),
@@ -533,13 +531,13 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       decoration: InputDecoration(
                           labelStyle: TextStyle(color: textColorBlack),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(206, 206, 206, 0.5)),
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 width: 2.0,
                                 color: Color.fromRGBO(44, 44, 44, 0.494)),
                             borderRadius: BorderRadius.circular(20.0),
@@ -550,7 +548,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           labelText: 'Bio (Maximum 5 Lines of Text)',
                           isDense: true,
-                          contentPadding: EdgeInsets.only(
+                          contentPadding: const EdgeInsets.only(
                               top: 20, left: 25, right: 47, bottom: 40),
                           hintMaxLines: 5,
                           hintText:
@@ -594,8 +592,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                         semanticsLabel: 'vector',
                                         color: ColorsReference.lightBlue,
                                       ),
-                                      SizedBox(height: 10),
-                                      Text(
+                                      const SizedBox(height: 10),
+                                      const Text(
                                         "Upload your speaker’s sheet as PDF",
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -620,15 +618,15 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                           height: 70,
                                           width: 70,
                                         ),
-                                        SizedBox(width: 20),
+                                        const SizedBox(width: 20),
                                         Flexible(
                                           child: Text(
                                             '$_fileName',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontFamily: 'Poppins'),
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 15,
                                         ),
                                         GestureDetector(
@@ -648,7 +646,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                             )),
 
                   Padding(
-                    padding: EdgeInsets.only(left: 16, right: 16, top: 20),
+                    padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
                     child: RequiredTextField(
                         hintText: "Paste here a link to your video",
                         labelText: "Link to Video",
@@ -678,12 +676,12 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                           submission();
                         }
                       },
-                      child: Text('Register', style: TextStyle(color: Colors.white),),
+                      child: const Text('Register', style: TextStyle(color: Colors.white),),
                     ),
                   )),
               // Navigate to login page
               Padding(
-                  padding: EdgeInsets.only(bottom: 30),
+                  padding: const EdgeInsets.only(bottom: 30),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
