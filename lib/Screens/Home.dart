@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
-import '../backend/firebase.dart';
-import 'package:firebase_database/firebase_database.dart';
-import '../style/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import '../backend/firebase.dart';
+import '../style/colors.dart';
 import '../backend/infoRetrieval.dart';
+
 
 class Speaker {
   final String userID;
@@ -22,7 +25,7 @@ class Speaker {
 }
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   Widget build(BuildContext context) {
     return MyHomePage();
@@ -38,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String userStatus = "";
   bool isSpeaker = false; // Flag to check if the user is a speaker
+  bool showStatusBar = true;
 
   String firstName = "";
   final DatabaseReference _speakersRef =
@@ -54,19 +58,28 @@ class _MyHomePageState extends State<MyHomePage> {
     loadUsers();
     _loadSpeakers();
     checkIfSpeaker();
-
+    Timer(
+      const Duration(seconds: 2),
+      () {
+        setShowStatusBarToFalse();
+      },
+    );
   }
 
   List<Speaker> filteredSpeakers = [];
-
   List<String> selectedLanguages = [];
   List<String> selectedTopics = [];
 
+  void setShowStatusBarToFalse() async {
+    if (userStatus == 'approved' || userStatus == 'declined') {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('showStatusBar', false);
+    }
+  }
+
   void checkIfSpeaker() async {
     // Assuming you're using Firebase Authentication
-
-      User? user = FirebaseAuth.instance.currentUser;
-
+    User? user = FirebaseAuth.instance.currentUser;
 
     final speakerSnapshot = await _speakersRef.child(user!.uid).once();
     final userSnapshot = await _userssRef.child(user!.uid).once();
@@ -84,6 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
         isSpeaker = true; // User is a speaker
         print('${isSpeaker.toString()}, ${userData['firstName']}');
       });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      showStatusBar = prefs.getBool('showStatusBar') ?? false;
     }
   }
 
@@ -171,7 +187,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.filter_list),
             iconSize: 34,
             onPressed: () {
-              
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => FilterPage(
@@ -192,10 +207,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
            
       body: Column(children: [
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
-        if (userStatus.isNotEmpty && isSpeaker)
+        if (userStatus.isNotEmpty && isSpeaker && showStatusBar)
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Container(
@@ -207,16 +222,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: ColorsReference.darkBlue,
                   borderRadius: BorderRadius.circular(17),
                 ),
-                child: Row(children: [SizedBox(width: 15,),Text(
-                  "Your request's Status:",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400, color: Colors.white
+                child: Row(children: [
+                  const SizedBox(width: 15,), 
+                  const Text(
+                    "Your request's Status:",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400, color: Colors.white
+                    ),
                   ),
-                ),Spacer(), Text(userStatus, style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500, color: Colors.white)), SizedBox(width: 15)])
+                  const Spacer(), 
+                  Text(userStatus, style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500, color: Colors.white)), SizedBox(width: 15)])
               )),
+        
         Expanded(
             child: ListView.builder(
                 itemCount: filteredSpeakers.length,
@@ -354,7 +374,7 @@ List<Widget> buildItemWidgets(List<String>items) {
             padding: const EdgeInsets.fromLTRB(12,4,12,4), // Adjust padding as needed
             child: Text(
               item,
-              style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
+              style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600), // Adjust text style as needed
             ),
           ),
         ),
@@ -396,9 +416,9 @@ class _FilterPageState extends State<FilterPage> {
       Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Filter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+        title: const Text('Filter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
          leading: IconButton(
-    icon: Icon(Icons.arrow_back_ios_new_rounded), // Change the back button icon here
+    icon: const Icon(Icons.arrow_back_ios_new_rounded), // Change the back button icon here
     onPressed: () {
       Navigator.pop(context);
     },
@@ -415,7 +435,7 @@ class _FilterPageState extends State<FilterPage> {
               }).toList();
               Navigator.pop(context, filteredSpeakers);
             },
-            child: Text(
+            child: const Text(
               'Apply',
               style: TextStyle(color: ColorsReference.lightBlue, fontSize: 16, fontWeight: FontWeight.w400),
             ),
@@ -423,10 +443,10 @@ class _FilterPageState extends State<FilterPage> {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         children: [
           ListTile(
-            title: Text('Select topics:', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+            title: const Text('Select topics:', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
             subtitle: Wrap(
               children: List<Widget>.generate(
                 widget.allSpeakers
@@ -440,7 +460,7 @@ class _FilterPageState extends State<FilterPage> {
                       .toSet()
                       .toList()[index];
                   return CheckboxListTile(
-                    title: Text(topic, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
+                    title: Text(topic, style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),),
                     value: _selectedTopics.contains(topic),
                     onChanged: (bool? value) {
                       setState(() {
@@ -461,7 +481,7 @@ class _FilterPageState extends State<FilterPage> {
             ),
           ),
           ListTile(
-            title: Text('Select spoken languages:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+            title: const Text('Select spoken languages:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
             subtitle: Wrap(
               children: List<Widget>.generate(
                 widget.allSpeakers
@@ -475,7 +495,7 @@ class _FilterPageState extends State<FilterPage> {
                       .toSet()
                       .toList()[index];
                   return CheckboxListTile(
-                    title: Text(language, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+                    title: Text(language, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
                     value: _selectedLanguages.contains(language),
                     onChanged: (bool? value) {
                       setState(() {
