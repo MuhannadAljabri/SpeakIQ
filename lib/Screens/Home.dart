@@ -148,9 +148,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: 
+      Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black), // Change icon color to black
+        iconTheme: const IconThemeData(color: Colors.black), // Change icon color to black
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: Text.rich(
@@ -168,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextSpan(
                 text: firstName,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 18,
                   fontFamily: 'Poppins',
@@ -184,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0.0,
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             iconSize: 34,
             onPressed: () {
               Navigator.push(
@@ -199,13 +200,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     filteredSpeakers = value;
                   });
-                };}
-
+                }
+              }
               );})
         ],
 
       ),
-           
       body: Column(children: [
         const SizedBox(
           height: 5,
@@ -232,11 +232,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const Spacer(), 
-                  Text(userStatus, style: const TextStyle(
+                  Text(
+                    userStatus, 
+                    style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w500, color: Colors.white)), SizedBox(width: 15)])
+                      fontWeight: FontWeight.w500, color: Colors.white
+                    )
+                  ), 
+                  const SizedBox(width: 15)])
               )),
-        
         Expanded(
             child: ListView.builder(
                 itemCount: filteredSpeakers.length,
@@ -268,8 +272,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               Container(
                                   width: double.maxFinite,
                                   height: 80,
-                                  margin: EdgeInsets.only(left: 20, bottom: 5),
-                                  decoration: BoxDecoration(
+                                  margin: const EdgeInsets.only(left: 20, bottom: 5),
+                                  decoration: const BoxDecoration(
                                     border: Border(
                                       bottom: BorderSide(
                                         color: ColorsReference.borderColorGray,
@@ -288,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               border: Border.all(
                                                   color: ColorsReference
                                                       .borderColorGray),
-                                              color: Color.fromARGB(
+                                              color: const Color.fromARGB(
                                                   255, 255, 255, 255),
                                               shape: BoxShape.circle,
                                             ),
@@ -296,21 +300,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               imageUrl:
                                                   filteredSpeakers[index].pictureUrl,
                                               placeholder: (context, url) =>
-                                                  CircularProgressIndicator(),
+                                                  const CircularProgressIndicator(),
                                               errorWidget:
                                                   (context, url, error) =>
-                                                      Icon(Icons.error),
+                                                      const Icon(Icons.error),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 20,
                                         ),
                                         Text(
                                           '${filteredSpeakers[index].firstName} ${filteredSpeakers[index].lastName}',
-                                          style: TextStyle(
-                                            color: const Color.fromARGB(
+                                          style: const TextStyle(
+                                            color: Color.fromARGB(
                                                 255, 0, 0, 0),
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -320,7 +324,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               // Name in the center
 
                               Padding(
-                                  padding: EdgeInsets.only(top: 10, left: 20),
+                                  padding: const EdgeInsets.only(top: 10, left: 20),
                                   child: Row(
                                     children: [
                                       SvgPicture.asset(
@@ -329,18 +333,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                         width: 15,
                                         color: Colors.black,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
-                                      Text(
+                                      const Text(
                                         'Topics',
                                         style: TextStyle(
-                                          color: const Color.fromARGB(
+                                          color: Color.fromARGB(
                                               255, 108, 108, 108),
                                           fontSize: 15,
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 20,
                                       ),
 
@@ -354,6 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 })),
       ]),
+    )
     );
   }
 }
@@ -415,14 +420,25 @@ class _FilterPageState extends State<FilterPage> {
     return SafeArea(child: 
       Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         centerTitle: true,
-        title: const Text('Filter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
-         leading: IconButton(
-    icon: const Icon(Icons.arrow_back_ios_new_rounded), // Change the back button icon here
-    onPressed: () {
-      Navigator.pop(context);
-    },
-  ),
+        title: const Text(
+          'Filter', 
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18, 
+          )
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.black,
+          ), // Change the back button icon here
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -442,6 +458,7 @@ class _FilterPageState extends State<FilterPage> {
           ),
         ],
       ),
+      
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 10),
         children: [
