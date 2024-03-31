@@ -392,7 +392,8 @@ class _FilterPageState extends State<FilterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: 
+      Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Filter', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
@@ -496,6 +497,7 @@ class _FilterPageState extends State<FilterPage> {
           ),
         ],
       ),
+    )
     );
   }
 }
