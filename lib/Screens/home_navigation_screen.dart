@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import './Home.dart';
 import './profile_page.dart';
@@ -22,11 +23,12 @@ class HomeNavigationScreenState extends State<HomeNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = Platform.isIOS? 92.0 : 85.0;
     return Scaffold(
       body: _pages[_currentIndex],
       
       bottomNavigationBar: Container(
-          height: 85,
+          height: screenHeight,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
