@@ -10,6 +10,7 @@ import 'package:speak_iq/style/colors.dart';
 import 'package:speak_iq/style/route_animation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speak_iq/style/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -238,7 +239,11 @@ class LoginState extends State<LoginScreen> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
-          .then((value) {
+          .then((value) async {
+            // Save the logged in state
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+
         Navigator.of(context).pushAndRemoveUntil(
             slidingFromLeft(LoadingScreen()), (Route<dynamic> route) => false);
       }).catchError((error) {
