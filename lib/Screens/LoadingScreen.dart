@@ -33,7 +33,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
    @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const SafeArea(child: 
+      Scaffold(
       body: Center(
         child: GFLoader( // Using GFLoader circular loading indicator
           type: GFLoaderType.circle,
@@ -42,6 +43,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           loaderColorThree: ColorsReference.lightBlue,
         ),
       ),
-    );
+    )
+    )
   }
 }
