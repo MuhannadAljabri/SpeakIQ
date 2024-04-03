@@ -35,7 +35,8 @@ class _Onboard extends State<OnboardingScreen> {
         ),
 
         // Colored box from the bottom to the middle
-        Container(
+        Expanded(
+        child: Container(
           height: MediaQuery.of(context).size.height / 2,
           decoration: const BoxDecoration(
             color: Color.fromARGB(255, 245, 245, 245),
@@ -100,6 +101,7 @@ class _Onboard extends State<OnboardingScreen> {
               ),
             ],
           ),
+        ),
         ),
       ],
     );
