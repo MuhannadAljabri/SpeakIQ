@@ -268,7 +268,9 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Text(
                     'Topics',
                     textAlign: TextAlign.left,
@@ -278,10 +280,12 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  Row(
+                  Wrap(
+                    runSpacing: 8.0,
                     children: buildItemWidgets(topics),
                   )
                 ])
+                )
               ],
             ),
             SizedBox(height: 16.0), // Adjust the space between rows
@@ -294,7 +298,8 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Text(
                     'Languages',
                     textAlign: TextAlign.left,
@@ -304,10 +309,12 @@ class SpeakerProfileState extends State<SpeakerProfile> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  Row(
+                  Wrap(
+                    runSpacing: 8.0,
                     children: buildItemWidgets(languages),
                   )
                 ])
+                )
               ],
             ),
             SizedBox(height: 16.0), // Adjust the space between rows
