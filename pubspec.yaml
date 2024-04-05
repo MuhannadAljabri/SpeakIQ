@@ -99,6 +99,7 @@ flutter:
     - assets/sheet_icon.svg
     - assets/topic_icon.svg
     - assets/language_icon.svg
+    - assets/42.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

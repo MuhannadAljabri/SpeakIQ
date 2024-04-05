@@ -107,9 +107,10 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Congratulations!'),
+              title: const Text('Congratulations!', style: TextStyle(color: Colors.white),),
+              backgroundColor: ColorsReference.darkBlue,
               content: const Text(
-                  'You have successfully created an account! You will be notified once your request as a speaker is approved.'),
+                  'You have successfully created an account! You will be notified once your request as a speaker is approved.', style: TextStyle(color: Colors.white),),
               actions: <Widget>[
                 TextButton(
                   child: Text('OK'),
@@ -139,9 +140,10 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Account Exists'),
+              title: const Text('Account Exists',style: TextStyle(color: Colors.white),),
+              backgroundColor: ColorsReference.darkBlue,
               content: const Text(
-                'An account with this email already exists. Please login or use a different email.',
+                'An account with this email already exists. Please login or use a different email.', style: TextStyle(color: Colors.white),
               ),
               actions: <Widget>[
                 TextButton(

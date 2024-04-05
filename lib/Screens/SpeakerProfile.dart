@@ -151,14 +151,22 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   Widget content() {
     return Column(children: [
       Stack(clipBehavior: Clip.none, children: [
+        pictureUrl != 'Not provided'?
         Image.network(pictureUrl,
             height: (298 / 812) *
                 (MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top),
             width: MediaQuery.of(context).size.width,
-            fit: BoxFit.cover),
+            fit: BoxFit.cover) 
+            : Image.asset('assets/42.png',
+            height: (298 / 812) *
+                (MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top),
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover), 
+
         Container(
-          height: 200,
+          
           decoration: const BoxDecoration(
             color: Color.fromRGBO(0, 0, 0, 0),
             borderRadius: BorderRadius.only(
@@ -206,7 +214,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
       const SizedBox(height: 50),
       Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: (Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -360,7 +368,7 @@ class SpeakerProfileState extends State<SpeakerProfile> {
               height: 100, // or whatever height works for your design
             ),
           ],
-        ),
+        )),
       ),
     ]);
   }
@@ -498,12 +506,18 @@ class SpeakerProfileState extends State<SpeakerProfile> {
   showAlertDialog(BuildContext context) {
     Widget okButton = TextButton(
       child: Text("OK"),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pop(); // Close the dialog
+        Navigator.of(context).pop(); 
+
+
+      },
     );
 
     AlertDialog alert = AlertDialog(
-      title: Text("Booking Request Sent"),
-      content: Text("Please allow the request to be processed and reviewed"),
+      title: Text("Congratulations!", style: TextStyle(fontFamily: 'Poppins', color: Colors.white)),
+      backgroundColor: ColorsReference.darkBlue,
+      content: Text("Your booking request has been sent. Please allow the request to be processed and reviewed. One of our team members will contact you through your email or phone number (If applicable). Thank you for your business!", style: TextStyle(color: Colors.white),),
       actions: [okButton],
     );
     showDialog(

@@ -624,9 +624,10 @@ class _UserSignupState extends State<UserSignup> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text('Congratulations!'),
+                  title: const Text('Congratulations!', style: TextStyle(color: Colors.white),),
+                  backgroundColor: ColorsReference.darkBlue,
                   content:
-                      const Text('You have successfully created an account!'),
+                      const Text('You have successfully created an account!', style: TextStyle(color: Colors.white),),
                   actions: <Widget>[
                     TextButton(
                       child: Text('OK'),
@@ -657,9 +658,10 @@ class _UserSignupState extends State<UserSignup> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text('Account Exists'),
+                  title: const Text('Account Exists', style: TextStyle(color: Colors.white),),
+                  backgroundColor: ColorsReference.darkBlue,
                   content: const Text(
-                      'An account with this email already exists. Please login or use a different email.'),
+                      'An account with this email already exists. Please login or use a different email.', style: TextStyle(color: Colors.white),),
                   actions: <Widget>[
                     TextButton(
                       child: Text('OK'),
@@ -677,8 +679,10 @@ class _UserSignupState extends State<UserSignup> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text('Error'),
-                  content: const Text('An error occurred. Please try again.'),
+                  title: const Text('Error', style: TextStyle(color: Colors.white),),
+                  backgroundColor: ColorsReference.darkBlue,
+
+                  content: const Text('An error occurred. Please try again.', style: TextStyle(color: Colors.white),),
                   actions: <Widget>[
                     TextButton(
                       child: Text('OK'),

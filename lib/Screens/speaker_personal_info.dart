@@ -176,8 +176,10 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
           showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Update Successful'),
-            content: const Text('Your information has been updated.'),
+            
+            title: const Text('Update Successful', style: TextStyle(color: Colors.white),),
+            backgroundColor: ColorsReference.darkBlue,
+            content: const Text('Your information has been updated.', style: TextStyle(color: Colors.white),),
             actions: [
               TextButton(
                 onPressed: () {
