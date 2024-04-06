@@ -37,17 +37,39 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
 
   // Declare the lists of topics and spoken languages
   List<String> availableTopics = [
-    'Finance',
-    'Entrepreneurship',
+    'Diversity',
+    'Leadership',
+    "Women's issues",
+    'Innovation',
+    'Entreprenuership',
+    'Motivational'
+        'Diversity',
+    'Mental health',
+    'Customer experience',
+    'Artificial Intelligence',
+    'Emotional intelligence',
+    'Communication',
+    'Future trends',
+    'Technology',
+    'Culture',
+    'Employee management',
+    'Team building',
+    'Storytelling',
+    'Celebrity',
+    'Diversity, equity and inclusion',
+    'Inspirational',
     'Politics',
-    'Environment'
+    'Personal development',
+    'Corporate culture',
+    'Marketing',
+    'Media',
+    'Beauty',
+    'STEM'
   ]; // Your list of words
   List<String> selectedTopics = [];
   List<String> availableLanguages = [
-    'Arabic',
-    'Chinese',
+    'English',
     'Spanish',
-    'French'
   ]; // Your list of words
   List<String> selectedLanguages = [];
 
@@ -86,7 +108,11 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
         File pictureFile = File(_imagePath);
         File pdfFile = File(_filePath);
         // Upload the speaker information to the database
-        await userUploader.uploadUserInfo(firstName: firstName, lastName: lastName, phoneNum: phoneNumber, email: email);
+        await userUploader.uploadUserInfo(
+            firstName: firstName,
+            lastName: lastName,
+            phoneNum: phoneNumber,
+            email: email);
         await userUploader.uploadSpeakerInfo(
             firstName: firstName,
             lastName: lastName,
@@ -107,10 +133,15 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Congratulations!', style: TextStyle(color: Colors.white),),
+              title: const Text(
+                'Congratulations!',
+                style: TextStyle(color: Colors.white),
+              ),
               backgroundColor: ColorsReference.darkBlue,
               content: const Text(
-                  'You have successfully created an account! You will be notified once your request as a speaker is approved.', style: TextStyle(color: Colors.white),),
+                'You have successfully created an account! You will be notified once your request as a speaker is approved.',
+                style: TextStyle(color: Colors.white),
+              ),
               actions: <Widget>[
                 TextButton(
                   child: Text('OK'),
@@ -140,10 +171,14 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Account Exists',style: TextStyle(color: Colors.white),),
+              title: const Text(
+                'Account Exists',
+                style: TextStyle(color: Colors.white),
+              ),
               backgroundColor: ColorsReference.darkBlue,
               content: const Text(
-                'An account with this email already exists. Please login or use a different email.', style: TextStyle(color: Colors.white),
+                'An account with this email already exists. Please login or use a different email.',
+                style: TextStyle(color: Colors.white),
               ),
               actions: <Widget>[
                 TextButton(
@@ -457,7 +492,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: const Text(
-                        'Topics (select all that applies)',
+                        'Topics (Maximum 5 selections)',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
@@ -474,7 +509,22 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                           onSelected: (selected) {
                             setState(() {
                               if (selected) {
-                                selectedTopics.add(word);
+                                if (selectedTopics.length < 5) {
+                                  selectedTopics.add(word);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      backgroundColor: ColorsReference.darkBlue,
+                                      content: Text(
+                                        'You can\'t select more than 5 topics.',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  );
+                                }
                               } else {
                                 selectedTopics.remove(word);
                               }
@@ -648,7 +698,8 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                             )),
 
                   Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 20),
                     child: RequiredTextField(
                         hintText: "Paste here a link to your video",
                         labelText: "Link to Video",
@@ -678,7 +729,10 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                           submission();
                         }
                       },
-                      child: const Text('Register', style: TextStyle(color: Colors.white),),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   )),
               // Navigate to login page

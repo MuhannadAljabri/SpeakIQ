@@ -22,7 +22,6 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
   
   List<String> roles = [
       'Event Planner',
-      'Speaker',
       'Other'
     ];
   String selectedRole = 'None'; // Original role

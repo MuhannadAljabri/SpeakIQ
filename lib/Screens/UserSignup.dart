@@ -28,7 +28,6 @@ class _UserSignupState extends State<UserSignup> {
 
   List<String> roles = [
     'Event Planner',
-    'Speaker',
     'Other'
   ]; // Add your role options here
   String selectedRole = 'None'; // Set a default role
