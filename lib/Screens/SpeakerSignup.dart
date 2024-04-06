@@ -31,6 +31,7 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
   final Reference _storageReference = FirebaseStorage.instance.ref();
   bool passwordVisible = true;
   bool confirmPasswordVisible = true;
+  bool isRegisterButtonClicked = false;
   Color borderColorGray = const Color.fromRGBO(206, 206, 206, 0.5);
   Color textColorBlack = Color.fromARGB(255, 66, 66, 66);
   Color primaryColorGreen = const Color(0xFF2CA6A4);
@@ -43,7 +44,6 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
     'Innovation',
     'Entreprenuership',
     'Motivational'
-        'Diversity',
     'Mental health',
     'Customer experience',
     'Artificial Intelligence',
@@ -308,14 +308,21 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                       _pickImageFromGallery();
                     },
                     child: Center(
-                      child: Container(
+                      child: Column(
+                      children: [
+                        Container(
                         alignment: Alignment.center,
                         height: 85,
                         width: 85,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                             color: Color.fromARGB(250, 240, 240, 240),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            border: _selectedImage == null && isRegisterButtonClicked == true
+                          ? Border.all(
+                              color: Colors.red, // Set border color to red
+                              width: 1.0, // Set border width
+                            ) : null,
+                        ),
                         child: _selectedImage != null
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(30.0),
@@ -337,6 +344,19 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                                 width: 24,
                                 color: ColorsReference.lightBlue,
                               ),
+                      ),
+                        if (_selectedImage == null && isRegisterButtonClicked)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              'This field is required',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                      ],
                       ),
                     ),
                   )),
@@ -725,7 +745,10 @@ class _SpeakerSignUpState extends State<SpeakerSignUp> {
                         ),
                       ),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isRegisterButtonClicked = true;
+                        });
+                        if (_formKey.currentState!.validate() && _selectedImage != null) {
                           submission();
                         }
                       },
