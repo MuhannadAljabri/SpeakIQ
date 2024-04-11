@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:speak_iq/Screens/Home.dart';
+import 'package:speak_iq/Screens/privacy_policy.dart';
+import 'package:speak_iq/Screens/terms_and_conditions.dart';
 import 'package:speak_iq/Style/route_animation.dart';
 import 'package:speak_iq/Style/colors.dart';
 import 'package:speak_iq/Screens/login.dart';
@@ -527,6 +529,58 @@ class _UserSignupState extends State<UserSignup> {
                   ),
                 )),
             // Navigate to login page
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 0),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the login page
+              Navigator.of(context).push(slidingFromDown(const TermsAndConditions()));
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'By clicking register you agree to our Terms and Conditions',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 0),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the login page
+              Navigator.of(context).push(slidingFromDown(const PrivacyPolicy()));
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'and Privacy Policy',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 30, bottom: 30),
               child: GestureDetector(
