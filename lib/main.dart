@@ -29,6 +29,7 @@ void main() async {
   Widget initialScreen = isLoggedIn ? const HomeNavigationScreen() : const SplashScreen();
 
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false, // Set this to false to remove the debug banner
     initialRoute: '/',
     routes: {
       '/': (context) => initialScreen,
