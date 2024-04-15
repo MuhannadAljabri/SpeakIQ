@@ -1,5 +1,5 @@
-name: speak_iq
-description: A new Flutter project.
+name: Speaksy
+description: Public speakers booking app.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.0.8
   
 dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
   flutter_test:
     sdk: flutter
 
@@ -100,6 +101,7 @@ flutter:
     - assets/topic_icon.svg
     - assets/language_icon.svg
     - assets/42.png
+    - assets/SpeaksyBlue.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -130,3 +132,21 @@ flutter:
 
 flutter_native_splash: 
   image: D:\Desktop\SpeakIQ_Flutter\speak_iq\lib\assets\MicDropLogoMain.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/SpeaksyBlue.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/SpeaksyBlue.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/SpeaksyBlue.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/SpeaksyBlue.png"
