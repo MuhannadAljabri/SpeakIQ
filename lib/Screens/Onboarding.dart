@@ -65,7 +65,7 @@ class _Onboard extends State<OnboardingScreen> {
                         fontSize: 18,
                       ),
                     )),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     Spacer(),
