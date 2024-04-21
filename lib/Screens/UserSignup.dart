@@ -530,7 +530,7 @@ class _UserSignupState extends State<UserSignup> {
                 )),
             // Navigate to login page
             Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 0),
+              padding: const EdgeInsets.only(top: 15, bottom: 0),
               child: GestureDetector(
                 onTap: () {
                   // Navigate to the login page

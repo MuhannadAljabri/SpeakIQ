@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:speak_iq/Screens/change_password.dart';
+import 'package:speak_iq/Screens/terms_and_conditions.dart';
 import '../backend/firebase.dart';
 import '../Style/route_animation.dart';
 import '../Style/colors.dart';
@@ -14,16 +15,12 @@ class UserPersonalInfo extends StatefulWidget {
 }
 
 class UserPersonalInfoState extends State<UserPersonalInfo> {
-
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  
-  List<String> roles = [
-      'Event Planner',
-      'Other'
-    ];
+
+  List<String> roles = ['Event Planner', 'Other'];
   String selectedRole = 'None'; // Original role
   String otherRoleText = ''; // Text entered for "Other" role
   bool hasChanges = false;
@@ -70,15 +67,14 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
   }
 
   Future<void> updateUser() async {
-
     setState(() {
       formSubmitted = true;
       isFirstNameValid = firstNameController.text.isNotEmpty;
       isLastNameValid = lastNameController.text.isNotEmpty;
       isPhoneNumberValid = phoneNumberController.text.isEmpty ||
-        _isValidPhoneNumber(phoneNumberController.text);
+          _isValidPhoneNumber(phoneNumberController.text);
       isOtherRoleValid = otherRoleText.isNotEmpty && otherRoleText != 'Other';
-      
+
       // Maintain focus on the field with an empty value
       if (!isFirstNameValid) {
         FocusScope.of(context).requestFocus(firstNameFocus);
@@ -91,18 +87,20 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
       }
       // Call a method to update user information in Firebase
       else {
-        String adjustedRole = selectedRole == 'Other' ? '$selectedRole: $otherRoleText' : selectedRole;
+        String adjustedRole = selectedRole == 'Other'
+            ? '$selectedRole: $otherRoleText'
+            : selectedRole;
         FirebaseDatabase.instance
-          .ref()
-          .child("users")
-          .child(FirebaseAuth.instance.currentUser!.uid)
-          .update({
-            'firstName': firstNameController.text,
-            'lastName': lastNameController.text,
-            //'email': emailController.text,
-            'phoneNumber': phoneNumberController.text,
-            'role': adjustedRole
-          });
+            .ref()
+            .child("users")
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'firstName': firstNameController.text,
+          'lastName': lastNameController.text,
+          //'email': emailController.text,
+          'phoneNumber': phoneNumberController.text,
+          'role': adjustedRole
+        });
         // Show a dialog if update is successful
         showDialog(
           context: context,
@@ -183,12 +181,14 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                   hintText: 'Enter your first name',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
-                    color: ColorsReference.textColorBlack, 
+                    color: ColorsReference.textColorBlack,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                         width: 2.0,
-                        color: isFirstNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                        color: isFirstNameValid
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed),
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -201,7 +201,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   errorText:
-                    isFirstNameValid ? null : 'Please enter your first name',
+                      isFirstNameValid ? null : 'Please enter your first name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -217,7 +217,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                 onChanged: (value) {
                   setState(() {
                     hasChanges = true;
-                    isLastNameValid = value.isNotEmpty; 
+                    isLastNameValid = value.isNotEmpty;
                   });
                 },
                 // readOnly: true,
@@ -227,12 +227,14 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                   hintText: 'Enter your last name',
                   contentPadding: const EdgeInsets.all(16.0),
                   labelStyle: const TextStyle(
-                    color: ColorsReference.textColorBlack, 
+                    color: ColorsReference.textColorBlack,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                         width: 2.0,
-                        color: isLastNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                        color: isLastNameValid
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed),
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -245,7 +247,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   errorText:
-                    isLastNameValid ? null : 'Please enter your last name',
+                      isLastNameValid ? null : 'Please enter your last name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -272,7 +274,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                       color: ColorsReference.borderColorGray,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(30),                    
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
@@ -295,7 +297,8 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                 onChanged: (value) {
                   setState(() {
                     hasChanges = true;
-                    isPhoneNumberValid = value.isEmpty || _isValidPhoneNumber(value);
+                    isPhoneNumberValid =
+                        value.isEmpty || _isValidPhoneNumber(value);
                   });
                 },
                 //readOnly: true,
@@ -310,7 +313,9 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                         width: 2.0,
-                        color: isPhoneNumberValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                        color: isPhoneNumberValid
+                            ? ColorsReference.borderColorGray
+                            : ColorsReference.errorColorRed),
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -323,7 +328,7 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   errorText:
-                    isPhoneNumberValid ? null : 'Please a valid phone number',
+                      isPhoneNumberValid ? null : 'Please a valid phone number',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -332,96 +337,167 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
             ),
             // Roles drop down field
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Column(
-                children: [
-                  DropdownButtonFormField(
-                    iconEnabledColor: Colors.black,
-                    items: roles.map((role) {
-                      return DropdownMenuItem(
-                        value: role,
-                        child: Text(role),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRole = value.toString();
-                        hasChanges = true;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 2.0,
-                            color: ColorsReference.borderColorGray),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 2.0,
-                            color: ColorsReference.borderColorGray),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      labelText: 'Role',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelStyle: const TextStyle(
-                        color: ColorsReference.textColorBlack,
-                      ),
-                      hintText: selectedRole,
-                      contentPadding: const EdgeInsets.all(16.0),
-                      //prefixText: prefixText,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                  ),
-                  // Additional text field for "Other" role
-                  if (selectedRole == 'Other')
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            otherRoleText = value;
-                            isOtherRoleValid = value.isNotEmpty;
-                          });
-                        },
-                        focusNode: otherRoleFocus,
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField(
+                      iconEnabledColor: Colors.black,
+                      items: roles.map((role) {
+                        return DropdownMenuItem(
+                          value: role,
+                          child: Text(role),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRole = value.toString();
+                          hasChanges = true;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
                               width: 2.0,
-                              color: ColorsReference.borderColorGray,
-                            ),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                              color: ColorsReference.borderColorGray),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
                               width: 2.0,
-                              color: isOtherRoleValid
-                                  ? Colors.grey
-                                  : ColorsReference.errorColorRed,
-                            ),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          labelText: 'Other Role*',
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelStyle: const TextStyle(
-                            color: ColorsReference.textColorBlack,
-                          ),
-                          hintText: 'Enter your role',
-                          errorText: isOtherRoleValid
-                            ? null
-                            : 'Please enter your role',
-                          contentPadding: const EdgeInsets.all(16.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
+                              color: ColorsReference.borderColorGray),
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        labelText: 'Role',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelStyle: const TextStyle(
+                          color: ColorsReference.textColorBlack,
+                        ),
+                        hintText: selectedRole,
+                        contentPadding: const EdgeInsets.all(16.0),
+                        //prefixText: prefixText,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                     ),
-                ],
-              )
+                    // Additional text field for "Other" role
+                    if (selectedRole == 'Other')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              otherRoleText = value;
+                              isOtherRoleValid = value.isNotEmpty;
+                            });
+                          },
+                          focusNode: otherRoleFocus,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 2.0,
+                                color: ColorsReference.borderColorGray,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: isOtherRoleValid
+                                    ? Colors.grey
+                                    : ColorsReference.errorColorRed,
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            labelText: 'Other Role*',
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelStyle: const TextStyle(
+                              color: ColorsReference.textColorBlack,
+                            ),
+                            hintText: 'Enter your role',
+                            errorText: isOtherRoleValid
+                                ? null
+                                : 'Please enter your role',
+                            contentPadding: const EdgeInsets.all(16.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                )),
+            Padding(
+              padding: const EdgeInsets.only(top: 15, bottom: 0),
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirm Delete'),
+                        content: Text(
+                            'Are you sure you want to delete your account?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              FirebaseDatabase.instance
+                                  .ref()
+                                  .child("users")
+                                  .child(FirebaseAuth.instance.currentUser!.uid)
+                                  .remove();
+
+                              FirebaseAuth.instance.currentUser?.delete();
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Sorry to see you leave!'),
+                                  content: const Text(
+                                      'Your account has been successfully deleted.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          '/login',
+                                          (Route<dynamic> route) => false,
+                                        );
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Delete account',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
             // Change password
             // Padding(
@@ -490,5 +566,4 @@ class UserPersonalInfoState extends State<UserPersonalInfo> {
     RegExp phoneRegex = RegExp(r'^\+?\d{0,3}?\d{8,15}$');
     return phoneRegex.hasMatch(phoneNumber);
   }
-
 }
