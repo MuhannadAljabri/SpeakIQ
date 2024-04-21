@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:speak_iq/Screens/terms_and_conditions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../backend/firebase.dart';
@@ -21,7 +22,6 @@ class SpeakerPersonalInfo extends StatefulWidget {
 }
 
 class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
-
   File? _selectedFile;
   File? _selectedImage;
   String _fileName = '';
@@ -30,7 +30,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
   String _imagePath = '';
   String? _fileDownloadUrl;
   String? _imageDownloadUrl;
-  
+
   bool formSubmitted = false;
   bool hasChanges = false;
 
@@ -87,16 +87,15 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
   }
 
   Future<void> updateSpeaker() async {
-
     setState(() async {
       formSubmitted = true;
       isFirstNameValid = firstNameController.text.isNotEmpty;
       isLastNameValid = lastNameController.text.isNotEmpty;
       isPhoneNumberValid = phoneNumberController.text.isEmpty ||
-        _isValidPhoneNumber(phoneNumberController.text);
+          _isValidPhoneNumber(phoneNumberController.text);
       isBioValid = bioController.text.isNotEmpty;
       isLinkValid = linkController.text.isNotEmpty;
-      
+
       // Maintain focus on the field with an empty value
       if (!isFirstNameValid) {
         FocusScope.of(context).requestFocus(firstNameFocus);
@@ -113,20 +112,21 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
       // Call a method to update user information in Firebase
       else {
         FirebaseDatabase.instance
-          .ref()
-          .child("users")
-          .child(FirebaseAuth.instance.currentUser!.uid)
-          .update({
-            'firstName': firstNameController.text,
-            'lastName': lastNameController.text,
-            'email': emailController.text,
-            'phoneNumber': phoneNumberController.text,
-          });
+            .ref()
+            .child("users")
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'firstName': firstNameController.text,
+          'lastName': lastNameController.text,
+          'email': emailController.text,
+          'phoneNumber': phoneNumberController.text,
+        });
         if (_selectedImage != null) {
           UserUploader userUploader = UserUploader();
           try {
             // Generate a unique filename for the new image
-            String lastNameWithUniqueExtension = '${lastNameController.text}-${DateTime.now().millisecondsSinceEpoch}';
+            String lastNameWithUniqueExtension =
+                '${lastNameController.text}-${DateTime.now().millisecondsSinceEpoch}';
             String uploadedImageUrl = await userUploader.uploadFile(
               _selectedImage!,
               'profile_pics',
@@ -140,12 +140,13 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
             print('Error uploading image file: $error');
           }
         }
-        
+
         if (_filePath != '') {
           UserUploader userUploader = UserUploader();
           try {
             // Generate a unique filename for the new pdf file
-            String lastNameWithUniqueExtension = '${lastNameController.text}-${DateTime.now().millisecondsSinceEpoch}';
+            String lastNameWithUniqueExtension =
+                '${lastNameController.text}-${DateTime.now().millisecondsSinceEpoch}';
             String uploadedPdfUrl = await userUploader.uploadFile(
               File(_filePath),
               'speaker_sheets',
@@ -161,35 +162,40 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
         }
 
         FirebaseDatabase.instance
-          .ref()
-          .child("speaker_requests")
-          .child(FirebaseAuth.instance.currentUser!.uid)
-          .update({
-            'fullName': '${firstNameController.text} ${lastNameController.text}',
-            'bio': bioController.text,
-            'link': linkController.text,
-            'pictureUrl': pictureUrl,
-            'pdfUrl': pdfUrl,
-          });
+            .ref()
+            .child("speaker_requests")
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'fullName': '${firstNameController.text} ${lastNameController.text}',
+          'bio': bioController.text,
+          'link': linkController.text,
+          'pictureUrl': pictureUrl,
+          'pdfUrl': pdfUrl,
+        });
         // Show a dialog if update is successful
         setState(() {
           showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            
-            title: const Text('Update Successful', style: TextStyle(color: Colors.white),),
-            backgroundColor: ColorsReference.darkBlue,
-            content: const Text('Your information has been updated.', style: TextStyle(color: Colors.white),),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: const Text('OK'),
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text(
+                'Update Successful',
+                style: TextStyle(color: Colors.white),
               ),
-            ],
-          ),
-        );
+              backgroundColor: ColorsReference.darkBlue,
+              content: const Text(
+                'Your information has been updated.',
+                style: TextStyle(color: Colors.white),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
         });
       }
     });
@@ -197,7 +203,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
 
   Future<void> _pickImageFromGallery() async {
     final pickedFile =
-      await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
       _imagePath = pickedFile != null ? pickedFile.path : "";
@@ -269,7 +275,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
             ),
           ],
         ),
-        body: Stack (
+        body: Stack(
           children: [
             ListView(
               children: [
@@ -282,7 +288,10 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         setState(() {
                           imageToView = _selectedImage != null
                               ? Image.file(_selectedImage!)
-                              : Image.network(pictureUrl.isNotEmpty && pictureUrl.startsWith('http') ? pictureUrl : '');
+                              : Image.network(pictureUrl.isNotEmpty &&
+                                      pictureUrl.startsWith('http')
+                                  ? pictureUrl
+                                  : '');
                         });
                       },
                       child: Container(
@@ -300,9 +309,13 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(30),
                                 child: CachedNetworkImage(
-                                  imageUrl: pictureUrl.startsWith('http') ? pictureUrl : '',
-                                  placeholder: (context, url) => CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                  imageUrl: pictureUrl.startsWith('http')
+                                      ? pictureUrl
+                                      : '',
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                   height: 85,
                                   width: 85,
                                   fit: BoxFit.cover,
@@ -311,21 +324,21 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // Trigger the logic to select and upload a new picture
-                        _pickImageFromGallery();
-                      },
-                      child: Container (
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.fromLTRB(112, 61, 0, 0),
-                        child: SvgPicture.asset(
-                          'assets/camera_icon.svg', // Replace 'upload_image.svg' with the path to your SVG file
-                          width: 24,
-                          height: 24,
-                          semanticsLabel: 'Upload Image',
-                          color: ColorsReference.lightBlue,),
-                      )
-                    ),
+                        onTap: () {
+                          // Trigger the logic to select and upload a new picture
+                          _pickImageFromGallery();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.fromLTRB(112, 61, 0, 0),
+                          child: SvgPicture.asset(
+                            'assets/camera_icon.svg', // Replace 'upload_image.svg' with the path to your SVG file
+                            width: 24,
+                            height: 24,
+                            semanticsLabel: 'Upload Image',
+                            color: ColorsReference.lightBlue,
+                          ),
+                        )),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -348,12 +361,14 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       hintText: 'Enter your first name',
                       contentPadding: const EdgeInsets.all(16.0),
                       labelStyle: const TextStyle(
-                        color: ColorsReference.textColorBlack, 
+                        color: ColorsReference.textColorBlack,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 2.0,
-                            color: isFirstNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                            color: isFirstNameValid
+                                ? ColorsReference.borderColorGray
+                                : ColorsReference.errorColorRed),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -365,8 +380,9 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         ),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
-                      errorText:
-                        isFirstNameValid ? null : 'Please enter your first name',
+                      errorText: isFirstNameValid
+                          ? null
+                          : 'Please enter your first name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -382,7 +398,7 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                     onChanged: (value) {
                       setState(() {
                         hasChanges = true;
-                        isLastNameValid = value.isNotEmpty; 
+                        isLastNameValid = value.isNotEmpty;
                       });
                     },
                     // readOnly: true,
@@ -392,12 +408,14 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       hintText: 'Enter your last name',
                       contentPadding: const EdgeInsets.all(16.0),
                       labelStyle: const TextStyle(
-                        color: ColorsReference.textColorBlack, 
+                        color: ColorsReference.textColorBlack,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 2.0,
-                            color: isLastNameValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                            color: isLastNameValid
+                                ? ColorsReference.borderColorGray
+                                : ColorsReference.errorColorRed),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -409,8 +427,9 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         ),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
-                      errorText:
-                        isLastNameValid ? null : 'Please enter your last name',
+                      errorText: isLastNameValid
+                          ? null
+                          : 'Please enter your last name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -425,30 +444,32 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                     controller: emailController,
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: 'Email',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: 'You are not alllowed to change your email address',
-                      contentPadding: const EdgeInsets.all(16.0),
-                      labelStyle: const TextStyle(
-                        color: ColorsReference.textColorBlack,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: ColorsReference.borderColorGray,
-                          width: 2.0,
+                        labelText: 'Email',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText:
+                            'You are not alllowed to change your email address',
+                        contentPadding: const EdgeInsets.all(16.0),
+                        labelStyle: const TextStyle(
+                          color: ColorsReference.textColorBlack,
                         ),
-                        borderRadius: BorderRadius.circular(30),                    
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: ColorsReference.borderColorGray,
-                          width: 2.0,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: ColorsReference.borderColorGray,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      filled: true,  // Add this line
-                      fillColor: ColorsReference.borderColorGray.withOpacity(0.1) // Add this line,
-                    ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: ColorsReference.borderColorGray,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        filled: true, // Add this line
+                        fillColor: ColorsReference.borderColorGray
+                            .withOpacity(0.1) // Add this line,
+                        ),
                   ),
                 ),
                 // Phone number
@@ -460,7 +481,8 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                     onChanged: (value) {
                       setState(() {
                         hasChanges = true;
-                        isPhoneNumberValid = value.isEmpty || _isValidPhoneNumber(value);
+                        isPhoneNumberValid =
+                            value.isEmpty || _isValidPhoneNumber(value);
                       });
                     },
                     //readOnly: true,
@@ -475,7 +497,9 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 2.0,
-                            color: isPhoneNumberValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                            color: isPhoneNumberValid
+                                ? ColorsReference.borderColorGray
+                                : ColorsReference.errorColorRed),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -487,8 +511,9 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         ),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
-                      errorText:
-                        isPhoneNumberValid ? null : 'Please a valid phone number',
+                      errorText: isPhoneNumberValid
+                          ? null
+                          : 'Please a valid phone number',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -513,7 +538,8 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       });
                     },
                     decoration: InputDecoration(
-                        labelStyle: TextStyle(color: ColorsReference.textColorBlack),
+                        labelStyle:
+                            TextStyle(color: ColorsReference.textColorBlack),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               width: 2.0,
@@ -541,109 +567,114 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                 ),
                 // Sheet upload button
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: _selectedFile == null
-                      ? Column(children: [
-                          Container(
-                            height: 100,
-                            width: 500,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>((const Color.fromARGB(250, 240, 240, 240))),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    side: const BorderSide(color: ColorsReference.borderColorGray),
-                                    borderRadius: BorderRadius.circular(15),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: _selectedFile == null
+                        ? Column(children: [
+                            Container(
+                              height: 100,
+                              width: 500,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          (const Color.fromARGB(
+                                              250, 240, 240, 240))),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      side: const BorderSide(
+                                          color:
+                                              ColorsReference.borderColorGray),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                _choosePdfFile();
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/upload_button.svg',
-                                        width: 20,
-                                        height: 20,
-                                        semanticsLabel: 'vector',
-                                        color: ColorsReference.lightBlue,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        'Upload new speaker sheet',
-                                        style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            color: ColorsReference.lightBlue),
-                                      ),
-                                    ],
-                                  ),                                  
-                                  const SizedBox(height: 10),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Handle the tap event, e.g., open the URL in a web browser
-                                      // You can use launch(url) from the url_launcher package to open the URL
-                                      launch(pdfUrl);
-                                    },
-                                    child: Text(
-                                      extractFileNameFromUrl(pdfUrl),
-                                      style: const TextStyle(
-                                        fontFamily: 'Poppins',
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ])
-                      : Column(
-                          children: [
-                            Container(
-                                alignment: Alignment.center,
-                                height: 100,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                onPressed: () {
+                                  _choosePdfFile();
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/Pdf_icon.png',
-                                      height: 70,
-                                      width: 70,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/upload_button.svg',
+                                          width: 20,
+                                          height: 20,
+                                          semanticsLabel: 'vector',
+                                          color: ColorsReference.lightBlue,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Text(
+                                          'Upload new speaker sheet',
+                                          style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: ColorsReference.lightBlue),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 20),
-                                    Flexible(
-                                      child: Text(
-                                        '$_fileName',
-                                        style: TextStyle(
-                                            fontFamily: 'Poppins'),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
+                                    const SizedBox(height: 10),
                                     GestureDetector(
                                       onTap: () {
-                                        _deletePdfFile();
+                                        // Handle the tap event, e.g., open the URL in a web browser
+                                        // You can use launch(url) from the url_launcher package to open the URL
+                                        launch(pdfUrl);
                                       },
-                                      // ignore: deprecated_member_use
-                                      child: SvgPicture.asset(
-                                        'assets/delete_button.svg',
-                                        color: const Color.fromRGBO(
-                                            236, 0, 0, 1),
+                                      child: Text(
+                                        extractFileNameFromUrl(pdfUrl),
+                                        style: const TextStyle(
+                                          fontFamily: 'Poppins',
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
-                                )),
-                          ],
-                        )
-                ),
+                                ),
+                              ),
+                            ),
+                          ])
+                        : Column(
+                            children: [
+                              Container(
+                                  alignment: Alignment.center,
+                                  height: 100,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/Pdf_icon.png',
+                                        height: 70,
+                                        width: 70,
+                                      ),
+                                      SizedBox(width: 20),
+                                      Flexible(
+                                        child: Text(
+                                          '$_fileName',
+                                          style:
+                                              TextStyle(fontFamily: 'Poppins'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _deletePdfFile();
+                                        },
+                                        // ignore: deprecated_member_use
+                                        child: SvgPicture.asset(
+                                          'assets/delete_button.svg',
+                                          color: const Color.fromRGBO(
+                                              236, 0, 0, 1),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ],
+                          )),
                 // Video link
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -653,7 +684,8 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                     onChanged: (value) {
                       setState(() {
                         hasChanges = true;
-                        isLinkValid = value.isNotEmpty && value.startsWith('http');
+                        isLinkValid =
+                            value.isNotEmpty && value.startsWith('http');
                       });
                     },
                     //readOnly: true,
@@ -663,12 +695,14 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                       hintText: 'Enter your video link',
                       contentPadding: const EdgeInsets.all(16.0),
                       labelStyle: const TextStyle(
-                        color: ColorsReference.textColorBlack, 
+                        color: ColorsReference.textColorBlack,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 2.0,
-                            color: isLinkValid ? ColorsReference.borderColorGray : ColorsReference.errorColorRed),
+                            color: isLinkValid
+                                ? ColorsReference.borderColorGray
+                                : ColorsReference.errorColorRed),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -680,11 +714,93 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
                         ),
                         borderRadius: BorderRadius.circular(50.0),
                       ),
-                      errorText:
-                        isLinkValid ? null : 'Please enter a valid video link',
+                      errorText: isLinkValid
+                          ? null
+                          : 'Please enter a valid video link',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15, bottom: 0),
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                            builder: (context) => AlertDialog(
+                            title: Text('Confirm Delete'),
+                            content: Text(
+                                'Are you sure you want to delete your account?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseDatabase.instance
+                                      .ref()
+                                      .child("users")
+                                      .child(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .remove();
+
+                                  FirebaseDatabase.instance
+                                      .ref()
+                                      .child("speaker_requests")
+                                      .child(FirebaseAuth
+                                          .instance.currentUser!.uid)
+                                      .remove();
+
+                                  FirebaseAuth.instance.currentUser?.delete();
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title:
+                                          const Text('Sorry to see you leave!'),
+                                      content: const Text(
+                                          'Your account has been successfully deleted.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/login',
+                        (Route<dynamic> route) => false,
+                      ); // Close the dialog
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Text('Delete'),
+                              ),
+                            ],
+                          
+                      ),
+                      );
+
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Delete account',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
@@ -812,5 +928,4 @@ class SpeakerPersonalInfoState extends State<SpeakerPersonalInfo> {
 
     return fileName;
   }
-
 }
